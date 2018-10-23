@@ -1,0 +1,6 @@
+{
+  "rules": {
+    ".read": "auth !== null && auth.provider == 'google'",
+    ".write": "auth !== null && auth.provider == 'google'"
+  }
+}
