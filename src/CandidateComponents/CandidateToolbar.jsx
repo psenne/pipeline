@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Dropdown, Input, Icon, Menu } from "semantic-ui-react";
 import StatusDropdown from "./StatusDropdown";
 import ExportToExcel from "../modules/ExportToExcel";
@@ -15,8 +16,10 @@ class CandidateToolbar extends Component {
         const { candidates, viewArchived, searchTerm, searchCandidates, filterByArchived, filterByStatus } = this.props;
         return (
             <Menu attached="top" className="no-print">
-                <Menu.Item  title="Add new candidate" onClick={()=>this.props.history.push("/candidates/add")}>
-                    <Icon name="plus" />
+                <Menu.Item title="Add new candidate" link>
+                    <Link to="/candidates/add">
+                        <Icon name="plus" />
+                    </Link>
                 </Menu.Item>
                 <Menu.Item>
                     <StatusDropdown text="Filter by Status" onChange={filterByStatus} />
