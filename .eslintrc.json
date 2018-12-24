@@ -14,7 +14,6 @@
     "plugins": ["react", "prettier"],
     "rules": {
         "indent": ["warn", 4],
-        "linebreak-style": ["error", "windows"],
         "quotes": ["error", "double"],
         "semi": [
             "error",
