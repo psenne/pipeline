@@ -33,5 +33,4 @@ const tmplLOIStatus = [
     { key: "accepted", text: "Accepted", value: "accepted" }
 ];
 
-
-export  { tmplCandidate,  tmplLOIStatus };
+export { tmplCandidate, tmplLOIStatus };

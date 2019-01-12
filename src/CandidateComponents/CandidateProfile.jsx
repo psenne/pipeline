@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Grid, Header, Segment, Icon, Card } from "semantic-ui-react";
 import moment from "moment";
 import { fbCandidatesDB } from "../firebase/firebase.config";
+import { tmplCandidate } from "../constants/candidateInfo";
 
 class CandidateProfile extends Component {
     constructor(props) {
@@ -31,22 +32,31 @@ class CandidateProfile extends Component {
     }
 
     render() {
-        const { candidate } = this.state;
+        let candidate = this.state.candidate;
+        let interviewed = "Candidate has not been interviewed.";
+        let loi_message = "LOI has not been sent.";
 
         if (candidate) {
+            candidate = { ...tmplCandidate, ...candidate };
+
             candidate.interview_date = candidate.interview_date ? moment(candidate.interview_date).format("M/D/YYYY") : "";
             candidate.loi_sent_date = candidate.loi_sent_date ? moment(candidate.loi_sent_date).format("M/D/YYYY") : "";
             candidate.interviewed_by = candidate.interviewed_by.join(", ");
             candidate.potential_contracts = candidate.potential_contracts.join(", ");
             candidate.salary = candidate.salary ? atob(candidate.salary) : "";
+
+            if (candidate.interviewed_by) {
+                interviewed = `Interviewed on ${candidate.interview_date} by ${candidate.interviewed_by}.`;
+            }
+
             if (candidate.loi_status === "accepted") {
-                candidate.loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
+                loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
             }
             else if (candidate.loi_status === "sent") {
-                candidate.loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}.`;
+                loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}.`;
             }
             else {
-                candidate.loi_message = "LOI has not been sent.";
+                loi_message = "LOI has not been sent.";
             }
         }
 
@@ -77,10 +87,8 @@ class CandidateProfile extends Component {
                                     <div>Salary: {candidate.salary}</div>
                                 </Grid.Column>
                                 <Grid.Column>
-                                    <div>
-                                        Interviewed on {candidate.interview_date} by {candidate.interviewed_by}
-                                    </div>
-                                    <div>{candidate.loi_message}</div>
+                                    <div>{interviewed}</div>
+                                    <div>{loi_message}</div>
                                 </Grid.Column>
                             </Grid>
                         </Segment>
