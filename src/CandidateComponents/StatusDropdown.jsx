@@ -29,10 +29,10 @@ export default class StatusDropdown extends Component {
             <Dropdown text={text}>
                 <Dropdown.Menu>
                     <Dropdown.Item icon="window close" value="" text="Clear" onClick={onChange} />
-                    <Dropdown.Divider/>
+                    <Dropdown.Divider />
                     {statuses.map(status => {
-                        const label = {color: status.info.color, empty: true, circular: true}
-                        return <Dropdown.Item key={status.key} label={label} value={status.info.name} text={sentence(status.info.name)}  onClick={onChange} />;
+                        const label = { color: status.info.color, empty: true, circular: true };
+                        return <Dropdown.Item key={status.key} label={label} value={status.info.name} text={sentence(status.info.name)} onClick={onChange} />;
                     })}
                 </Dropdown.Menu>
             </Dropdown>

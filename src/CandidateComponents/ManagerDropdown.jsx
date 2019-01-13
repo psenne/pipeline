@@ -19,7 +19,7 @@ export default class ManagerDropdown extends Component {
                 managers.push({
                     key: manager.key,
                     text: val.name,
-                    value: val.name
+                    value: val.email
                 });
             });
 

@@ -63,9 +63,9 @@ class CandidateForm extends React.Component {
 
     //generic callback for dropdowns
     HandleDropdownInput(ev, data) {
+        console.log(data);
         const name = data.name;
         const value = data.value;
-
         this.updateSelectedCandidate(name, value);
     }
 
@@ -183,17 +183,17 @@ class CandidateForm extends React.Component {
                                 <Form.Input type="text" name="skill" label="Skill / Role:" onChange={this.HandleTextInput} value={candidate.skill} />
                                 <Form.Input type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Input type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
-                                {/* <Form.Field>
-                                <label>Interview date / Interviewers: </label>
-                                <DatePicker name="interview_date" dateFormat="MMM D, YYYY" maxDate={moment()} selected={interview_date} onChange={this.handleInterviewDateChange} />
-                            </Form.Field>
-                            <ManagerDropdown name="interviewed_by" multiple={true} placeholder="Interviewed by" value={candidate.interviewed_by} onChange={this.HandleManagerDropdown} />
-                            <Form.Field>
-                                <label>LOI Status / Sent by:</label>
-                                <LOIStatusDropdown onChange={this.HandleDropdownInput} />
-                                <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} onChange={this.HandleManagerDropdown} />
-                                <DatePicker name="loi_sent_date" dateFormat="MMM D, YYYY" placeholderText="Date LOI Sent" maxDate={moment()} selected={loi_sent_date} disabled={candidate.loi_status === "notsent"} onChange={this.handleLOIDateChange} />
-                            </Form.Field> */}
+                                <Form.Field>
+                                    <label>Interview date / Interviewers: </label>
+                                    <DatePicker name="interview_date" dateFormat="MMM D, YYYY" maxDate={moment()} selected={interview_date} onChange={this.handleInterviewDateChange} />
+                                </Form.Field>
+                                <ManagerDropdown name="interviewed_by" multiple={true} placeholder="Interviewed by" value={candidate.interviewed_by} onChange={this.HandleManagerDropdown} />
+                                <Form.Field>
+                                    <label>LOI Status / Sent by:</label>
+                                    <LOIStatusDropdown value={candidate.loi_status} onChange={this.HandleDropdownInput} />
+                                    <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} onChange={this.HandleManagerDropdown} />
+                                    <DatePicker name="loi_sent_date" dateFormat="MMM D, YYYY" placeholderText="Date LOI Sent" maxDate={moment()} selected={loi_sent_date} disabled={candidate.loi_status === "notsent"} onChange={this.handleLOIDateChange} />
+                                </Form.Field>
                                 <Form.Field>
                                     <label>Resume:</label>
                                     <Form.Input name="resume_filename" type="file" />
