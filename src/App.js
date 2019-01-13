@@ -102,12 +102,10 @@ class App extends Component {
         else {
             //user is logged in
             return (
-                <div>
-                    <Container className="App" fluid>
-                        <AppHeader currentuser={currentuser} />
-                        <AppRoutes />
-                    </Container>
-                </div>
+                <Container className="App" fluid>
+                    <AppHeader currentuser={currentuser} />
+                    <AppRoutes />
+                </Container>
             );
         }
     } //end render

@@ -16,6 +16,7 @@ const tmplCandidate = {
     next_steps: "",
     notes: "",
     potential_contracts: [],
+    prefered_location: "",
     skill: "",
     resume_filename: "",
     resume_type: [],

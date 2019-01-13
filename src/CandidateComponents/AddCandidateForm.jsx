@@ -3,15 +3,8 @@ import history from "../modules/history";
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 import NavBar from "../NavBar";
-import LOIStatusDropdown from "./LOIStatusDropdown";
 import ContractDropdown from "./ContractDropdown";
-import ManagerDropdown from "./ManagerDropdown";
 import { Form, Container, Segment, Button, Message, Header } from "semantic-ui-react";
-
-import DatePicker from "react-datepicker";
-import moment from "moment";
-
-import "react-datepicker/dist/react-datepicker-cssmodules.css";
 
 class CandidateForm extends React.Component {
     constructor(props) {
@@ -32,7 +25,6 @@ class CandidateForm extends React.Component {
         this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
         this.HandleCheckbox = this.HandleCheckbox.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
-        this.HandleDelete = this.HandleDelete.bind(this);
         this.updateSelectedCandidate = this.updateSelectedCandidate.bind(this);
     }
 
@@ -103,12 +95,10 @@ class CandidateForm extends React.Component {
     //callback function when form editing is done.
     updateDB() {
         const { candidate } = this.state;
-
         //this.props.showLoader(true, "Processing data"); //trigger loading component from App. Because loading is done via App state, The next part needs to wait for App state to get update. Maybe add a While loop waiting for True to be returned
 
         fbCandidatesDB.push(candidate).then(newcandidate => {
-            history.push("/candidates/"+newcandidate.key);
-            //go to new candidate
+            history.push("/candidates/"+newcandidate.key); //go to new candidate
         });
     }
 
@@ -133,36 +123,8 @@ class CandidateForm extends React.Component {
         );
     }
 
-    //callback function when delete candidate button is click in form.
-    DeleteCandidate(key) {
-        fbCandidatesDB
-            .child(key)
-            .remove()
-            .then(() => {
-                this.props.resetForm();
-            }) //reset sidebar and table
-            .catch(function(error) {
-                console.error(error);
-            });
-    }
-
-    //callback for Delete button. needed this for confirmation prompt
-    HandleDelete() {
-        const key = this.props.ckey;
-        const candidate = this.state.candidate;
-        const confirmationMsg = "Are you sure you want to delete " + candidate.firstname + " " + candidate.lastname + "?";
-        const deleteConfirmed = window.confirm(confirmationMsg);
-
-        if (deleteConfirmed) {
-            this.DeleteCandidate(key);
-        }
-    }
-
     render() {
         const { candidate } = this.state;
-        const interview_date = candidate.interview_date ? moment(candidate.interview_date) : "";
-        const loi_sent_date = candidate.loi_sent_date ? moment(candidate.loi_sent_date) : "";
-        const salary = candidate.salary ? atob(candidate.salary) : "";
         return (
             <>
                 <NavBar active="candidates" />
@@ -175,6 +137,7 @@ class CandidateForm extends React.Component {
                                 <Form.Input name="lastname" type="text" required placeholder="Last name" onChange={this.HandleTextInput} value={candidate.lastname} />
                                 <Form.Input name="emailaddress" type="email" label="Email Address:" icon="mail" iconPosition="left" placeholder="Email Address" onChange={this.HandleTextInput} value={candidate.emailaddress} />
                                 <Form.Input name="telephone" type="tel" label="Phone Number:" icon="phone" iconPosition="left" placeholder="XXX-XXX-XXXX" onChange={this.HandleTextInput} value={candidate.telephone} />
+                                <Form.Input name="prefered_location" type="text" label="Prefered work location:" icon="globe" iconPosition="left" placeholder="City / State" onChange={this.HandleTextInput} value={candidate.prefered_location} />
                             </Segment>
 
                             <Header>Hiring Information</Header>
@@ -187,22 +150,9 @@ class CandidateForm extends React.Component {
                                 <Form.Input type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Input type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
                                 <Form.Field>
-                                    <label>Interview date / Interviewers: </label>
-                                    <DatePicker name="interview_date" dateFormat="MMM D, YYYY" maxDate={moment()} selected={interview_date} onChange={this.handleInterviewDateChange} />
-                                </Form.Field>
-                                <ManagerDropdown name="interviewed_by" multiple={true} placeholder="Interviewed by" value={candidate.interviewed_by} onChange={this.HandleManagerDropdown} />
-                                <Form.Field>
-                                    <label>LOI Status / Sent by:</label>
-                                    <LOIStatusDropdown name="loi_status" value={candidate.loi_status} onChange={this.HandleLOIStatusChange} />
-                                    <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} disabled={candidate.loi_status === "notsent"} onChange={this.HandleManagerDropdown} />
-                                    <DatePicker name="loi_sent_date" dateFormat="MMM D, YYYY" placeholderText="Date LOI Sent" maxDate={moment()} selected={loi_sent_date} disabled={candidate.loi_status === "notsent"} onChange={this.handleLOIDateChange} />
-                                </Form.Field>
-                                <Form.Field>
                                     <label>Resume:</label>
                                     <Form.Input name="resume_filename" type="file" />
                                 </Form.Field>
-
-                                <Form.Input name="salary" type="text" icon="dollar" iconPosition="left" label="Salary Requirement" onChange={this.HandleSalaryInput} value={salary} />
                             </Segment>
 
                             <Header>Notes</Header>
@@ -213,9 +163,10 @@ class CandidateForm extends React.Component {
                             </Segment>
                         </Form>
                     </Segment>
+<Segment>
                     <Button type="submit" icon="save" positive content="Add" onClick={this.ValidateAndSubmit} />
                     {this.state.formError && <Message error floating compact icon="warning" header="Required fields missing" content="First and last names are both required." />}
-                </Container>
+         </Segment>       </Container>
             </>
         );
     }
