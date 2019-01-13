@@ -28,6 +28,7 @@ class CandidateForm extends React.Component {
         this.HandleSalaryInput = this.HandleSalaryInput.bind(this);
         this.HandleDropdownInput = this.HandleDropdownInput.bind(this);
         this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
+        this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
         this.HandleCheckbox = this.HandleCheckbox.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
         this.HandleDelete = this.HandleDelete.bind(this);
@@ -64,9 +65,13 @@ class CandidateForm extends React.Component {
     //generic callback for dropdowns
     HandleDropdownInput(ev, data) {
         console.log(data);
-        const name = data.name;
+        const name = ev.target.name;
         const value = data.value;
         this.updateSelectedCandidate(name, value);
+    }
+
+    HandleLOIStatusChange(value) {
+        this.updateSelectedCandidate("loi_status", value);
     }
 
     HandleManagerDropdown(name, value) {
@@ -190,8 +195,8 @@ class CandidateForm extends React.Component {
                                 <ManagerDropdown name="interviewed_by" multiple={true} placeholder="Interviewed by" value={candidate.interviewed_by} onChange={this.HandleManagerDropdown} />
                                 <Form.Field>
                                     <label>LOI Status / Sent by:</label>
-                                    <LOIStatusDropdown value={candidate.loi_status} onChange={this.HandleDropdownInput} />
-                                    <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} onChange={this.HandleManagerDropdown} />
+                                    <LOIStatusDropdown name="loi_status" value={candidate.loi_status} onChange={this.HandleLOIStatusChange} />
+                                    <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} disabled={candidate.loi_status === "notsent"} onChange={this.HandleManagerDropdown} />
                                     <DatePicker name="loi_sent_date" dateFormat="MMM D, YYYY" placeholderText="Date LOI Sent" maxDate={moment()} selected={loi_sent_date} disabled={candidate.loi_status === "notsent"} onChange={this.handleLOIDateChange} />
                                 </Form.Field>
                                 <Form.Field>
