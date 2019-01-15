@@ -98,7 +98,7 @@ class CandidateForm extends React.Component {
         //this.props.showLoader(true, "Processing data"); //trigger loading component from App. Because loading is done via App state, The next part needs to wait for App state to get update. Maybe add a While loop waiting for True to be returned
 
         fbCandidatesDB.push(candidate).then(newcandidate => {
-            history.push("/candidates/"+newcandidate.key); //go to new candidate
+            history.push("/candidates/" + newcandidate.key); //go to new candidate
         });
     }
 
@@ -163,10 +163,11 @@ class CandidateForm extends React.Component {
                             </Segment>
                         </Form>
                     </Segment>
-<Segment>
-                    <Button type="submit" icon="save" positive content="Add" onClick={this.ValidateAndSubmit} />
-                    {this.state.formError && <Message error floating compact icon="warning" header="Required fields missing" content="First and last names are both required." />}
-         </Segment>       </Container>
+                    <Segment>
+                        <Button type="submit" icon="save" positive content="Add" onClick={this.ValidateAndSubmit} />
+                        {this.state.formError && <Message error floating compact icon="warning" header="Required fields missing" content="First and last names are both required." />}
+                    </Segment>{" "}
+                </Container>
             </>
         );
     }
