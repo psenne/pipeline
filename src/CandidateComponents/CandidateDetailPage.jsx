@@ -12,7 +12,6 @@ export default class CandidateDetail extends Component {
         super(props);
 
         this.GoBack = this.GoBack.bind(this);
-        this.EditCandidate = this.EditCandidate.bind(this);
     }
 
     GoBack() {

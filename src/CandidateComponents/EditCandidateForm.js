@@ -35,11 +35,28 @@ class CandidateForm extends React.Component {
         this.updateSelectedCandidate = this.updateSelectedCandidate.bind(this);
     }
 
+    componentDidMount() {
+        const candidateID  = this.props.match.params.id;
+        fbCandidatesDB.child(candidateID).once("value", data => {
+            this.setState({ candidate: data.val() });
+        });
+
+        //child_changed will be called when an object is updated in firebase (usually by another user).
+        //Checks if the candidate updated is the one this user is currently editing. If so, then update form with those values.
+
+        fbCandidatesDB.on("child_changed", childSnapshot => {
+            if (childSnapshot.key === this.props.ckey) {
+                this.setState({
+                    candidate: childSnapshot.val()
+                });
+            }
+        });
+    }
+
     updateSelectedCandidate(name, value) {
         this.setState(prevState => {
             let candidateinfo = prevState.candidate; //get candidate info
             candidateinfo[name] = value; //update with onChange info
-            console.log(candidateinfo)
             return { candidate: candidateinfo };
         });
     }
