@@ -39,7 +39,6 @@ class CandidateForm extends React.Component {
         this.setState(prevState => {
             let candidateinfo = prevState.candidate; //get candidate info
             candidateinfo[name] = value; //update with onChange info
-            console.log(candidateinfo)
             return { candidate: candidateinfo };
         });
     }
@@ -107,7 +106,7 @@ class CandidateForm extends React.Component {
         //this.props.showLoader(true, "Processing data"); //trigger loading component from App. Because loading is done via App state, The next part needs to wait for App state to get update. Maybe add a While loop waiting for True to be returned
 
         fbCandidatesDB.push(candidate).then(newcandidate => {
-            history.push("/candidates/"+newcandidate.key);
+            history.push("/candidates/" + newcandidate.key);
             //go to new candidate
         });
     }
@@ -123,8 +122,7 @@ class CandidateForm extends React.Component {
 
                 if (candidate.firstname.length > 0 && candidate.lastname.length > 0) {
                     this.updateDB();
-                }
-                else {
+                } else {
                     this.setState({
                         formError: true
                     });
@@ -186,11 +184,13 @@ class CandidateForm extends React.Component {
                                 <Form.Input type="text" name="skill" label="Skill / Role:" onChange={this.HandleTextInput} value={candidate.skill} />
                                 <Form.Input type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Input type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
-                                <Form.Field>
-                                    <label>Interview date / Interviewers: </label>
-                                    <DatePicker name="interview_date" dateFormat="MMM D, YYYY" maxDate={new Date()} placeholderText="Click to select a date" selected={interview_date} onChange={this.handleInterviewDateChange} />
-                                </Form.Field>
-                                <ManagerDropdown name="interviewed_by" multiple={true} placeholder="Interviewed by" value={candidate.interviewed_by} onChange={this.HandleManagerDropdown} />
+                                <Form.Group inline widths='equal'>  
+                                    <Form.Field>
+                                        <label>Interview date / Interviewers: </label>
+                                        <DatePicker inline name="interview_date" dateFormat="MMM D, YYYY" maxDate={new Date()} placeholderText="Click to select a date" selected={interview_date} onChange={this.handleInterviewDateChange} />
+                                        <ManagerDropdown name="interviewed_by" multiple={true} placeholder="Interviewed by" value={candidate.interviewed_by} onChange={this.HandleManagerDropdown} />
+                                    </Form.Field>
+                                </Form.Group>
                                 <Form.Field>
                                     <label>LOI Status / Sent by:</label>
                                     <LOIStatusDropdown name="loi_status" value={candidate.loi_status} onChange={this.HandleLOIStatusChange} />

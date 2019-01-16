@@ -15,7 +15,7 @@ export default class CandidateDetail extends Component {
     }
 
     GoBack() {
-        history.goBack();
+        history.push("/candidates");
     }
 
     render() {

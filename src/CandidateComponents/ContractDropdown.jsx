@@ -25,11 +25,11 @@ export default class ContractDropdown extends Component {
     }
 
     render() {
-        const { text, onChange } = this.props;
+        const { text, onChange, value } = this.props;
         const { contracts } = this.state;
         const contractList = contracts.map(({ key, info: contract }) => {
             return { key: key, text: contract.name, value: contract.name };
         });
-        return <Dropdown text={text} multiple selection options={contractList} onChange={(ev, selection) => onChange(selection.value)} />;
+        return <Dropdown text={text} value={value} multiple selection options={contractList} onChange={(ev, selection) => onChange(selection.value)} />;
     }
 }

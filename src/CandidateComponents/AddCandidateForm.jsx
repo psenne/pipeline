@@ -150,8 +150,8 @@ class CandidateForm extends React.Component {
                                 <Form.Input type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Input type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
                                 <Form.Field>
-                                    <label>Resume:</label>
-                                    <Form.Input name="resume_filename" type="file" />
+                                    <label>Add document:</label>
+                                    <Form.Input name="doc_filename" type="file" />
                                 </Form.Field>
                             </Segment>
 

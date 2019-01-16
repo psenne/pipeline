@@ -69,6 +69,9 @@ class CandidateProfile extends Component {
                                 <Grid.Column>
                                     <Header size="huge">
                                         {candidate.firstname} {candidate.lastname}
+                                        <h5>
+                                            {[candidate.emailaddress, candidate.telephone].filter(Boolean).join(" / ")}
+                                        </h5>
                                         <Header.Subheader>
                                             {candidate.level} {candidate.skill}
                                         </Header.Subheader>

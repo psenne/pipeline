@@ -168,10 +168,10 @@ export default class ContractsEditsTable extends Component {
                                 <Input name="name" value={newcontract.name} placeholder="Contract name" onChange={this.HandleTextInput} />
                             </Table.Cell>
                             <Table.Cell>
-                                <Input name="pm" value={newcontract.pm} placeholder="Project manager" onChange={this.HandleTextInput} />
+                                <Input name="pop" value={newcontract.pop} placeholder="Period of performance" onChange={this.HandleTextInput} />
                             </Table.Cell>
                             <Table.Cell>
-                                <Input name="pop" value={newcontract.pop} placeholder="Period of performance" onChange={this.HandleTextInput} />
+                                <Input name="pm" value={newcontract.pm} placeholder="Project manager" onChange={this.HandleTextInput} />
                             </Table.Cell>
                             <Table.Cell>
                                 <Icon link name="save" color="green" title="Save entry" onClick={this.Update} /> <Icon link name="ban" title="Cancel update" onClick={this.ResetForm} />
