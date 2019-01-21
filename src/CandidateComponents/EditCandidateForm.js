@@ -7,7 +7,7 @@ import NavBar from "../NavBar";
 import LOIStatusDropdown from "./LOIStatusDropdown";
 import ContractDropdown from "./ContractDropdown";
 import ManagerDropdown from "./ManagerDropdown";
-import { Form, Container, Segment, Button, Message, Header, Menu, Icon } from "semantic-ui-react";
+import { Form, Container, Segment, Button, Message, Header, Menu, Icon, Checkbox } from "semantic-ui-react";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker-cssmodules.css";
@@ -102,10 +102,10 @@ class CandidateForm extends React.Component {
 
     //callback for checkbox for setting candidate to archive
     HandleCheckbox(ev, data) {
-        const name = data.name;
         const value = data.checked ? "archived" : "current";
-
-        this.updateSelectedCandidate(name, value);
+        this.setState(prevState => {
+            Object.assign(prevState.candidate, { archived: value });
+        }, this.updateDB);
     }
 
     //callback for interview date.
@@ -195,6 +195,8 @@ class CandidateForm extends React.Component {
         const interview_date = candidate.interview_date ? new Date(candidate.interview_date) : null;
         const loi_sent_date = candidate.loi_sent_date ? new Date(candidate.loi_sent_date) : null;
         const salary = candidate.salary ? atob(candidate.salary) : "";
+        const archiveLabel = candidate.archived === "archived" ? "Unarchive Candidate" : "Archive Candidate";
+
         return (
             <>
                 <NavBar active="candidates" />
@@ -206,7 +208,10 @@ class CandidateForm extends React.Component {
                             </Header>
                         </Menu.Item>
                         <Menu.Menu position="right">
-                            <Menu.Item onClick={() => history.goBack()}>
+                            <Menu.Item>
+                                <Checkbox toggle label={archiveLabel} checked={candidate.archived === "archived" ? true : false} onChange={this.HandleCheckbox} />
+                            </Menu.Item>
+                            <Menu.Item title="Close" onClick={() => history.goBack()}>
                                 <Icon name="cancel" />
                             </Menu.Item>
                         </Menu.Menu>
