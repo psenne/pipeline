@@ -32,6 +32,7 @@ class CandidatesPage extends Component {
         this.filterCandidates = this.filterCandidates.bind(this);
         this.HandleDropdownInput = this.HandleDropdownInput.bind(this);
         this.filterByStatus = this.filterByStatus.bind(this);
+        this.ArchiveCandidate = this.ArchiveCandidate.bind(this);
     }
 
     //callback function for search bar
@@ -55,6 +56,10 @@ class CandidatesPage extends Component {
         });
     }
 
+    ArchiveCandidate(key, status) {
+        fbCandidatesDB.child(key).update({ archived: status });
+    }
+
     componentDidMount() {
         this.orderedCandidates.on("value", data => {
             let tmpitems = [];
@@ -70,12 +75,11 @@ class CandidatesPage extends Component {
     }
 
     render() {
-        const { history } = this.props;
         return (
             <div>
                 <NavBar active="candidates" />
                 <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} filterByArchived={this.HandleDropdownInput} viewArchived={this.state.viewArchived} filterByStatus={this.filterByStatus} searchCandidates={this.filterCandidates} searchTerm={this.state.filterTerm} />
-                <CandidatesTable history={history} filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} activeRow={this.state.activeRow} list={this.state.candidateList} selectCandidate={this.selectCandidate} />
+                <CandidatesTable ArchiveCandidate={this.ArchiveCandidate} filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={this.state.candidateList} />
             </div>
         );
     }

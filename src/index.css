@@ -102,12 +102,20 @@ body {
     border-radius: 0 !important;
 }
 
-.set-flag .icon {
+.set-flag {
+    position: relative;
+}
+.set-flag .menu {
     visibility: hidden;
 }
-.set-flag:hover .icon {
+.set-flag:hover .menu {
     visibility: visible;
 }
+.set-flag .menu {
+    position: absolute;
+    top: calc(50% - 21px);
+}
+
 @media print {
     .no-print {
         display: none !important;

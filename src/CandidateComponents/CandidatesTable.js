@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Table, Icon } from "semantic-ui-react";
+import history from "../modules/history";
+import { Table, Icon, Menu } from "semantic-ui-react";
 import classnames from "classnames";
 
 //uses search field value to filter array of candidates for table population
@@ -29,14 +30,29 @@ function isFiltered(searchTerm) {
 }
 
 class CandidatesTable extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            visible: false
+        };
+    }
 
     ViewCandidate(ev, key) {
         ev.stopPropagation();
-        this.props.history.push({pathname: `/candidates/${key}`});
+        this.props.history.push({ pathname: `/candidates/${key}` });
     }
-    SetFlag(ev, key) {
+
+    ArchiveCandidate(ev, key, status) {
         ev.stopPropagation();
-        console.log(key);
+        this.props.ArchiveCandidate(key, status);
+    }
+
+    SetFlag(ev, candidatekey) {
+        ev.stopPropagation();
+        this.setState({
+            visible: !this.state.visible
+        });
     }
 
     render() {
@@ -44,8 +60,8 @@ class CandidatesTable extends Component {
             <Table attached className="hovered candidate-table" compact>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell>
-                            <Icon name="flag" color="grey" />
+                        <Table.HeaderCell width={1} textAlign="center">
+                            <Icon name="edit" color="grey" />
                         </Table.HeaderCell>
                         <Table.HeaderCell>Name</Table.HeaderCell>
                         <Table.HeaderCell>Skill</Table.HeaderCell>
@@ -53,7 +69,7 @@ class CandidatesTable extends Component {
                         <Table.HeaderCell>Level</Table.HeaderCell>
                         <Table.HeaderCell>Current Contract</Table.HeaderCell>
                         <Table.HeaderCell>Notes</Table.HeaderCell>
-                        <Table.HeaderCell>Next Steps</Table.HeaderCell>
+                        <Table.HeaderCell>Follow Up</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -64,12 +80,36 @@ class CandidatesTable extends Component {
                             const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
                             const viewingCurrent = this.props.filter === item.info.archived; //item.info.archived is either "current" or "archived"
 
+                            // set button text and actions for archive candidate button
+                            let toggleArchive = "archived";
+                            let setArchiveStatusText = "Archive";
+                            if (item.info.archived === "archived") {
+                                toggleArchive = "current";
+                                setArchiveStatusText = "Unarchive";
+                            }
                             if (viewingCurrent) {
                                 //show only those candidates whose info.archived matches with archived/current dropdown. could've used the filter property
                                 return (
                                     <Table.Row key={item.key} className={classnames("status-" + item.info.status)} onClick={ev => this.ViewCandidate(ev, item.key)}>
                                         <Table.Cell className="set-flag">
-                                            <Icon name="flag" link color="red" onClick={ev => this.SetFlag(ev, item.key)} />
+                                            <Menu icon>
+                                                <Menu.Item name="flag" title="Add follow up note" onClick={ev => this.SetFlag(ev, item.key)}>
+                                                    <Icon link name="flag" />
+                                                </Menu.Item>
+
+                                                <Menu.Item name="archive" title={`${setArchiveStatusText} candidate`} onClick={ev => this.ArchiveCandidate(ev, item.key, toggleArchive)}>
+                                                    <Icon link name="archive" />
+                                                </Menu.Item>
+                                                <Menu.Item
+                                                    name="edit"
+                                                    title="Edit candidate"
+                                                    onClick={ev => {
+                                                        ev.stopPropagation();
+                                                        history.push(`/candidates/${item.key}/edit`);
+                                                    }}>
+                                                    <Icon link name="edit" />
+                                                </Menu.Item>
+                                            </Menu>
                                         </Table.Cell>
                                         <Table.Cell>
                                             {item.info.lastname}, {item.info.firstname}
@@ -82,8 +122,7 @@ class CandidatesTable extends Component {
                                         <Table.Cell>{item.info.next_steps}</Table.Cell>
                                     </Table.Row>
                                 );
-                            }
-                            else {
+                            } else {
                                 return false;
                             }
                         })}
