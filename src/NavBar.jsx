@@ -11,12 +11,12 @@ const NavBar = ({ active }) => {
             <Menu.Item active={active === "candidates"}>
                 <Link to="/candidates">Candidates</Link>
             </Menu.Item>
-            <Menu.Item active={active === "jobs"}>
+            {/* <Menu.Item active={active === "jobs"}>
                 <Link to="/jobs">Jobs</Link>
             </Menu.Item>
             <Menu.Item active={active === "admin"}>
                 <Link to="/admin">Admin</Link>
-            </Menu.Item>
+            </Menu.Item> */}
         </Menu>
     );
 };

@@ -1,5 +1,8 @@
 import React from "react";
 import history from "../modules/history";
+import classnames from "classnames";
+import { sentence } from "to-case";
+
 import NavBar from "../NavBar";
 import LOIStatusDropdown from "./LOIStatusDropdown";
 import ContractDropdown from "./ContractDropdown";
@@ -88,6 +91,9 @@ class CandidateForm extends React.Component {
 
     HandleLOIStatusChange(value) {
         this.updateSelectedCandidate("loi_status", value);
+        if (value === "notsent") this.updateSelectedCandidate("status", "interviewed"); //if LOI was not sent, update status to interviewed
+        if (value === "sent") this.updateSelectedCandidate("status", "recruiting"); //if LOI was sent, update status to recruiting
+        if (value === "accepted") this.updateSelectedCandidate("status", "active"); //if LOI was accepted, update status to active
     }
 
     HandleManagerDropdown(name, value) {
@@ -104,10 +110,17 @@ class CandidateForm extends React.Component {
 
     //callback for interview date.
     handleInterviewDateChange(date) {
+        //date is null if input is cleared
         if (date) {
             date = date.toJSON();
         }
         this.updateSelectedCandidate("interview_date", date);
+        if (this.state.candidate.status === "initial" && date) {
+            this.updateSelectedCandidate("status", "interviewed"); //if interview took place, set status to interviewed
+        }
+        if (date === null) {
+            this.updateSelectedCandidate("status", "initial"); //if no interview date has been entered, set status to initial
+        }
     }
 
     //callback for LOI date.
@@ -186,7 +199,12 @@ class CandidateForm extends React.Component {
             <>
                 <NavBar active="candidates" />
                 <Container>
-                    <Menu fluid attached="top" size="huge" borderless className="no-print">
+                    <Menu fluid attached="top" size="huge" borderless className={classnames("no-print", `status-${candidate.status}`)}>
+                        <Menu.Item>
+                            <Header>
+                                {candidate.firstname} {candidate.lastname} ({sentence(candidate.status)})
+                            </Header>
+                        </Menu.Item>
                         <Menu.Menu position="right">
                             <Menu.Item onClick={() => history.goBack()}>
                                 <Icon name="cancel" />
@@ -221,7 +239,7 @@ class CandidateForm extends React.Component {
                                         <ManagerDropdown name="interviewed_by" multiple={true} placeholder="Interviewed by" value={candidate.interviewed_by} onChange={this.HandleManagerDropdown} />
                                     </Form.Field>
                                 </Form.Group>
-                                <Form.Group inline>
+                                <Form.Group inline className={classnames({ "form-hidden": ["initial"].includes(candidate.status) })}>
                                     <label>LOI Status / Sent by:</label>
                                     <LOIStatusDropdown name="loi_status" value={candidate.loi_status} onChange={this.HandleLOIStatusChange} />
                                     <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} disabled={candidate.loi_status === "notsent"} onChange={this.HandleManagerDropdown} />

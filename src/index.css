@@ -27,7 +27,7 @@ body {
 }
 
 .form-hidden {
-    display: none;
+    display: none !important;
 }
 
 .floated-right {
@@ -61,30 +61,32 @@ body {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
-
+.padded-span {
+    padding: 0.5em;
+}
 .status-initial {
-    background-color: #fff;
-    color: #000;
+    background-color: #fff !important;
+    color: #000 !important;
 }
 .status-active {
-    background-color: rgb(200, 225, 180);
-    color: rgba(0, 0, 0, 0.9);
+    background-color: rgb(200, 225, 180) !important;
+    color: rgba(0, 0, 0, 0.9) !important;
 }
 .status-inactive {
-    background-color: #cccccc;
-    color: rgba(0, 0, 0, 0.5);
+    background-color: #cccccc !important;
+    color: rgba(0, 0, 0, 0.5) !important;
 }
 .status-processing {
-    background-color: #97ccf8;
-    color: rgba(0, 0, 0, 0.9);
+    background-color: #97ccf8 !important;
+    color: rgba(0, 0, 0, 0.9) !important;
 }
 .status-interviewed {
-    background-color: #ffffc6;
-    color: rgba(0, 0, 0, 0.9);
+    background-color: #ffffc6 !important;
+    color: rgba(0, 0, 0, 0.9) !important;
 }
 .status-recruiting {
-    background-color: #ffc478;
-    color: rgba(0, 0, 0, 0.9);
+    background-color: #ffc478 !important;
+    color: rgba(0, 0, 0, 0.9) !important;
 }
 
 .candidate-table {

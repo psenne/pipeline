@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Header, Segment, Icon, Card } from "semantic-ui-react";
+import classnames from "classnames";
 import moment from "moment";
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
@@ -51,11 +52,9 @@ class CandidateProfile extends Component {
 
             if (candidate.loi_status === "accepted") {
                 loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
-            }
-            else if (candidate.loi_status === "sent") {
+            } else if (candidate.loi_status === "sent") {
                 loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}.`;
-            }
-            else {
+            } else {
                 loi_message = "LOI has not been sent.";
             }
         }
@@ -69,16 +68,16 @@ class CandidateProfile extends Component {
                                 <Grid.Column>
                                     <Header size="huge">
                                         {candidate.firstname} {candidate.lastname}
-                                        <h5>
-                                            {[candidate.emailaddress, candidate.telephone].filter(Boolean).join(" / ")}
-                                        </h5>
+                                        <h5>{[candidate.emailaddress, candidate.telephone].filter(Boolean).join(" / ")}</h5>
                                         <Header.Subheader>
                                             {candidate.level} {candidate.skill}
                                         </Header.Subheader>
                                         <Header.Subheader>Referred by {candidate.found_by}</Header.Subheader>
                                     </Header>
                                 </Grid.Column>
-                                <Grid.Column textAlign="right">{candidate.status.toUpperCase()}</Grid.Column>
+                                <Grid.Column textAlign="right">
+                                    <span className={classnames("padded-span", `status-${candidate.status}`)}>{candidate.status.toUpperCase()}</span>
+                                </Grid.Column>
                             </Grid>
                         </Segment>
 

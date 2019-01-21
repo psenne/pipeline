@@ -1,12 +1,15 @@
 import React from "react";
-import NavBar  from "../NavBar";
+import NavBar from "../NavBar";
+import { Container } from "semantic-ui-react";
 
 const lp = () => {
     return (
-        <div>
+        <>
             <NavBar active="dashboard" />
-            <h1>Landing Page</h1>
-        </div>
+            <Container>
+                <h1>Landing Page</h1>
+            </Container>
+        </>
     );
 };
 
