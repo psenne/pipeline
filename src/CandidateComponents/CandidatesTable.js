@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import history from "../modules/history";
-import { Table, Icon, Menu } from "semantic-ui-react";
+import { Table, Icon } from "semantic-ui-react";
 import classnames from "classnames";
+import MiniToolbar from "./MiniToolbar";
 
 //uses search field value to filter array of candidates for table population
 function isSearched(s) {
@@ -40,7 +41,7 @@ class CandidatesTable extends Component {
 
     ViewCandidate(ev, key) {
         ev.stopPropagation();
-        this.props.history.push({ pathname: `/candidates/${key}` });
+        history.push({ pathname: `/candidates/${key}` });
     }
 
     ArchiveCandidate(ev, key, status) {
@@ -48,11 +49,9 @@ class CandidatesTable extends Component {
         this.props.ArchiveCandidate(key, status);
     }
 
-    SetFlag(ev, candidatekey) {
+    SetFlag(ev, item) {
         ev.stopPropagation();
-        this.setState({
-            visible: !this.state.visible
-        });
+        console.log(item);
     }
 
     render() {
@@ -60,7 +59,7 @@ class CandidatesTable extends Component {
             <Table attached className="hovered candidate-table" compact>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={1} textAlign="center">
+                        <Table.HeaderCell textAlign="center">
                             <Icon name="edit" color="grey" />
                         </Table.HeaderCell>
                         <Table.HeaderCell>Name</Table.HeaderCell>
@@ -81,35 +80,13 @@ class CandidatesTable extends Component {
                             const viewingCurrent = this.props.filter === item.info.archived; //item.info.archived is either "current" or "archived"
 
                             // set button text and actions for archive candidate button
-                            let toggleArchive = "archived";
-                            let setArchiveStatusText = "Archive";
-                            if (item.info.archived === "archived") {
-                                toggleArchive = "current";
-                                setArchiveStatusText = "Unarchive";
-                            }
+                            const toggleArchive = item.info.archived === "archived" ? "current" : "archived";
                             if (viewingCurrent) {
                                 //show only those candidates whose info.archived matches with archived/current dropdown. could've used the filter property
                                 return (
-                                    <Table.Row key={item.key} className={classnames("status-" + item.info.status)} onClick={ev => this.ViewCandidate(ev, item.key)}>
-                                        <Table.Cell className="set-flag">
-                                            <Menu icon>
-                                                <Menu.Item name="flag" title="Add follow up note" onClick={ev => this.SetFlag(ev, item.key)}>
-                                                    <Icon link name="flag" />
-                                                </Menu.Item>
-
-                                                <Menu.Item name="archive" title={`${setArchiveStatusText} candidate`} onClick={ev => this.ArchiveCandidate(ev, item.key, toggleArchive)}>
-                                                    <Icon link name="archive" />
-                                                </Menu.Item>
-                                                <Menu.Item
-                                                    name="edit"
-                                                    title="Edit candidate"
-                                                    onClick={ev => {
-                                                        ev.stopPropagation();
-                                                        history.push(`/candidates/${item.key}/edit`);
-                                                    }}>
-                                                    <Icon link name="edit" />
-                                                </Menu.Item>
-                                            </Menu>
+                                    <Table.Row key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
+                                        <Table.Cell textAlign="center">
+                                            <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item.key, toggleArchive)} AddNote={ev => this.SetFlag(ev, item)} />
                                         </Table.Cell>
                                         <Table.Cell>
                                             {item.info.lastname}, {item.info.firstname}

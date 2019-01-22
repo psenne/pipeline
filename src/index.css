@@ -101,19 +101,34 @@ body {
 .ui.inverted.menu {
     border-radius: 0 !important;
 }
-
-.set-flag {
-    position: relative;
-}
-.set-flag .menu {
-    visibility: hidden;
-}
-.set-flag:hover .menu {
+.candidate-table-row:hover .set-flag {
     visibility: visible;
 }
-.set-flag .menu {
+.set-flag {
+    position: relative;
+    visibility: hidden;
+    top: 7px;
+}
+.minitoolbar-inline {
     position: absolute;
-    top: calc(50% - 21px);
+    top: calc(50% - 35px);
+}
+.minitoolbar-switch {
+    border-color: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+.minitoolbar-hidden {
+    display: none !important;
+}
+.minitoolbar-flag:hover .icon {
+    color: red;
+}
+.minitoolbar-archive:hover .icon {
+    color: red;
+}
+.minitoolbar-edit:hover .icon {
+    color: green;
 }
 
 @media print {
