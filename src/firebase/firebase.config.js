@@ -27,6 +27,8 @@ if (!firebase.apps.length) {
     firebase.initializeApp(config);
 }
 
+const fbStorage = firebase.storage().ref();
+
 const fbUsersDB = firebase.database().ref("users"); //stores list of authorized users who can view and edit app.
 const fbCandidatesDB = firebase.database().ref("candidates");
 const fbStatusesDB = firebase.database().ref("statuses");
@@ -46,4 +48,4 @@ const SignOutWithGoogle = () => {
     return fbauth.signOut();
 };
 
-export { fbUsersDB, fbauth, fbCandidatesDB, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };
+export { fbStorage, fbUsersDB, fbauth, fbCandidatesDB, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };
