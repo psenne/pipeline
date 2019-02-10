@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { fbContractsDB } from "../firebase/firebase.config";
+import ManagerDropdown from '../CandidateComponents/ManagerDropdown'
 import { Table, Header, Icon, Input, Message } from "semantic-ui-react";
 import { sentence } from "to-case";
 
@@ -23,6 +24,7 @@ export default class ContractsEditsTable extends Component {
 
         this.updateNewContract = this.updateNewContract.bind(this);
         this.HandleTextInput = this.HandleTextInput.bind(this);
+        this.HandleManagerSelection = this.HandleManagerSelection.bind(this);
         this.Add = this.Add.bind(this);
         this.Edit = this.Edit.bind(this);
         this.Update = this.Update.bind(this);
@@ -45,6 +47,10 @@ export default class ContractsEditsTable extends Component {
         const name = ev.target.name;
         const value = ev.target.value;
 
+        this.updateNewContract(name, value);
+    }
+
+    HandleManagerSelection(name, value){
         this.updateNewContract(name, value);
     }
 
@@ -171,7 +177,7 @@ export default class ContractsEditsTable extends Component {
                                 <Input name="pop" value={newcontract.pop} placeholder="Period of performance" onChange={this.HandleTextInput} />
                             </Table.Cell>
                             <Table.Cell>
-                                <Input name="pm" value={newcontract.pm} placeholder="Project manager" onChange={this.HandleTextInput} />
+                                <ManagerDropdown name="pm" multiple={false}  value={newcontract.pm} placeholder="Project manager"  onChange={this.HandleManagerSelection} />
                             </Table.Cell>
                             <Table.Cell>
                                 <Icon link name="save" color="green" title="Save entry" onClick={this.Update} /> <Icon link name="ban" title="Cancel update" onClick={this.ResetForm} />

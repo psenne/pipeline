@@ -36,6 +36,8 @@ class CandidateProfile extends Component {
         let candidate = this.state.candidate;
         let interviewed = "Candidate has not been interviewed.";
         let loi_message = "LOI has not been sent.";
+        let referedby = "";
+        let company_info = "";
 
         if (candidate) {
             candidate = { ...tmplCandidate, ...candidate };
@@ -48,6 +50,14 @@ class CandidateProfile extends Component {
 
             if (candidate.interviewed_by) {
                 interviewed = `Interviewed on ${candidate.interview_date} by ${candidate.interviewed_by}.`;
+            }
+
+            if (candidate.found_by) {
+                referedby = `Refered by ${candidate.found_by}`;
+            }
+
+            if (candidate.current_company) {
+                company_info = ` with ${candidate.current_company}`;
             }
 
             if (candidate.loi_status === "accepted") {
@@ -64,77 +74,90 @@ class CandidateProfile extends Component {
                 {candidate && (
                     <Segment attached padded>
                         <Segment vertical padded>
-                            <Grid columns={2}>
-                                <Grid.Column>
-                                    <Header size="huge">
-                                        {candidate.firstname} {candidate.lastname}
-                                        <h5>{[candidate.emailaddress, candidate.telephone].filter(Boolean).join(" / ")}</h5>
+                            <Grid>
+                                <Grid.Row verticalAlign="middle" columns={2}>
+                                    <Grid.Column>
+                                        <Header size="huge">
+                                            {candidate.firstname} {candidate.lastname}
+                                            <h5>{[candidate.emailaddress, candidate.telephone].filter(Boolean).join(" / ")}</h5>
+                                        </Header>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <span className={classnames("padded-span", `status-${candidate.status}`)}>{candidate.status.toUpperCase()}</span>
+                                    </Grid.Column>
+                                </Grid.Row>
+                                <Grid.Row columns={1}>
+                                    <Grid.Column>
                                         <Header.Subheader>
-                                            {candidate.level} {candidate.skill}
+                                            {candidate.level} {candidate.skill} {company_info}
                                         </Header.Subheader>
-                                        <Header.Subheader>Referred by {candidate.found_by}</Header.Subheader>
-                                    </Header>
-                                </Grid.Column>
-                                <Grid.Column textAlign="right">
-                                    <span className={classnames("padded-span", `status-${candidate.status}`)}>{candidate.status.toUpperCase()}</span>
-                                </Grid.Column>
+                                        <Header.Subheader>{referedby}</Header.Subheader>
+                                    </Grid.Column>
+                                </Grid.Row>
                             </Grid>
                         </Segment>
 
                         <Segment vertical padded>
                             <Grid columns={2}>
-                                <Grid.Column>
-                                    <div>Current contract: {candidate.current_contract}</div>
-                                    <div>Potential contracts: {candidate.potential_contracts}</div>
-                                    <div>Salary: {candidate.salary}</div>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <div>{interviewed}</div>
-                                    <div>{loi_message}</div>
-                                </Grid.Column>
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <div>Current contract: {candidate.current_contract}</div>
+                                        <div>Potential contracts: {candidate.potential_contracts}</div>
+                                        <div>Prefered work location: {candidate.prefered_location}</div>
+                                        <div>Salary: {candidate.salary}</div>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <div>{interviewed}</div>
+                                        <div>{loi_message}</div>
+                                    </Grid.Column>
+                                </Grid.Row>
                             </Grid>
                         </Segment>
 
                         <Segment vertical padded>
-                            <div>
-                                <h3>Management Notes:</h3>
-                                {candidate.notes}
-                            </div>
-                            <div>
-                                <h3>Follow up:</h3>
-                                {candidate.next_steps}
-                            </div>
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <h3>Management Notes:</h3>
+                                        {candidate.notes}
+                                    </Grid.Column>
+                                </Grid.Row>
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <h3>Follow up:</h3>
+                                        {candidate.next_steps}
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
                         </Segment>
                         <Segment vertical padded>
-                            <div>
-                                <h3>Documents</h3>
-                                <Card.Group itemsPerRow={8}>
-                                    <Card>
-                                        <Card.Content textAlign="center">
-                                            <Card.Header>
-                                                <Icon name="paperclip" size="big" />
-                                            </Card.Header>
-                                            <Card.Description>Resume</Card.Description>
-                                        </Card.Content>
-                                    </Card>
-                                    <Card>
-                                        <Card.Content textAlign="center">
-                                            <Card.Header>
-                                                <Icon name="paperclip" size="big" />
-                                            </Card.Header>
-                                            <Card.Description>LOI</Card.Description>
-                                        </Card.Content>
-                                    </Card>
-                                    <Card>
-                                        <Card.Content textAlign="center">
-                                            <Card.Header>
-                                                <Icon name="paperclip" size="big" />
-                                            </Card.Header>
-                                            <Card.Description>Cover Letter</Card.Description>
-                                        </Card.Content>
-                                    </Card>
-                                </Card.Group>
-                            </div>
+                            <h3>Documents</h3>
+                            <Card.Group>
+                                <Card>
+                                    <Card.Content textAlign="center">
+                                        <Card.Header>
+                                            <Icon name="paperclip" size="big" />
+                                        </Card.Header>
+                                        <Card.Description>Resume</Card.Description>
+                                    </Card.Content>
+                                </Card>
+                                <Card>
+                                    <Card.Content textAlign="center">
+                                        <Card.Header>
+                                            <Icon name="paperclip" size="big" />
+                                        </Card.Header>
+                                        <Card.Description>LOI</Card.Description>
+                                    </Card.Content>
+                                </Card>
+                                <Card>
+                                    <Card.Content textAlign="center">
+                                        <Card.Header>
+                                            <Icon name="paperclip" size="big" />
+                                        </Card.Header>
+                                        <Card.Description>Cover Letter</Card.Description>
+                                    </Card.Content>
+                                </Card>
+                            </Card.Group>
                         </Segment>
                     </Segment>
                 )}

@@ -16,11 +16,13 @@ export default class ManagerDropdown extends Component {
             let managers = [];
             data.forEach(function(manager) {
                 const val = manager.val();
-                managers.push({
-                    key: manager.key,
-                    text: val.name,
-                    value: val.name
-                });
+                if (val.role.indexOf("manager") > -1) {
+                    managers.push({
+                        key: manager.key,
+                        text: val.name,
+                        value: val.name
+                    });
+                }
             });
 
             this.setState({

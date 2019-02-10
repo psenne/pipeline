@@ -224,11 +224,14 @@ class CandidateForm extends React.Component {
                                 <Form.Input name="lastname" type="text" required placeholder="Last name" onChange={this.HandleTextInput} value={candidate.lastname} />
                                 <Form.Input name="emailaddress" type="email" label="Email Address:" icon="mail" iconPosition="left" placeholder="Email Address" onChange={this.HandleTextInput} value={candidate.emailaddress} />
                                 <Form.Input name="telephone" type="tel" label="Phone Number:" icon="phone" iconPosition="left" placeholder="XXX-XXX-XXXX" onChange={this.HandleTextInput} value={candidate.telephone} />
+                                <Form.Input name="prefered_location" type="text" label="Prefered work location:" icon="globe" iconPosition="left" placeholder="City / State" onChange={this.HandleTextInput} value={candidate.prefered_location} />
                             </Segment>
 
                             <Header>Hiring Information</Header>
                             <Segment>
-                                <Form.Input inline type="text" name="skill" label="Skill / Role:" onChange={this.HandleTextInput} value={candidate.skill} />
+                                <Form.Group inline>
+                                    <Form.Input inline type="text" name="skill" label="Skill / Role:" onChange={this.HandleTextInput} value={candidate.skill} /> <Form.Input type="text" name="current_company" label="with current company" onChange={this.HandleTextInput} value={candidate.current_company} />
+                                </Form.Group>
                                 <Form.Input inline type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
                                 <Form.Input inline type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Group inline>
@@ -254,7 +257,6 @@ class CandidateForm extends React.Component {
                                     <label>Add document:</label>
                                     <Form.Input name="doc_filename" type="file" />
                                 </Form.Group>
-
                                 <Form.Input inline name="salary" type="text" icon="dollar" iconPosition="left" label="Salary Requirement" onChange={this.HandleSalaryInput} value={salary} />
                             </Segment>
 
@@ -265,12 +267,12 @@ class CandidateForm extends React.Component {
                                 <Form.Input name="found_by" type="text" label="Referred By" onChange={this.HandleTextInput} value={candidate.found_by} />
                             </Segment>
                         </Form>
-                        <Segment>
-                            <Button type="submit" icon="save" positive content="Update" onClick={this.ValidateAndSubmit} />
-                            <Button type="submit" icon="trash" negative content="Delete" onClick={this.HandleDelete} />
-                        </Segment>
                     </Segment>
-                    {this.state.formError && <Message error floating compact icon="warning" header="Required fields missing" content="First and last names are both required." />}
+                    <Segment>
+                        {this.state.formError && <Message error floating compact icon="warning" header="Required fields missing" content="First and last names are both required." />}
+                        <Button type="submit" icon="save" positive content="Update" onClick={this.ValidateAndSubmit} />
+                        <Button type="submit" icon="trash" negative content="Delete" onClick={this.HandleDelete} />
+                    </Segment>
                 </Container>
             </>
         );

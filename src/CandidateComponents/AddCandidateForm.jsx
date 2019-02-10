@@ -113,8 +113,7 @@ class CandidateForm extends React.Component {
 
                 if (candidate.firstname.length > 0 && candidate.lastname.length > 0) {
                     this.updateDB();
-                }
-                else {
+                } else {
                     this.setState({
                         formError: true
                     });
@@ -142,17 +141,19 @@ class CandidateForm extends React.Component {
 
                             <Header>Hiring Information</Header>
                             <Segment>
-                                <Form.Field>
+                                <Form.Group inline>
+                                    <Form.Input inline type="text" name="skill" label="Skill / Role:" onChange={this.HandleTextInput} value={candidate.skill} /> <Form.Input inline type="text" name="current_company" label="with current company" onChange={this.HandleTextInput} value={candidate.current_company} />
+                                </Form.Group>
+                                <Form.Input inline type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
+                                <Form.Input inline type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
+                                <Form.Group inline>
                                     <label>Potential contracts: </label>
-                                    <ContractDropdown onChange={this.HandlePContractInput} />
-                                </Form.Field>
-                                <Form.Input type="text" name="skill" label="Skill / Role:" onChange={this.HandleTextInput} value={candidate.skill} />
-                                <Form.Input type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
-                                <Form.Input type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
-                                <Form.Field>
+                                    <ContractDropdown onChange={this.HandlePContractInput} value={candidate.potential_contracts} />
+                                </Form.Group>
+                                <Form.Group inline>
                                     <label>Add document:</label>
                                     <Form.Input name="doc_filename" type="file" />
-                                </Form.Field>
+                                </Form.Group>
                             </Segment>
 
                             <Header>Notes</Header>
@@ -164,9 +165,9 @@ class CandidateForm extends React.Component {
                         </Form>
                     </Segment>
                     <Segment>
-                        <Button type="submit" icon="save" positive content="Add" onClick={this.ValidateAndSubmit} />
                         {this.state.formError && <Message error floating compact icon="warning" header="Required fields missing" content="First and last names are both required." />}
-                    </Segment>{" "}
+                        <Button type="submit" icon="save" positive content="Add" onClick={this.ValidateAndSubmit} />
+                    </Segment>
                 </Container>
             </>
         );

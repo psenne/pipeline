@@ -32,6 +32,7 @@ class CandidateForm extends React.Component {
         this.HandleCheckbox = this.HandleCheckbox.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
         this.HandleDelete = this.HandleDelete.bind(this);
+        this.HandleFileSelection = this.HandleFileSelection.bind(this);
         this.updateSelectedCandidate = this.updateSelectedCandidate.bind(this);
     }
 
@@ -73,6 +74,10 @@ class CandidateForm extends React.Component {
 
     HandleManagerDropdown(name, value) {
         this.updateSelectedCandidate(name, value);
+    }
+
+    HandleFileSelection(ev, data) {
+        console.log(ev, data);
     }
 
     //callback for checkbox for setting candidate to archive
@@ -184,7 +189,7 @@ class CandidateForm extends React.Component {
                                 <Form.Input type="text" name="skill" label="Skill / Role:" onChange={this.HandleTextInput} value={candidate.skill} />
                                 <Form.Input type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Input type="text" name="level" label="Level:" onChange={this.HandleTextInput} value={candidate.level} />
-                                <Form.Group inline widths='equal'>  
+                                <Form.Group inline widths="equal">
                                     <Form.Field>
                                         <label>Interview date / Interviewers: </label>
                                         <DatePicker inline name="interview_date" dateFormat="MMM D, YYYY" maxDate={new Date()} placeholderText="Click to select a date" selected={interview_date} onChange={this.handleInterviewDateChange} />
@@ -199,7 +204,7 @@ class CandidateForm extends React.Component {
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Resume:</label>
-                                    <Form.Input name="resume_filename" type="file" />
+                                    <Form.Input name="resume_filename" type="file" onChange={this.HandleFileSelection} />
                                 </Form.Field>
 
                                 <Form.Input name="salary" type="text" icon="dollar" iconPosition="left" label="Salary Requirement" onChange={this.HandleSalaryInput} value={salary} />
@@ -209,7 +214,7 @@ class CandidateForm extends React.Component {
                             <Segment>
                                 <Form.TextArea name="notes" label="Notes" onChange={this.HandleTextInput} value={candidate.notes} />
                                 <Form.TextArea name="next_steps" label="Next Steps" onChange={this.HandleTextInput} value={candidate.next_steps} />
-                                <Form.Input name="found_by" type="text" label="Referred By" onChange={this.HandleTextInput} value={candidate.found_by} />
+                                <Input name="found_by" type="text" label="Referred By" onChange={this.HandleTextInput} value={candidate.found_by} />
                             </Segment>
                         </Form>
                     </Segment>

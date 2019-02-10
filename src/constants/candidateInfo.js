@@ -1,5 +1,7 @@
 const tmplCandidate = {
+    create_date: "",
     current_contract: "",
+    current_company: "",
     firstname: "",
     lastname: "",
     emailaddress: "",
@@ -8,6 +10,7 @@ const tmplCandidate = {
     found_by: "",
     interview_date: "",
     interviewed_by: [],
+    last_update_date: "",
     level: "",
     loi_status: "notsent",
     loi_sent_date: "",
