@@ -1,6 +1,6 @@
 import React from "react";
 import history from "../modules/history";
-import { fbCandidatesDB } from "../firebase/firebase.config";
+import { fbCandidatesDB, fbStorage } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "./ContractDropdown";
@@ -24,6 +24,7 @@ class CandidateForm extends React.Component {
         this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
         this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
         this.HandleCheckbox = this.HandleCheckbox.bind(this);
+        this.HandleFileUpload = this.HandleFileUpload.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
         this.updateSelectedCandidate = this.updateSelectedCandidate.bind(this);
     }
@@ -92,6 +93,10 @@ class CandidateForm extends React.Component {
         this.updateSelectedCandidate("loi_sent_date", date);
     }
 
+    HandleFileUpload(a, b) {
+        console.log(a, b);
+    }
+
     //callback function when form editing is done.
     updateDB() {
         const { candidate } = this.state;
@@ -152,7 +157,7 @@ class CandidateForm extends React.Component {
                                 </Form.Group>
                                 <Form.Group inline>
                                     <label>Add document:</label>
-                                    <Form.Input name="doc_filename" type="file" />
+                                    <Form.Input name="doc_filename" type="file" onChange={this.HandleFileUpload} />
                                 </Form.Group>
                             </Segment>
 
