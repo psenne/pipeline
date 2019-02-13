@@ -20,7 +20,7 @@
     "xlsx": "^0.14.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-app-rewired start",
     "build": "react-scripts build  && firebase deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -35,6 +35,9 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "prettier": "^1.15.3"
+    "prettier": "^1.15.3",
+    "react-app-rewire-hot-loader": "^2.0.1",
+    "react-app-rewired": "^2.1.0",
+    "react-hot-loader": "^4.6.5"
   }
 }

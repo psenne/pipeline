@@ -93,8 +93,8 @@ class CandidateForm extends React.Component {
         this.updateSelectedCandidate("loi_sent_date", date);
     }
 
-    HandleFileUpload(a, b) {
-        console.log(a, b);
+    HandleFileUpload(ev, f_input) {
+        console.log(f_input);
     }
 
     //callback function when form editing is done.

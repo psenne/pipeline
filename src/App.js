@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { hot } from 'react-hot-loader'
 import { fbUsersDB, fbauth, SignInWithGoogle, SignOutWithGoogle } from "./firebase/firebase.config";
 import AppHeader from "./AppHeader";
 import AppRoutes from "./AppRoutes";
@@ -111,4 +112,5 @@ class App extends Component {
     } //end render
 } //end class
 
-export default App;
+//export default App;
+export default process.env.NODE_ENV === "development" ? hot(module)(App) : App

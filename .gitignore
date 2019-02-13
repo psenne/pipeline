@@ -22,11 +22,6 @@ yarn-error.log*
 
 public/.htaccess
 
-package-lock.json
-package.json.*
-.firebase/
-
 .idea/
 .vscode/
 
-.gitignore.*
