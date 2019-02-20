@@ -20,7 +20,7 @@ class CandidateProfile extends Component {
 
         fbCandidatesDB.child(candidateID).on("value", data => {
             this.setState({
-                candidate: Object.assign(tmplCandidate, data.val())
+                candidate: Object.assign({}, tmplCandidate, data.val())
             });
         });
     }
@@ -37,12 +37,12 @@ class CandidateProfile extends Component {
         let referedby = "";
         let company_info = "";
 
-        candidate.interview_date = candidate.interview_date ? moment(candidate.interview_date).format("M/D/YYYY") : "";
-        candidate.loi_sent_date = candidate.loi_sent_date ? moment(candidate.loi_sent_date).format("M/D/YYYY") : "";
-        candidate.salary = candidate.salary ? atob(candidate.salary) : "";
+        let interview_date = candidate.interview_date ? moment(candidate.interview_date).format("M/D/YYYY") : "";
+        let loi_sent_date = candidate.loi_sent_date ? moment(candidate.loi_sent_date).format("M/D/YYYY") : "";
+        let salary = candidate.salary !== "" ? atob(candidate.salary) : "";
 
         if (candidate.interviewed_by && candidate.interviewed_by.length > 0) {
-            interviewed = `Interviewed on ${candidate.interview_date} by ${candidate.interviewed_by.join(", ")}.`;
+            interviewed = `Interviewed on ${interview_date} by ${candidate.interviewed_by.join(", ")}.`;
         }
 
         if (candidate.found_by) {
@@ -54,9 +54,9 @@ class CandidateProfile extends Component {
         }
 
         if (candidate.loi_status === "accepted") {
-            loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
+            loi_message = `LOI was sent on ${loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
         } else if (candidate.loi_status === "sent") {
-            loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}.`;
+            loi_message = `LOI was sent on ${loi_sent_date} by ${candidate.loi_sent_by}.`;
         } else {
             loi_message = "LOI has not been sent.";
         }
@@ -96,7 +96,7 @@ class CandidateProfile extends Component {
                                         <div>Current contract: {candidate.current_contract}</div>
                                         <div>Potential contracts: {candidate.potential_contracts.join(", ")}</div>
                                         <div>Prefered work location: {candidate.prefered_location}</div>
-                                        <div>Salary: {candidate.salary}</div>
+                                        <div>Salary: {salary}</div>
                                     </Grid.Column>
                                     <Grid.Column>
                                         <div>{interviewed}</div>

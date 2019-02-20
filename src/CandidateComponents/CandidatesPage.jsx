@@ -20,13 +20,10 @@ class CandidatesPage extends Component {
         ***/
 
         this.state = {
-            selectedCandidateKey: null,
-            activeRow: null,
             candidateList: [],
             viewArchived: "current",
             filterTerm: "",
-            statusFilter: "",
-            formButtonName: ""
+            statusFilter: ""
         };
 
         this.filterCandidates = this.filterCandidates.bind(this);
@@ -70,7 +67,6 @@ class CandidatesPage extends Component {
             this.setState({
                 candidateList: tmpitems
             });
-            //this.props.showLoader(false);
         }); //update candidate table when data in firebase changes.
     }
 

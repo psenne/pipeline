@@ -47,7 +47,7 @@ export default class EditCandidateForm extends React.Component {
 
         fbCandidatesDB.child(candidateID).on("value", data => {
             if (data.val()) {
-                this.setState({ candidate: Object.assign(tmplCandidate, data.val()), key: data.key });
+                this.setState({ candidate: Object.assign({}, tmplCandidate, data.val()), key: data.key });
             } else {
                 history.replace("/candidates");
             }
@@ -227,7 +227,7 @@ export default class EditCandidateForm extends React.Component {
         const { candidate } = this.state;
         const interview_date = candidate.interview_date ? new Date(candidate.interview_date) : null;
         const loi_sent_date = candidate.loi_sent_date ? new Date(candidate.loi_sent_date) : null;
-        const salary = candidate.salary ? atob(candidate.salary) : "";
+        const salary = candidate.salary !== "" ? atob(candidate.salary) : "";
         const archiveLabel = candidate.archived === "archived" ? "Unarchive Candidate" : "Archive Candidate";
 
         return (

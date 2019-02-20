@@ -55,6 +55,7 @@ class CandidatesTable extends Component {
     }
 
     render() {
+        const { filterByStatus, filterBySearch } = this.props;
         return (
             <Table attached className="hovered candidate-table" compact>
                 <Table.Header>
@@ -73,8 +74,8 @@ class CandidatesTable extends Component {
                 </Table.Header>
                 <Table.Body>
                     {this.props.list
-                        .filter(isFiltered(this.props.filterByStatus))
-                        .filter(isSearched(this.props.filterBySearch))
+                        .filter(isFiltered(filterByStatus))
+                        .filter(isSearched(filterBySearch))
                         .map(item => {
                             const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
                             const viewingCurrent = this.props.filter === item.info.archived; //item.info.archived is either "current" or "archived"
