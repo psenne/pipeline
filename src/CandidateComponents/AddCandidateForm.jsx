@@ -6,12 +6,13 @@ import NavBar from "../NavBar";
 import ContractDropdown from "./ContractDropdown";
 import { Form, Container, Segment, Button, Message, Header } from "semantic-ui-react";
 
-class CandidateForm extends React.Component {
+export default class AddCandidateForm extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             candidate: { ...tmplCandidate },
+            files: [],
             formError: false
         };
 
@@ -93,17 +94,38 @@ class CandidateForm extends React.Component {
         this.updateSelectedCandidate("loi_sent_date", date);
     }
 
-    HandleFileUpload(ev, f_input) {
-        console.log(f_input);
+    HandleFileUpload(ev) {
+        //add files to state for later uploading
+        const files = ev.target.files;
+        this.setState({
+            files
+        });
+
+        //add filenames to candidate info for later retrieving
+        let filenames = [];
+        for (var i = 0; i < files.length; i++) {
+            filenames.push(files[i].name);
+        }
+        this.updateSelectedCandidate("filenames", filenames);
     }
 
     //callback function when form editing is done.
     updateDB() {
-        const { candidate } = this.state;
+        const { candidate, files } = this.state;
         //this.props.showLoader(true, "Processing data"); //trigger loading component from App. Because loading is done via App state, The next part needs to wait for App state to get update. Maybe add a While loop waiting for True to be returned
 
         fbCandidatesDB.push(candidate).then(newcandidate => {
-            history.push("/candidates/" + newcandidate.key); //go to new candidate
+            const key = newcandidate.key;
+            const uploadedFiles = [];
+
+            for (var i = 0; i < files.length; i++) {
+                let file = files[i];
+                const fileRef = fbStorage.child(key + "/" + file.name);
+                uploadedFiles.push(fileRef.put(file, { contentType: file.type })); //add file upload promise to array, so that we can use promise.all() for one returned promise
+            }
+            Promise.all(uploadedFiles).then(() => {
+                history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
+            });
         });
     }
 
@@ -157,7 +179,7 @@ class CandidateForm extends React.Component {
                                 </Form.Group>
                                 <Form.Group inline>
                                     <label>Add document:</label>
-                                    <Form.Input name="doc_filename" type="file" onChange={this.HandleFileUpload} />
+                                    <Form.Input name="doc_filename" type="file" multiple onChange={this.HandleFileUpload} />
                                 </Form.Group>
                             </Segment>
 
@@ -178,5 +200,3 @@ class CandidateForm extends React.Component {
         );
     }
 }
-
-export default CandidateForm;

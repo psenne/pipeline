@@ -22,6 +22,10 @@ export default class StatusDropdown extends Component {
         });
     }
 
+    componentWillUnmount() {
+        fbStatusesDB.off("value");
+    }
+
     render() {
         const { text, onChange } = this.props;
         const { statuses } = this.state;

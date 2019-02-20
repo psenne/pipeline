@@ -31,6 +31,10 @@ export default class ManagerDropdown extends Component {
         });
     }
 
+    componentWillMount() {
+        fbUsersDB.off("value");
+    }
+
     render() {
         const { managers } = this.state;
         const { name, placeholder, multiple, value, disabled, onChange } = this.props;

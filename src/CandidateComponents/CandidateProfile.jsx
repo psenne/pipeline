@@ -1,35 +1,33 @@
 import React, { Component } from "react";
-import { Grid, Header, Segment, Icon, Card } from "semantic-ui-react";
+import { Grid, Header, Segment } from "semantic-ui-react";
 import classnames from "classnames";
 import moment from "moment";
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
+import Files from "../CandidateComponents/Files";
 
 class CandidateProfile extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            candidate: null
+            candidate: { ...tmplCandidate }
         };
     }
 
     componentDidMount() {
         const { candidateID } = this.props;
-        fbCandidatesDB.child(candidateID).once("value", data => {
-            this.setState({ candidate: data.val() });
-        });
 
-        //child_changed will be called when an object is updated in firebase (usually by another user).
-        //Checks if the candidate updated is the one this user is currently editing. If so, then update form with those values.
-
-        fbCandidatesDB.on("child_changed", childSnapshot => {
-            if (childSnapshot.key === this.props.ckey) {
-                this.setState({
-                    candidate: childSnapshot.val()
-                });
-            }
+        fbCandidatesDB.child(candidateID).on("value", data => {
+            this.setState({
+                candidate: Object.assign(tmplCandidate, data.val())
+            });
         });
+    }
+
+    componentWillUnmount() {
+        const { candidateID } = this.props;
+        fbCandidatesDB.child(candidateID).off("value");
     }
 
     render() {
@@ -39,38 +37,32 @@ class CandidateProfile extends Component {
         let referedby = "";
         let company_info = "";
 
-        if (candidate) {
-            candidate = { ...tmplCandidate, ...candidate };
+        candidate.interview_date = candidate.interview_date ? moment(candidate.interview_date).format("M/D/YYYY") : "";
+        candidate.loi_sent_date = candidate.loi_sent_date ? moment(candidate.loi_sent_date).format("M/D/YYYY") : "";
+        candidate.salary = candidate.salary ? atob(candidate.salary) : "";
 
-            candidate.interview_date = candidate.interview_date ? moment(candidate.interview_date).format("M/D/YYYY") : "";
-            candidate.loi_sent_date = candidate.loi_sent_date ? moment(candidate.loi_sent_date).format("M/D/YYYY") : "";
-            candidate.interviewed_by = candidate.interviewed_by.join(", ");
-            candidate.potential_contracts = candidate.potential_contracts.join(", ");
-            candidate.salary = candidate.salary ? atob(candidate.salary) : "";
+        if (candidate.interviewed_by && candidate.interviewed_by.length > 0) {
+            interviewed = `Interviewed on ${candidate.interview_date} by ${candidate.interviewed_by.join(", ")}.`;
+        }
 
-            if (candidate.interviewed_by) {
-                interviewed = `Interviewed on ${candidate.interview_date} by ${candidate.interviewed_by}.`;
-            }
+        if (candidate.found_by) {
+            referedby = `Refered by ${candidate.found_by}`;
+        }
 
-            if (candidate.found_by) {
-                referedby = `Refered by ${candidate.found_by}`;
-            }
+        if (candidate.current_company) {
+            company_info = ` with ${candidate.current_company}`;
+        }
 
-            if (candidate.current_company) {
-                company_info = ` with ${candidate.current_company}`;
-            }
-
-            if (candidate.loi_status === "accepted") {
-                loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
-            } else if (candidate.loi_status === "sent") {
-                loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}.`;
-            } else {
-                loi_message = "LOI has not been sent.";
-            }
+        if (candidate.loi_status === "accepted") {
+            loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
+        } else if (candidate.loi_status === "sent") {
+            loi_message = `LOI was sent on ${candidate.loi_sent_date} by ${candidate.loi_sent_by}.`;
+        } else {
+            loi_message = "LOI has not been sent.";
         }
 
         return (
-            <div>
+            <>
                 {candidate && (
                     <Segment attached padded>
                         <Segment vertical padded>
@@ -102,7 +94,7 @@ class CandidateProfile extends Component {
                                 <Grid.Row>
                                     <Grid.Column>
                                         <div>Current contract: {candidate.current_contract}</div>
-                                        <div>Potential contracts: {candidate.potential_contracts}</div>
+                                        <div>Potential contracts: {candidate.potential_contracts.join(", ")}</div>
                                         <div>Prefered work location: {candidate.prefered_location}</div>
                                         <div>Salary: {candidate.salary}</div>
                                     </Grid.Column>
@@ -132,36 +124,11 @@ class CandidateProfile extends Component {
                         </Segment>
                         <Segment vertical padded>
                             <h3>Documents</h3>
-                            <Card.Group>
-                                <Card>
-                                    <Card.Content textAlign="center">
-                                        <Card.Header>
-                                            <Icon name="paperclip" size="big" />
-                                        </Card.Header>
-                                        <Card.Description>Resume</Card.Description>
-                                    </Card.Content>
-                                </Card>
-                                <Card>
-                                    <Card.Content textAlign="center">
-                                        <Card.Header>
-                                            <Icon name="paperclip" size="big" />
-                                        </Card.Header>
-                                        <Card.Description>LOI</Card.Description>
-                                    </Card.Content>
-                                </Card>
-                                <Card>
-                                    <Card.Content textAlign="center">
-                                        <Card.Header>
-                                            <Icon name="paperclip" size="big" />
-                                        </Card.Header>
-                                        <Card.Description>Cover Letter</Card.Description>
-                                    </Card.Content>
-                                </Card>
-                            </Card.Group>
+                            <Files candidateID={this.props.candidateID} filenames={candidate.filenames} />
                         </Segment>
                     </Segment>
                 )}
-            </div>
+            </>
         );
     }
 }

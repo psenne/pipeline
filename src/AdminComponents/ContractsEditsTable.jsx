@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { fbContractsDB } from "../firebase/firebase.config";
-import ManagerDropdown from '../CandidateComponents/ManagerDropdown'
+import ManagerDropdown from "../CandidateComponents/ManagerDropdown";
 import { Table, Header, Icon, Input, Message } from "semantic-ui-react";
 import { sentence } from "to-case";
 
@@ -50,7 +50,7 @@ export default class ContractsEditsTable extends Component {
         this.updateNewContract(name, value);
     }
 
-    HandleManagerSelection(name, value){
+    HandleManagerSelection(name, value) {
         this.updateNewContract(name, value);
     }
 
@@ -70,7 +70,7 @@ export default class ContractsEditsTable extends Component {
     Edit(contract) {
         this.setState({
             formState: "editing",
-            newcontract: Object.assign({},contract.info),
+            newcontract: Object.assign({}, contract.info),
             newcontractkey: contract.key
         });
     }
@@ -86,12 +86,10 @@ export default class ContractsEditsTable extends Component {
                     .child(newcontractkey)
                     .update(newcontract)
                     .then(this.ResetForm);
-            }
-            else {
+            } else {
                 fbContractsDB.push(newcontract).then(this.ResetForm);
             }
-        }
-        else {
+        } else {
             this.setState({
                 errormsg: "All fields are mandatory."
             });
@@ -127,6 +125,10 @@ export default class ContractsEditsTable extends Component {
                 contracts
             });
         });
+    }
+
+    componentWillUnmount() {
+        fbContractsDB.off("value");
     }
 
     render() {
@@ -177,7 +179,7 @@ export default class ContractsEditsTable extends Component {
                                 <Input name="pop" value={newcontract.pop} placeholder="Period of performance" onChange={this.HandleTextInput} />
                             </Table.Cell>
                             <Table.Cell>
-                                <ManagerDropdown name="pm" multiple={false}  value={newcontract.pm} placeholder="Project manager"  onChange={this.HandleManagerSelection} />
+                                <ManagerDropdown name="pm" multiple={false} value={newcontract.pm} placeholder="Project manager" onChange={this.HandleManagerSelection} />
                             </Table.Cell>
                             <Table.Cell>
                                 <Icon link name="save" color="green" title="Save entry" onClick={this.Update} /> <Icon link name="ban" title="Cancel update" onClick={this.ResetForm} />

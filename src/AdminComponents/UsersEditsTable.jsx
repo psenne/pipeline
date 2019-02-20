@@ -15,7 +15,7 @@ export default class UsersEditsTable extends Component {
         this.state = {
             users: [],
             editable: false,
-            newuser: Object.assign({},newuser),
+            newuser: Object.assign({}, newuser),
             newuserkey: -1,
             formState: null,
             errormsg: null
@@ -50,7 +50,7 @@ export default class UsersEditsTable extends Component {
 
     Add() {
         this.setState({
-            newuser: Object.assign({},newuser),
+            newuser: Object.assign({}, newuser),
             newuserkey: -1,
             formState: "adding"
         });
@@ -75,12 +75,10 @@ export default class UsersEditsTable extends Component {
                     .child(newuserkey)
                     .update(newuser)
                     .then(this.ResetForm);
-            }
-            else {
+            } else {
                 fbUsersDB.push(newuser).then(this.ResetForm);
             }
-        }
-        else {
+        } else {
             this.setState({
                 errormsg: "All fields are mandatory."
             });
@@ -95,7 +93,7 @@ export default class UsersEditsTable extends Component {
 
     ResetForm() {
         this.setState({
-            newuser: Object.assign({},newuser),
+            newuser: Object.assign({}, newuser),
             newuserkey: -1,
             formState: null
         });
@@ -111,6 +109,10 @@ export default class UsersEditsTable extends Component {
                 users
             });
         });
+    }
+
+    componentWillUnmount() {
+        fbUsersDB.off("value");
     }
 
     render() {

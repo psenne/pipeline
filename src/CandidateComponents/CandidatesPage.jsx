@@ -74,6 +74,10 @@ class CandidatesPage extends Component {
         }); //update candidate table when data in firebase changes.
     }
 
+    componentWillUnmount() {
+        this.orderedCandidates.off("value");
+    }
+
     render() {
         return (
             <div>

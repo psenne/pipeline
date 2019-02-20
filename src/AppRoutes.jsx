@@ -13,7 +13,7 @@ import noMatch from "./nomatch";
 export default function AppRoutes() {
     return (
         <Switch>
-            <Route exact path="/" component={LandingPage} />
+            <Route exact path="/" component={CandidatesPage} />
             <Route path="/admin" component={AdminPage} />
             <Route path="/candidates/add" component={AddCandidateForm} />
             <Route exact path="/candidates/:id/edit" component={EditCandidateForm} />

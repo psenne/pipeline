@@ -24,6 +24,10 @@ export default class ContractDropdown extends Component {
         });
     }
 
+    componentWillUnmount() {
+        fbContractsDB.off("value");
+    }
+
     render() {
         const { text, onChange, value } = this.props;
         const { contracts } = this.state;

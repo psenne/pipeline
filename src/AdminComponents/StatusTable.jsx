@@ -24,6 +24,10 @@ export default class StatusTable extends Component {
         });
     }
 
+    componentWillUnmount() {
+        fbStatusesDB.off("value");
+    }
+
     render() {
         const { statuses } = this.state;
         return (
