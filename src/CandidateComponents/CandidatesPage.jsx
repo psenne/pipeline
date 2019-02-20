@@ -32,6 +32,30 @@ class CandidatesPage extends Component {
         this.ArchiveCandidate = this.ArchiveCandidate.bind(this);
     }
 
+    componentDidMount() {
+        const filter = this.props.location.state ? this.props.location.state.filter : "current";
+        const filterBySearch = this.props.location.state ? this.props.location.state.filterBySearch : "";
+        const filterByStatus = this.props.location.state ? this.props.location.state.filterByStatus : "";
+
+        this.orderedCandidates.on("value", data => {
+            let tmpitems = [];
+            data.forEach(function(candidate) {
+                tmpitems.push({ key: candidate.key, info: candidate.val() });
+            });
+
+            this.setState({
+                candidateList: tmpitems,
+                viewArchived: filter,
+                filterTerm: filterBySearch,
+                statusFilter: filterByStatus
+            });
+        }); //update candidate table when data in firebase changes.
+    }
+
+    componentWillUnmount() {
+        this.orderedCandidates.off("value");
+    }
+
     //callback function for search bar
     filterCandidates(ev, data) {
         this.setState({
@@ -55,23 +79,6 @@ class CandidatesPage extends Component {
 
     ArchiveCandidate(key, status) {
         fbCandidatesDB.child(key).update({ archived: status });
-    }
-
-    componentDidMount() {
-        this.orderedCandidates.on("value", data => {
-            let tmpitems = [];
-            data.forEach(function(candidate) {
-                tmpitems.push({ key: candidate.key, info: candidate.val() });
-            });
-
-            this.setState({
-                candidateList: tmpitems
-            });
-        }); //update candidate table when data in firebase changes.
-    }
-
-    componentWillUnmount() {
-        this.orderedCandidates.off("value");
     }
 
     render() {

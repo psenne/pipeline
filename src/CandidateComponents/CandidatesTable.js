@@ -41,7 +41,8 @@ class CandidatesTable extends Component {
 
     ViewCandidate(ev, key) {
         ev.stopPropagation();
-        history.push({ pathname: `/candidates/${key}` });
+        const { filterByStatus, filterBySearch, filter } = this.props;
+        history.push({ pathname: `/candidates/${key}`, state: { filter, filterBySearch, filterByStatus } });
     }
 
     ArchiveCandidate(ev, key, status) {
@@ -55,7 +56,7 @@ class CandidatesTable extends Component {
     }
 
     render() {
-        const { filterByStatus, filterBySearch } = this.props;
+        const { filterByStatus, filterBySearch, filter } = this.props;
         return (
             <Table attached className="hovered candidate-table" compact>
                 <Table.Header>
@@ -78,7 +79,7 @@ class CandidatesTable extends Component {
                         .filter(isSearched(filterBySearch))
                         .map(item => {
                             const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
-                            const viewingCurrent = this.props.filter === item.info.archived; //item.info.archived is either "current" or "archived"
+                            const viewingCurrent = filter === item.info.archived; //item.info.archived is either "current" or "archived"
 
                             // set button text and actions for archive candidate button
                             const toggleArchive = item.info.archived === "archived" ? "current" : "archived";

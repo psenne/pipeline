@@ -15,7 +15,12 @@ export default class CandidateDetail extends Component {
     }
 
     GoBack() {
-        history.push("/candidates");
+        // history.push("/candidates");
+        const filter = this.props.location.state ? this.props.location.state.filter : "current";
+        const filterBySearch = this.props.location.state ? this.props.location.state.filterBySearch : "";
+        const filterByStatus = this.props.location.state ? this.props.location.state.filterByStatus : "";
+
+        history.push({ pathname: `/candidates`, state: { filter, filterBySearch, filterByStatus } });
     }
 
     render() {
