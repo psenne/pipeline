@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import NavBar from "../NavBar";
+import { Container } from "semantic-ui-react";
 
 export default class JobsPage extends Component {
     constructor(props) {
@@ -12,7 +13,9 @@ export default class JobsPage extends Component {
         return (
             <div>
                 <NavBar active="jobs" />
-                <h2>Jobs Management</h2>
+                <Container>
+                    <h1>Jobs Management</h1>
+                </Container>
             </div>
         );
     }
