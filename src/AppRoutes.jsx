@@ -21,7 +21,7 @@ const AddCandidateForm = lazy(() => import("./CandidateComponents/AddCandidateFo
 const EditCandidateForm = lazy(() => import("./CandidateComponents/EditCandidateForm"));
 const AdminPage = lazy(() => import("./AdminComponents/AdminPage"));
 const JobsPage = lazy(() => import("./JobComponents/JobsPage"));
-const noMatch = lazy(() => import("./nomatch"));
+const NoMatch = lazy(() => import("./nomatch"));
 
 export default function AppRoutes() {
     return (
@@ -40,7 +40,7 @@ export default function AppRoutes() {
                     <Route path="/candidates/:id" render={props => <CandidateDetailPage {...props} />} />
                     <Route path="/candidates" render={props => <CandidatesPage {...props} />} />
                     <Route path="/jobs" render={props => <JobsPage {...props} />} />
-                    <Route render={() => <noMatch />} />
+                    <Route render={() => <NoMatch />} />
                 </Switch>
             </Suspense>
         </Router>
