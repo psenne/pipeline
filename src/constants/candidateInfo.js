@@ -1,5 +1,4 @@
 const tmplCandidate = {
-    create_date: "",
     current_contract: "",
     current_company: "",
     firstname: "",
@@ -26,7 +25,12 @@ const tmplCandidate = {
     status: "initial",
     archived: "current",
     isFlagged: false,
-    flagged_comment: ""
+    flagged_comment: "",
+    created_date: "",
+    created_by: "",
+    modified_date: "",
+    modified_by: "",
+    modified_fields: []
 };
 
 // prettier-ignore

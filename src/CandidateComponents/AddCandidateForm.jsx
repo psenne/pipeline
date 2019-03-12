@@ -31,9 +31,15 @@ export default class AddCandidateForm extends React.Component {
     }
 
     updateSelectedCandidate(name, value) {
+        const { currentuser } = this.props;
+        const now = new Date();
+
         this.setState(prevState => {
             let candidateinfo = prevState.candidate; //get candidate info
             candidateinfo[name] = value; //update with onChange info
+            candidateinfo["created_by"] = currentuser.displayName;
+            candidateinfo["created_date"] = now.toJSON();
+
             return { candidate: candidateinfo };
         });
     }

@@ -47,7 +47,7 @@ export default class EditCandidateForm extends React.Component {
 
         fbCandidatesDB.child(candidateID).on("value", data => {
             if (data.val()) {
-                this.setState({ candidate: Object.assign({}, tmplCandidate, data.val()), key: data.key });
+                this.setState({ candidate: Object.assign({}, tmplCandidate, data.val(), { modified_fields: [] }), key: data.key });
             } else {
                 history.replace("/candidates");
             }
@@ -63,6 +63,8 @@ export default class EditCandidateForm extends React.Component {
         this.setState(prevState => {
             let candidateinfo = prevState.candidate; //get candidate info
             candidateinfo[name] = value; //update with onChange info
+
+            if (!candidateinfo["modified_fields"].includes(name)) candidateinfo["modified_fields"].push(name);
             return { candidate: candidateinfo };
         });
     }
@@ -153,6 +155,11 @@ export default class EditCandidateForm extends React.Component {
     //callback function when form editing is done.
     updateDB() {
         const { candidate, key, files } = this.state;
+        const { currentuser } = this.props;
+        const now = new Date();
+
+        candidate["modified_by"] = currentuser.displayName;
+        candidate["modified_date"] = now.toJSON();
 
         fbCandidatesDB
             .child(key)
