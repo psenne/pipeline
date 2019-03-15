@@ -8,7 +8,7 @@ import LOIStatusDropdown from "../CandidateComponents/LOIStatusDropdown";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import ManagerDropdown from "../CandidateComponents/ManagerDropdown";
 import Files from "../CandidateComponents/Files";
-import { fbCandidatesDB, fbStorage } from "../firebase/firebase.config";
+import { fbCandidatesDB, fbStorage, fbAuditTrailDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 
 import { Form, Container, Segment, Button, Message, Header, Menu, Icon, Checkbox } from "semantic-ui-react";
@@ -35,7 +35,7 @@ export default class EditCandidateForm extends React.Component {
         this.HandlePContractInput = this.HandlePContractInput.bind(this);
         this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
         this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
-        this.HandleCheckbox = this.HandleCheckbox.bind(this);
+        this.ToggleArchive = this.ToggleArchive.bind(this);
         this.HandleFileUpload = this.HandleFileUpload.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
         this.HandleDelete = this.HandleDelete.bind(this);
@@ -65,6 +65,7 @@ export default class EditCandidateForm extends React.Component {
             candidateinfo[name] = value; //update with onChange info
 
             if (!candidateinfo["modified_fields"].includes(name)) candidateinfo["modified_fields"].push(name);
+
             return { candidate: candidateinfo };
         });
     }
@@ -102,14 +103,6 @@ export default class EditCandidateForm extends React.Component {
 
     HandleManagerDropdown(name, value) {
         this.updateSelectedCandidate(name, value);
-    }
-
-    //callback for checkbox for setting candidate to archive
-    HandleCheckbox(ev, data) {
-        const value = data.checked ? "archived" : "current";
-        this.setState(prevState => {
-            Object.assign(prevState.candidate, { archived: value });
-        }, this.updateDB);
     }
 
     //callback for interview date.
@@ -152,30 +145,16 @@ export default class EditCandidateForm extends React.Component {
         this.updateSelectedCandidate("filenames", [...newfilenames, ...filenames]);
     }
 
-    //callback function when form editing is done.
-    updateDB() {
-        const { candidate, key, files } = this.state;
-        const { currentuser } = this.props;
-        const now = new Date();
+    //callback for Delete button. needed this for confirmation prompt
+    HandleDelete() {
+        const key = this.props.match.params.id;
+        const candidate = this.state.candidate;
+        const confirmationMsg = "Are you sure you want to delete " + candidate.firstname + " " + candidate.lastname + "?";
+        const deleteConfirmed = window.confirm(confirmationMsg);
 
-        candidate["modified_by"] = currentuser.displayName;
-        candidate["modified_date"] = now.toJSON();
-
-        fbCandidatesDB
-            .child(key)
-            .update(candidate)
-            .then(() => {
-                const uploadedFiles = [];
-                for (var i = 0; i < files.length; i++) {
-                    let file = files[i];
-                    const fileRef = fbStorage.child(key + "/" + file.name);
-                    uploadedFiles.push(fileRef.put(file, { contentType: file.type })); //add file upload promise to array, so that we can use promise.all() for one returned promise
-                }
-                Promise.all(uploadedFiles).then(() => {
-                    history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
-                });
-            })
-            .catch(err => console.error("EditCandidate, line 167: ", err));
+        if (deleteConfirmed) {
+            this.DeleteCandidate(key, candidate.filenames);
+        }
     }
 
     // only required fields are first and last name of candidate. If those aren't set return false and show error message
@@ -198,8 +177,93 @@ export default class EditCandidateForm extends React.Component {
         );
     }
 
+    //callback function when form editing is done.
+    updateDB() {
+        const { candidate, key, files } = this.state;
+        const { currentuser } = this.props;
+        const now = new Date();
+
+        const newEvents = candidate.modified_fields.map(field => {
+            const eventinfo = candidate[field] === "" ? `${currentuser.displayName} deleted ${field.replace("_", " ")}.` : `${currentuser.displayName} updated ${field.replace("_", " ")} with ${candidate[field]}.`;
+            return {
+                eventinfo: eventinfo,
+                eventdate: now.toJSON(),
+                candidatename: `${candidate.firstname} ${candidate.lastname}`
+            };
+        });
+
+        candidate["modified_by"] = currentuser.displayName;
+        candidate["modified_date"] = now.toJSON();
+
+        fbCandidatesDB
+            .child(key)
+            .update(candidate)
+            .then(() => {
+                const uploadedFiles = [];
+                for (var i = 0; i < files.length; i++) {
+                    let file = files[i];
+                    const fileRef = fbStorage.child(key + "/" + file.name);
+                    uploadedFiles.push(fileRef.put(file, { contentType: file.type })); //add file upload promise to array, so that we can use promise.all() for one returned promise
+                }
+                Promise.all(uploadedFiles)
+                    .then(() => {
+                        newEvents.forEach(newEvent => {
+                            fbAuditTrailDB.push(newEvent);
+                        });
+                    })
+                    .then(() => {
+                        history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
+                    });
+            })
+            .catch(err => console.error("EditCandidate, line 167: ", err));
+    }
+
+    //callback for checkbox for setting candidate to archive
+    ToggleArchive(ev, data) {
+        const { candidate, key } = this.state;
+        const { currentuser } = this.props;
+        const value = data.checked ? "archived" : "current";
+        const now = new Date();
+        let eventinfo = "";
+
+        candidate.archived = value;
+        if (value === "archived") {
+            eventinfo = `${currentuser.displayName} set candidate to archived.`;
+        } else {
+            eventinfo = `${currentuser.displayName} set candidate to active.`;
+        }
+
+        const newEvent = {
+            eventdate: now.toJSON(),
+            username: currentuser.displayName,
+            eventinfo: eventinfo,
+            candidatename: `${candidate.firstname} ${candidate.lastname}`
+        };
+
+        fbCandidatesDB
+            .child(key)
+            .update(candidate)
+            .then(() => {
+                fbAuditTrailDB.push(newEvent).then(() => {
+                    history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
+                });
+            })
+            .catch(err => console.error("EditCandidate, line 250: ", err));
+    }
+
     //callback function when delete candidate button is click in form.
     DeleteCandidate(key, filenames) {
+        const { currentuser } = this.props;
+        const { candidate } = this.state;
+        const now = new Date();
+
+        const eventinfo = `${currentuser.displayName} deleted candidate.`;
+        const newEvent = {
+            eventinfo: eventinfo,
+            eventdate: now.toJSON(),
+            candidatename: `${candidate.firstname} ${candidate.lastname}`
+        };
+
         fbCandidatesDB
             .child(key)
             .remove()
@@ -213,21 +277,12 @@ export default class EditCandidateForm extends React.Component {
                         });
                 });
             })
+            .then(() => {
+                fbAuditTrailDB.push(newEvent);
+            })
             .catch(function(error) {
                 console.error("Error deleting candidate:", error);
             });
-    }
-
-    //callback for Delete button. needed this for confirmation prompt
-    HandleDelete() {
-        const key = this.props.match.params.id;
-        const candidate = this.state.candidate;
-        const confirmationMsg = "Are you sure you want to delete " + candidate.firstname + " " + candidate.lastname + "?";
-        const deleteConfirmed = window.confirm(confirmationMsg);
-
-        if (deleteConfirmed) {
-            this.DeleteCandidate(key, candidate.filenames);
-        }
     }
 
     render() {
@@ -250,7 +305,7 @@ export default class EditCandidateForm extends React.Component {
                             </Menu.Item>
                             <Menu.Menu position="right">
                                 <Menu.Item>
-                                    <Checkbox toggle label={archiveLabel} checked={candidate.archived === "archived" ? true : false} onChange={this.HandleCheckbox} />
+                                    <Checkbox toggle label={archiveLabel} checked={candidate.archived === "archived" ? true : false} onChange={this.ToggleArchive} />
                                 </Menu.Item>
                                 <Menu.Item title="Close" onClick={() => history.goBack()}>
                                     <Icon name="cancel" />

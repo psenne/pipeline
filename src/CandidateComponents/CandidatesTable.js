@@ -45,9 +45,9 @@ class CandidatesTable extends Component {
         history.push({ pathname: `/candidates/${key}`, state: { filter, filterBySearch, filterByStatus } });
     }
 
-    ArchiveCandidate(ev, key, status) {
+    ArchiveCandidate(ev, candidate, status) {
         ev.stopPropagation();
-        this.props.ArchiveCandidate(key, status);
+        this.props.ArchiveCandidate(candidate.key, { firstname: candidate.info.firstname, lastname: candidate.info.lastname }, status);
     }
 
     SetFlag(ev, item) {
@@ -88,7 +88,7 @@ class CandidatesTable extends Component {
                                 return (
                                     <Table.Row key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
                                         <Table.Cell textAlign="center">
-                                            <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item.key, toggleArchive)} AddNote={ev => this.SetFlag(ev, item)} />
+                                            <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item, toggleArchive)} AddNote={ev => this.SetFlag(ev, item)} />
                                         </Table.Cell>
                                         <Table.Cell>
                                             {item.info.lastname}, {item.info.firstname}

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import history from "../modules/history";
 
 import { fbCandidatesDB } from "../firebase/firebase.config";
-import { Container, Table, Image, List } from "semantic-ui-react";
-import moment from "moment";
+import { Container, Image, List } from "semantic-ui-react";
+import { format } from "date-fns";
 
 export default class LastModified extends Component {
     constructor(props) {
@@ -26,7 +26,7 @@ export default class LastModified extends Component {
                     tmpitems.push({ key: candidate.key, info: candidate.val() });
                 });
                 this.setState({
-                    candidates: tmpitems
+                    candidates: tmpitems.reverse()
                 });
             });
     }
@@ -49,14 +49,14 @@ export default class LastModified extends Component {
                             return candidate.info.modified_fields !== undefined;
                         })
                         .map(({ info, key }) => {
-                            const modified_date = info.modified_date ? moment(info.modified_date).format("MMM DD, YYYY") : "";
+                            const modified_date = info.modified_date ? format(info.modified_date, "MMM DD, YYYY") : "";
                             const skill = info.skill ? `(${info.skill})` : "";
-                            const modifiedmsg = info.modified_by ? `Edited by: ${info.modified_by} on ${modified_date}` : "";
                             const modified_fields = info.modified_fields
                                 ? info.modified_fields.map(field => {
                                       return `${field.replace("_", " ")}`;
                                   })
                                 : [];
+                            const modifiedmsg = info.modified_by ? `${info.modified_by} edited ${modified_fields.join(", ")} on ${modified_date}` : "";
 
                             return (
                                 <List.Item key={key} onClick={ev => this.ViewCandidate(ev, key)}>
@@ -66,7 +66,7 @@ export default class LastModified extends Component {
                                             {info.firstname} {info.lastname} {skill}
                                         </List.Header>
                                         <List.Description>
-                                            <div>Edited: {modified_fields.join(", ")}</div>
+                                            {/* <div>Edited: {modified_fields.join(", ")}</div> */}
                                             <div>{modifiedmsg}</div>
                                         </List.Description>
                                     </List.Content>

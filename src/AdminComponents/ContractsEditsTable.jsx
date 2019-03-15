@@ -134,7 +134,7 @@ export default class ContractsEditsTable extends Component {
     render() {
         const { contracts, newcontract, formState, errormsg } = this.state;
         return (
-            <Table collapsing celled>
+            <Table celled>
                 <Table.Header fullWidth>
                     <Table.Row>
                         <Table.HeaderCell colSpan="5">

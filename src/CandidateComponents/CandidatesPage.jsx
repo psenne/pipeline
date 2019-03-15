@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { fbCandidatesDB } from "../firebase/firebase.config";
+import { fbCandidatesDB, fbAuditTrailDB } from "../firebase/firebase.config";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
 import CandidatesTable from "./CandidatesTable";
@@ -77,8 +77,27 @@ class CandidatesPage extends Component {
         });
     }
 
-    ArchiveCandidate(key, status) {
-        fbCandidatesDB.child(key).update({ archived: status });
+    ArchiveCandidate(key, candidate, status) {
+        const { currentuser } = this.props;
+        const now = new Date();
+        let eventinfo = "";
+
+        eventinfo = `${currentuser.displayName} set candidate to ${status}.`;
+
+        const newEvent = {
+            eventdate: now.toJSON(),
+            username: currentuser.displayName,
+            eventinfo: eventinfo,
+            candidatename: `${candidate.firstname} ${candidate.lastname}`
+        };
+
+        fbCandidatesDB
+            .child(key)
+            .update({ archived: status })
+            .then(() => {
+                fbAuditTrailDB.push(newEvent);
+            })
+            .catch(err => console.error("CandidatesPage, line 102: ", err));
     }
 
     render() {

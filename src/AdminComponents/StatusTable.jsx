@@ -31,7 +31,7 @@ export default class StatusTable extends Component {
     render() {
         const { statuses } = this.state;
         return (
-            <Table collapsing celled>
+            <Table celled>
                 <Table.Header fullWidth>
                     <Table.Row>
                         <Table.HeaderCell colSpan="4">

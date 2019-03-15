@@ -10,12 +10,12 @@ export default () => {
         <>
             <NavBar active="dashboard" />
             <Container>
-                <Grid stackable>
+                <Grid stackable columns="equal">
                     <Grid.Row>
-                        <Grid.Column width={6}>
+                        <Grid.Column>
                             <UserContext.Consumer>{currentuser => <LastCreated currentuser={currentuser} />}</UserContext.Consumer>
                         </Grid.Column>
-                        <Grid.Column width={10}>
+                        <Grid.Column>
                             <UserContext.Consumer>{currentuser => <LastModified currentuser={currentuser} />}</UserContext.Consumer>
                         </Grid.Column>
                     </Grid.Row>
