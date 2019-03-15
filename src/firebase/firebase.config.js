@@ -32,11 +32,20 @@ const fbStorage = firebase.storage().ref();
 
 const fbUsersDB = firebase.database().ref("users"); //stores list of authorized users who can view and edit app.
 const fbCandidatesDB = firebase.database().ref("candidates");
+const fbAuditTrailDB = firebase.database().ref("auditing");
 const fbStatusesDB = firebase.database().ref("statuses");
 const fbContractsDB = firebase.database().ref("contracts");
 const fbLOIStatusesDB = firebase.database().ref("loistatuses");
 
 const fbauth = firebase.auth();
+
+/////// query to filter by data value ///////////
+// fbCandidatesDB
+//     .orderByChild("height")
+//     .equalTo(25)
+//     .on("value", function(candidates) {
+//         console.log(candidates.val());
+//     });
 
 //callback function for clicking Login Button
 const SignInWithGoogle = () => {
@@ -49,4 +58,4 @@ const SignOutWithGoogle = () => {
     return fbauth.signOut();
 };
 
-export { fbStorage, fbUsersDB, fbauth, fbCandidatesDB, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };
+export { fbStorage, fbUsersDB, fbauth, fbCandidatesDB, fbAuditTrailDB, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };

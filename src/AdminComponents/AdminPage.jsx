@@ -1,21 +1,34 @@
 import React from "react";
 import NavBar from "../NavBar";
-import StatusTable from "./StatusTable";
-import ContractsEditsTable from "./ContractsEditsTable";
-import UsersEditsTable from "./UsersEditsTable";
-import { Container, Divider } from "semantic-ui-react";
+import { Tab } from "semantic-ui-react";
+import DBManagement from "./DBManagement";
+import AuditTrailPage from "./AuditTrailPage";
+
+const panes = [
+    {
+        menuItem: "DB Management",
+        render: () => (
+            <Tab.Pane>
+                <DBManagement />
+            </Tab.Pane>
+        )
+    },
+    {
+        menuItem: "History",
+        render: () => (
+            <Tab.Pane>
+                <AuditTrailPage />
+            </Tab.Pane>
+        )
+    }
+];
 
 const AdminPage = () => {
     return (
-        <div>
+        <>
             <NavBar active="admin" />
-            <Container>
-                <StatusTable />
-                <ContractsEditsTable />
-                <UsersEditsTable />
-                <Divider />
-            </Container>
-        </div>
+            <Tab menu={{ attached: true }} panes={panes} />
+        </>
     );
 };
 

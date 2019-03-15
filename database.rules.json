@@ -1,6 +1,12 @@
 {
-  "rules": {
-    ".read": "auth !== null && auth.provider == 'google'",
-    ".write": "auth !== null && auth.provider == 'google'"
-  }
+    "rules": {
+        ".read": "auth !== null && auth.provider == 'google'",
+        ".write": "auth !== null && auth.provider == 'google'",
+        "candidates": {
+            ".indexOn": ["create_date", "modified_date"]
+        },
+        "auditing": {
+            ".indexOn": ["eventdate"]
+        }
+    }
 }

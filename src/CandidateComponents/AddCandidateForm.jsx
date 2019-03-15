@@ -1,6 +1,6 @@
 import React from "react";
 import history from "../modules/history";
-import { fbCandidatesDB, fbStorage } from "../firebase/firebase.config";
+import { fbCandidatesDB, fbStorage, fbAuditTrailDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "./ContractDropdown";
@@ -31,9 +31,15 @@ export default class AddCandidateForm extends React.Component {
     }
 
     updateSelectedCandidate(name, value) {
+        const { currentuser } = this.props;
+        const now = new Date();
+
         this.setState(prevState => {
             let candidateinfo = prevState.candidate; //get candidate info
             candidateinfo[name] = value; //update with onChange info
+            candidateinfo["created_by"] = currentuser.displayName;
+            candidateinfo["created_date"] = now.toJSON();
+
             return { candidate: candidateinfo };
         });
     }
@@ -112,7 +118,19 @@ export default class AddCandidateForm extends React.Component {
     //callback function when form editing is done.
     updateDB() {
         const { candidate, files } = this.state;
-        //this.props.showLoader(true, "Processing data"); //trigger loading component from App. Because loading is done via App state, The next part needs to wait for App state to get update. Maybe add a While loop waiting for True to be returned
+        const {
+            currentuser: { displayName: username }
+        } = this.props;
+
+        const now = new Date();
+        const eventinfo = `${username} added candidate.`;
+
+        const newEvent = {
+            eventdate: now.toJSON(),
+            username,
+            eventinfo,
+            candidatename: `${candidate.firstname} ${candidate.lastname}`
+        };
 
         fbCandidatesDB.push(candidate).then(newcandidate => {
             const key = newcandidate.key;
@@ -123,9 +141,13 @@ export default class AddCandidateForm extends React.Component {
                 const fileRef = fbStorage.child(key + "/" + file.name);
                 uploadedFiles.push(fileRef.put(file, { contentType: file.type })); //add file upload promise to array, so that we can use promise.all() for one returned promise
             }
-            Promise.all(uploadedFiles).then(() => {
-                history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
-            });
+            Promise.all(uploadedFiles)
+                .then(() => {
+                    fbAuditTrailDB.push(newEvent);
+                })
+                .then(() => {
+                    history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
+                });
         });
     }
 

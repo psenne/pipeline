@@ -63,6 +63,10 @@ body {
 .padded-span {
     padding: 0.5em;
 }
+.status-archived {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: #444 !important;
+}
 .status-initial {
     background-color: #fff !important;
     color: #000 !important;

@@ -64,7 +64,7 @@ class CandidateProfile extends Component {
         return (
             <>
                 {candidate && (
-                    <Segment attached padded>
+                    <Segment attached padded className={classnames(`status-${candidate.archived}`)}>
                         <Segment vertical padded>
                             <Grid>
                                 <Grid.Row verticalAlign="middle" columns={2}>
@@ -122,7 +122,7 @@ class CandidateProfile extends Component {
                                 </Grid.Row>
                             </Grid>
                         </Segment>
-                        <Segment vertical padded>
+                        <Segment vertical padded className={classnames({ "form-hidden": candidate.filenames.length === 0 }, "minitoolbar-inline")}>
                             <h3>Documents</h3>
                             <Files candidateID={this.props.candidateID} filenames={candidate.filenames} />
                         </Segment>

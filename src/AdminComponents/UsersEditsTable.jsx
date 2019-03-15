@@ -118,7 +118,7 @@ export default class UsersEditsTable extends Component {
     render() {
         const { users, newuser, formState, errormsg } = this.state;
         return (
-            <Table collapsing celled>
+            <Table celled>
                 <Table.Header fullWidth>
                     <Table.Row>
                         <Table.HeaderCell colSpan="4">

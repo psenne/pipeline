@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { hot } from "react-hot-loader";
+// import { hot } from "react-hot-loader";
 import { fbUsersDB, fbauth, SignInWithGoogle, SignOutWithGoogle } from "./firebase/firebase.config";
 import AppHeader from "./AppHeader";
 import AppRoutes from "./AppRoutes";
+import UserContext from "./contexts/UserContext";
 
 import { Button, Container, Image, Loader, Dimmer } from "semantic-ui-react";
 import "semantic-ui-css/semantic.css";
@@ -101,13 +102,15 @@ class App extends Component {
             //user is logged in
             return (
                 <Container className="App" fluid>
-                    <AppHeader currentuser={currentuser} />
-                    <AppRoutes />
+                    <UserContext.Provider value={currentuser}>
+                        <AppHeader />
+                        <AppRoutes />
+                    </UserContext.Provider>
                 </Container>
             );
         }
     } //end render
 } //end class
 
-//export default App;
-export default (process.env.NODE_ENV === "development" ? hot(module)(App) : App);
+export default App;
+// export default (process.env.NODE_ENV === "development" ? hot(module)(App) : App);
