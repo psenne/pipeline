@@ -100,7 +100,14 @@ body {
     border-color: rgba(255, 0, 0, 0.25);
     border-width: 2px 0;
 }
-
+.candidate-table-row {
+    padding: 0px !important;
+    cursor: pointer;
+}
+.candidate-table-field {
+    font-weight: bolder;
+    opacity: 0.75;
+}
 .ui.inverted.menu {
     border-radius: 0 !important;
 }
@@ -111,6 +118,7 @@ body {
     position: relative;
     visibility: hidden;
     top: 7px;
+    z-index: 100;
 }
 .minitoolbar-inline {
     position: absolute;

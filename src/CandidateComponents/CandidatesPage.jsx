@@ -8,7 +8,7 @@ class CandidatesPage extends Component {
     constructor(props) {
         super(props);
 
-        this.orderedCandidates = fbCandidatesDB.orderByChild("lastname"); //used for sorting and populating candidate table.
+        this.orderedCandidates = fbCandidatesDB.orderByChild("firstname"); //used for sorting and populating candidate table.
 
         /***
         

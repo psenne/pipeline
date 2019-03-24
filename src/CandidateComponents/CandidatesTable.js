@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import history from "../modules/history";
-import { Table, Icon } from "semantic-ui-react";
+import { Table, Icon, Grid, Header } from "semantic-ui-react";
 import classnames from "classnames";
 import MiniToolbar from "./MiniToolbar";
+import { sentence } from "to-case";
 
 //uses search field value to filter array of candidates for table population
 function isSearched(s) {
@@ -58,55 +59,57 @@ class CandidatesTable extends Component {
     render() {
         const { filterByStatus, filterBySearch, filter } = this.props;
         return (
-            <Table attached className="hovered candidate-table" compact>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell textAlign="center">
-                            <Icon name="edit" color="grey" />
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>Name</Table.HeaderCell>
-                        <Table.HeaderCell>Skill</Table.HeaderCell>
-                        <Table.HeaderCell>Potential Contracts</Table.HeaderCell>
-                        <Table.HeaderCell>Level</Table.HeaderCell>
-                        <Table.HeaderCell>Current Contract</Table.HeaderCell>
-                        <Table.HeaderCell>Notes</Table.HeaderCell>
-                        <Table.HeaderCell>Follow Up</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {this.props.list
-                        .filter(isFiltered(filterByStatus))
-                        .filter(isSearched(filterBySearch))
-                        .map(item => {
-                            const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
-                            const viewingCurrent = filter === item.info.archived; //item.info.archived is either "current" or "archived"
+            <Grid columns={16} verticalAlign="middle" divided="vertically" className="hovered">
+                <Grid.Row columns={1}>
+                    <Grid.Column textAlign="center">
+                        <Header>{sentence(filter)} Candidates</Header>
+                    </Grid.Column>
+                </Grid.Row>
+                {this.props.list
+                    .filter(isFiltered(filterByStatus))
+                    .filter(isSearched(filterBySearch))
+                    .map(item => {
+                        const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
+                        const viewingCurrent = filter === item.info.archived; //item.info.archived is either "current" or "archived"
+                        const company = item.info.company ? `with ${item.info.company}` : "";
+                        const current_contract = item.info.current_contract ? `on ${item.info.current_contract}` : "";
 
-                            // set button text and actions for archive candidate button
-                            const toggleArchive = item.info.archived === "archived" ? "current" : "archived";
-                            if (viewingCurrent) {
-                                //show only those candidates whose info.archived matches with archived/current dropdown. could've used the filter property
-                                return (
-                                    <Table.Row key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
-                                        <Table.Cell textAlign="center">
-                                            <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item, toggleArchive)} AddNote={ev => this.SetFlag(ev, item)} />
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {item.info.lastname}, {item.info.firstname}
-                                        </Table.Cell>
-                                        <Table.Cell>{item.info.skill}</Table.Cell>
-                                        <Table.Cell>{potential_contracts}</Table.Cell>
-                                        <Table.Cell>{item.info.level}</Table.Cell>
-                                        <Table.Cell>{item.info.current_contract}</Table.Cell>
-                                        <Table.Cell>{item.info.notes}</Table.Cell>
-                                        <Table.Cell>{item.info.next_steps}</Table.Cell>
-                                    </Table.Row>
-                                );
-                            } else {
-                                return false;
-                            }
-                        })}
-                </Table.Body>
-            </Table>
+                        // set button text and actions for archive candidate button
+                        const toggleArchive = item.info.archived === "archived" ? "current" : "archived";
+                        if (viewingCurrent) {
+                            //show only those candidates whose info.archived matches with archived/current dropdown. could've used the filter property
+                            return (
+                                <Grid.Row columns={2} key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
+                                    <Grid.Column textAlign="center" width={1}>
+                                        <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item, toggleArchive)} AddNote={ev => this.SetFlag(ev, item)} />
+                                    </Grid.Column>
+                                    <Grid.Column width={15}>
+                                        <Header>
+                                            <Header.Content>
+                                                {item.info.firstname} {item.info.lastname}
+                                            </Header.Content>
+
+                                            <Header.Subheader>
+                                                {item.info.level} {item.info.skill} {company} {current_contract}
+                                            </Header.Subheader>
+                                        </Header>
+                                        <div>
+                                            <span className="candidate-table-field">Potential contracts:</span> {potential_contracts}
+                                        </div>
+                                        <div>
+                                            <span className="candidate-table-field">Notes:</span> {item.info.notes}
+                                        </div>
+                                        <div>
+                                            <span className="candidate-table-field">Next steps:</span> {item.info.next_steps}
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            );
+                        } else {
+                            return false;
+                        }
+                    })}
+            </Grid>
         );
     }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import { hot } from "react-hot-loader";
+import { hot } from "react-hot-loader";
 import { fbUsersDB, fbauth, SignInWithGoogle, SignOutWithGoogle } from "./firebase/firebase.config";
 import AppHeader from "./AppHeader";
 import AppRoutes from "./AppRoutes";
@@ -101,16 +101,16 @@ class App extends Component {
         } else {
             //user is logged in
             return (
-                <Container className="App" fluid>
+                <div className="App">
                     <UserContext.Provider value={currentuser}>
                         <AppHeader />
                         <AppRoutes />
                     </UserContext.Provider>
-                </Container>
+                </div>
             );
         }
     } //end render
 } //end class
 
-export default App;
-// export default (process.env.NODE_ENV === "development" ? hot(module)(App) : App);
+// export default App;
+export default (process.env.NODE_ENV === "development" ? hot(module)(App) : App);

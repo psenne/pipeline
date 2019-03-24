@@ -15,7 +15,7 @@ class CandidateToolbar extends Component {
     render() {
         const { candidates, viewArchived, searchTerm, searchCandidates, filterByArchived, filterByStatus } = this.props;
         return (
-            <Menu attached="top" className="no-print">
+            <Menu className="no-print">
                 <Menu.Item title="Add new candidate" link>
                     <Link to="/candidates/add">
                         <Icon name="plus" />
