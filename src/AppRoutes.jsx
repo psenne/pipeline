@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Route, Switch, Router } from "react-router-dom";
 import history from "./modules/history";
+import UserContext from "./contexts/UserContext";
 
 import { Loader, Dimmer } from "semantic-ui-react";
 import "semantic-ui-css/semantic.css";
@@ -35,8 +36,8 @@ export default function AppRoutes() {
                 <Switch>
                     <Route exact path="/" render={props => <LandingPage {...props} />} />
                     <Route path="/admin" render={props => <AdminPage {...props} />} />
-                    <Route path="/candidates/add" render={props => <AddCandidateForm {...props} />} />
-                    <Route exact path="/candidates/:id/edit" render={props => <EditCandidateForm {...props} />} />
+                    <Route path="/candidates/add" render={props => <UserContext.Consumer>{currentuser => <AddCandidateForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
+                    <Route exact path="/candidates/:id/edit" render={props => <UserContext.Consumer>{currentuser => <EditCandidateForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
                     <Route path="/candidates/:id" render={props => <CandidateDetailPage {...props} />} />
                     <Route path="/candidates" render={props => <CandidatesPage {...props} />} />
                     <Route path="/jobs" render={props => <JobsPage {...props} />} />
