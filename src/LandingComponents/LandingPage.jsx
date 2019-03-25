@@ -13,10 +13,10 @@ export default () => {
                 <Grid stackable columns="equal">
                     <Grid.Row>
                         <Grid.Column>
-                            <UserContext.Consumer>{currentuser => <LastCreated currentuser={currentuser} />}</UserContext.Consumer>
+                            <LastCreated />
                         </Grid.Column>
                         <Grid.Column>
-                            <UserContext.Consumer>{currentuser => <LastModified currentuser={currentuser} />}</UserContext.Consumer>
+                            <LastModified />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

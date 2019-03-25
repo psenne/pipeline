@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import history from "../modules/history";
 
 import { fbCandidatesDB } from "../firebase/firebase.config";
-import { Container, Image, List } from "semantic-ui-react";
+import { Container, List } from "semantic-ui-react";
 import { format } from "date-fns";
 
 export default class LastModified extends Component {
@@ -38,7 +38,6 @@ export default class LastModified extends Component {
 
     render() {
         const { candidates } = this.state;
-        const { currentuser } = this.props;
 
         return (
             <Container>
@@ -60,7 +59,6 @@ export default class LastModified extends Component {
 
                             return (
                                 <List.Item key={key} onClick={ev => this.ViewCandidate(ev, key)}>
-                                    <Image avatar src={currentuser.photoURL} />
                                     <List.Content>
                                         <List.Header as="a">
                                             {info.firstname} {info.lastname} {skill}
