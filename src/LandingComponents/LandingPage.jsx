@@ -3,7 +3,6 @@ import NavBar from "../NavBar";
 import LastCreated from "./LastCreated";
 import LastModified from "./LastModified";
 import { Container, Grid } from "semantic-ui-react";
-import UserContext from "../contexts/UserContext";
 
 export default () => {
     return (

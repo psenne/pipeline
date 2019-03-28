@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import history from "../modules/history";
-import { Table, Icon, Grid, Header } from "semantic-ui-react";
+import { Grid, Header } from "semantic-ui-react";
 import classnames from "classnames";
 import MiniToolbar from "./MiniToolbar";
 import { sentence } from "to-case";
