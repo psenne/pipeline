@@ -93,7 +93,9 @@ class CandidatesPage extends Component {
 
         fbCandidatesDB
             .child(key)
-            .update({ archived: status })
+            .update({
+                archived: status
+            })
             .then(() => {
                 fbAuditTrailDB.push(newEvent);
             })
@@ -101,11 +103,20 @@ class CandidatesPage extends Component {
     }
 
     render() {
+        const { candidateList } = this.state;
+        const flaggedCandidates = candidateList.filter(candidate => {
+            return candidate.info.isFlagged;
+        });
+        const unflaggedCandidates = candidateList.filter(candidate => {
+            return !candidate.info.isFlagged;
+        });
+
         return (
             <div>
                 <NavBar active="candidates" />
                 <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} filterByArchived={this.HandleDropdownInput} viewArchived={this.state.viewArchived} filterByStatus={this.filterByStatus} searchCandidates={this.filterCandidates} searchTerm={this.state.filterTerm} />
-                <CandidatesTable ArchiveCandidate={this.ArchiveCandidate} filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={this.state.candidateList} />
+                <CandidatesTable ArchiveCandidate={this.ArchiveCandidate} filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={flaggedCandidates} />
+                <CandidatesTable ArchiveCandidate={this.ArchiveCandidate} filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={unflaggedCandidates} />
             </div>
         );
     }

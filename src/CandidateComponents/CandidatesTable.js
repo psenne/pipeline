@@ -3,7 +3,6 @@ import history from "../modules/history";
 import { Grid, Header } from "semantic-ui-react";
 import classnames from "classnames";
 import MiniToolbar from "./MiniToolbar";
-import { sentence } from "to-case";
 
 //uses search field value to filter array of candidates for table population
 function isSearched(s) {
@@ -38,6 +37,9 @@ class CandidatesTable extends Component {
         this.state = {
             visible: false
         };
+
+        this.ViewCandidate = this.ViewCandidate.bind(this);
+        this.ArchiveCandidate = this.ArchiveCandidate.bind(this);
     }
 
     ViewCandidate(ev, key) {
@@ -51,20 +53,10 @@ class CandidatesTable extends Component {
         this.props.ArchiveCandidate(candidate.key, { firstname: candidate.info.firstname, lastname: candidate.info.lastname }, status);
     }
 
-    SetFlag(ev, item) {
-        ev.stopPropagation();
-        console.log(item);
-    }
-
     render() {
         const { filterByStatus, filterBySearch, filter } = this.props;
         return (
             <Grid columns={16} verticalAlign="middle" divided="vertically" className="hovered">
-                <Grid.Row columns={1}>
-                    <Grid.Column textAlign="center">
-                        <Header>{sentence(filter)} Candidates</Header>
-                    </Grid.Column>
-                </Grid.Row>
                 {this.props.list
                     .filter(isFiltered(filterByStatus))
                     .filter(isSearched(filterBySearch))
@@ -81,7 +73,7 @@ class CandidatesTable extends Component {
                             return (
                                 <Grid.Row columns={2} key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
                                     <Grid.Column textAlign="center" width={1}>
-                                        <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item, toggleArchive)} AddNote={ev => this.SetFlag(ev, item)} />
+                                        <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item, toggleArchive)} />
                                     </Grid.Column>
                                     <Grid.Column width={15}>
                                         <Header>

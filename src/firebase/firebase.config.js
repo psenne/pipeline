@@ -36,6 +36,7 @@ const fbAuditTrailDB = firebase.database().ref("auditing");
 const fbStatusesDB = firebase.database().ref("statuses");
 const fbContractsDB = firebase.database().ref("contracts");
 const fbLOIStatusesDB = firebase.database().ref("loistatuses");
+const fbFlagNotes = firebase.database().ref("flagnotes");
 
 const fbauth = firebase.auth();
 
@@ -58,4 +59,4 @@ const SignOutWithGoogle = () => {
     return fbauth.signOut();
 };
 
-export { fbStorage, fbUsersDB, fbauth, fbCandidatesDB, fbAuditTrailDB, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };
+export { fbStorage, fbUsersDB, fbauth, fbCandidatesDB, fbAuditTrailDB, fbFlagNotes, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };
