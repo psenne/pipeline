@@ -31,6 +31,10 @@ export default class LastModified extends Component {
             });
     }
 
+    componentWillUnmount() {
+        fbCandidatesDB.off("value");
+    }
+
     ViewCandidate(ev, key) {
         ev.stopPropagation();
         history.push({ pathname: `/candidates/${key}` });

@@ -346,7 +346,7 @@ export default class EditCandidateForm extends React.Component {
                                     <Form.Group inline className={classnames({ "form-hidden": ["initial"].includes(candidate.status) })}>
                                         <label>LOI Status / Sent by:</label>
                                         <LOIStatusDropdown name="loi_status" value={candidate.loi_status} onChange={this.HandleLOIStatusChange} />
-                                        <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} disabled={candidate.loi_status === "notsent"} onChange={this.HandleManagerDropdown} />
+                                        {/* <ManagerDropdown name="loi_sent_by" multiple={false} placeholder="Who sent LOI?" value={candidate.loi_sent_by} disabled={candidate.loi_status === "notsent"} onChange={this.HandleManagerDropdown} /> */}
                                         <DatePicker name="loi_sent_date" dateFormat="MMM d, yyyy" placeholderText="Date LOI Sent" maxDate={new Date()} selected={loi_sent_date} disabled={candidate.loi_status === "notsent"} onChange={this.handleLOIDateChange} />
                                     </Form.Group>
                                     <Form.Input inline name="salary" type="text" icon="dollar" iconPosition="left" label="Salary Requirement" onChange={this.HandleSalaryInput} value={salary} />

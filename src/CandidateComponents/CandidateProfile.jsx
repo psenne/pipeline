@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Grid, Header, Segment } from "semantic-ui-react";
+import { Grid, Header, Segment, Icon, Message } from "semantic-ui-react";
 import classnames from "classnames";
 import moment from "moment";
-import { fbCandidatesDB } from "../firebase/firebase.config";
+import { format } from "date-fns";
+import { fbFlagNotes, fbAuditTrailDB, fbCandidatesDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 import Files from "../CandidateComponents/Files";
 
@@ -30,6 +31,38 @@ class CandidateProfile extends Component {
         fbCandidatesDB.child(candidateID).off("value");
     }
 
+    removeFlag = ev => {
+        ev.stopPropagation();
+        const { candidate } = this.state;
+        const { currentuser, candidateID } = this.props;
+
+        const candidate_name = candidate.firstname + " " + candidate.lastname;
+        const now = new Date();
+        let candidateflag = {};
+        let newEvent = {};
+
+        const removeflag = window.confirm(`Are you sure you want to remove the flag for ${candidate_name}?`);
+
+        if (removeflag) {
+            candidateflag = {
+                isFlagged: false,
+                flagged_by: "",
+                flag_note: "",
+                flagged_on: "",
+                actioned_to: ""
+            };
+            newEvent = {
+                eventdate: now.toJSON(),
+                eventinfo: `${currentuser.displayName} removed flag from candidate.`,
+                candidatename: candidate_name
+            };
+
+            fbFlagNotes.child(candidateID).remove();
+            fbAuditTrailDB.push(newEvent);
+            fbCandidatesDB.child(candidateID).update(candidateflag);
+        }
+    };
+
     render() {
         let candidate = this.state.candidate;
         let interviewed = "Candidate has not been interviewed.";
@@ -53,13 +86,23 @@ class CandidateProfile extends Component {
             company_info = ` with ${candidate.current_company}`;
         }
 
+        // if (candidate.loi_status === "accepted") {
+        //     loi_message = `LOI was sent on ${loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
+        // } else if (candidate.loi_status === "sent") {
+        //     loi_message = `LOI was sent on ${loi_sent_date} by ${candidate.loi_sent_by}.`;
+        // } else {
+        //     loi_message = "LOI has not been sent.";
+        // }
+        
         if (candidate.loi_status === "accepted") {
-            loi_message = `LOI was sent on ${loi_sent_date} by ${candidate.loi_sent_by}. LOI was accepted.`;
+            loi_message = `LOI was sent on ${loi_sent_date}. LOI was accepted.`;
         } else if (candidate.loi_status === "sent") {
-            loi_message = `LOI was sent on ${loi_sent_date} by ${candidate.loi_sent_by}.`;
+            loi_message = `LOI was sent on ${loi_sent_date}.`;
         } else {
             loi_message = "LOI has not been sent.";
         }
+
+        const action = candidate.actioned_to ? <Message.Header>Actioned to: {candidate.actioned_to}</Message.Header> : "";
 
         return (
             <>
@@ -67,6 +110,20 @@ class CandidateProfile extends Component {
                     <Segment attached padded className={classnames(`status-${candidate.archived}`)}>
                         <Segment vertical padded>
                             <Grid>
+                                {candidate.isFlagged && (
+                                    <Grid.Row>
+                                        <Message icon onDismiss={this.removeFlag}>
+                                            <Icon name="flag" color="red" />
+                                            <Message.Content>
+                                                {action}
+                                                <div>{candidate.flag_note}</div>
+                                                <div style={{ color: "#808080" }}>
+                                                    Added by {candidate.flagged_by} on {format(candidate.flagged_on, "MMM DD, YYYY")}
+                                                </div>
+                                            </Message.Content>
+                                        </Message>
+                                    </Grid.Row>
+                                )}
                                 <Grid.Row verticalAlign="middle" columns={2}>
                                     <Grid.Column>
                                         <Header size="huge">
@@ -116,7 +173,7 @@ class CandidateProfile extends Component {
                                 </Grid.Row>
                                 <Grid.Row>
                                     <Grid.Column>
-                                        <h3>Follow up:</h3>
+                                        <h3>Next Steps:</h3>
                                         {candidate.next_steps}
                                     </Grid.Column>
                                 </Grid.Row>

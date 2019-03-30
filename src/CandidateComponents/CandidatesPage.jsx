@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { fbCandidatesDB, fbAuditTrailDB } from "../firebase/firebase.config";
+import { fbCandidatesDB, fbAuditTrailDB, fbFlagNotes } from "../firebase/firebase.config";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
 import CandidatesTable from "./CandidatesTable";
@@ -86,16 +86,30 @@ class CandidatesPage extends Component {
 
         const newEvent = {
             eventdate: now.toJSON(),
-            username: currentuser.displayName,
             eventinfo: eventinfo,
             candidatename: `${candidate.firstname} ${candidate.lastname}`
         };
 
+        let updatedinfo;
+        if (status === "archived") {
+            //remove flag if setting canddiate to archived. Otherwise there's no way to filter the FlaggedCandidates cpnt.
+            updatedinfo = {
+                archived: "archived",
+                isFlagged: false,
+                flagged_by: "",
+                flag_note: "",
+                flagged_on: ""
+            };
+            fbFlagNotes.child(key).remove();
+        } else {
+            updatedinfo = {
+                archived: "current"
+            };
+        }
+
         fbCandidatesDB
             .child(key)
-            .update({
-                archived: status
-            })
+            .update(updatedinfo)
             .then(() => {
                 fbAuditTrailDB.push(newEvent);
             })

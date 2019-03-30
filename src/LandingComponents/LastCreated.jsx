@@ -17,15 +17,22 @@ export default class LastCreated extends Component {
     }
 
     componentDidMount() {
-        fbCandidatesDB.orderByChild("create_date").on("value", data => {
-            let tmpitems = [];
-            data.forEach(function(candidate) {
-                tmpitems.push({ key: candidate.key, info: candidate.val() });
+        fbCandidatesDB
+            .orderByChild("create_date")
+            .limitToLast(5)
+            .on("value", data => {
+                let tmpitems = [];
+                data.forEach(function(candidate) {
+                    tmpitems.push({ key: candidate.key, info: candidate.val() });
+                });
+                this.setState({
+                    candidates: tmpitems
+                });
             });
-            this.setState({
-                candidates: tmpitems
-            });
-        });
+    }
+
+    componentWillUnmount() {
+        fbCandidatesDB.off("value");
     }
 
     ViewCandidate(ev, key) {
@@ -61,32 +68,6 @@ export default class LastCreated extends Component {
                             );
                         })}
                 </List>
-                {/* <Table selectable className="hovered">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Name</Table.HeaderCell>
-                            <Table.HeaderCell>Skill</Table.HeaderCell>
-                            <Table.HeaderCell>Date added</Table.HeaderCell>
-                            <Table.HeaderCell>Added by</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {candidates.map(({ info, key }) => {
-                            const created_date = info.created_date ? moment(info.created_date).format("MMM DD, YYYY") : "";
-                            return (
-                                <Table.Row key={key} onClick={ev => this.ViewCandidate(ev, key)}>
-                                    <Table.Cell>
-                                        <Image avatar src={currentuser.photoURL} />
-                                        {info.firstname} {info.lastname}
-                                    </Table.Cell>
-                                    <Table.Cell>{info.skill}</Table.Cell>
-                                    <Table.Cell>{created_date}</Table.Cell>
-                                    <Table.Cell>{info.created_by}</Table.Cell>
-                                </Table.Row>
-                            );
-                        })}
-                    </Table.Body>
-                </Table> */}
             </Container>
         );
     }

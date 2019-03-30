@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import history from "../modules/history";
 import { Container, Menu, Icon } from "semantic-ui-react";
+import UserContext from "../contexts/UserContext";
 import CandidateProfile from "./CandidateProfile";
 import NavBar from "../NavBar";
 
@@ -40,7 +41,7 @@ export default class CandidateDetail extends Component {
                             </Menu.Item>
                         </Menu.Menu>
                     </Menu>
-                    <CandidateProfile candidateID={candidateID} />
+                    <UserContext.Consumer>{currentuser => <CandidateProfile currentuser={currentuser} candidateID={candidateID} />}</UserContext.Consumer>
                 </Container>
             </div>
         );

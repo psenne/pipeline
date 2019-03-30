@@ -25,6 +25,10 @@ export default class AuditTrail extends Component {
             });
     }
 
+    componentWillUnmount() {
+        fbAuditTrailDB.off("value");
+    }
+
     render() {
         const { events } = this.state;
         return (
