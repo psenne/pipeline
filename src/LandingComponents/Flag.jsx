@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import history from "../modules/history";
 import FlagMessagePopup from "../CandidateComponents/FlagMessagePopup";
 import UserContext from "../contexts/UserContext";
@@ -28,20 +29,11 @@ export default class Flag extends Component {
         });
     };
 
-    ViewCandidate = (ev, key) => {
-        ev.stopPropagation();
-        history.push({ pathname: `/candidates/${key}` });
-    };
-
     render() {
         const { flag } = this.props;
         const { flagOpen } = this.state;
         const flagdate = format(flag.info.flagged_on, "MMM DD, YYYY");
-        const candidatelink = (
-            <a href={`candidates/${flag.key}`} onClick={ev => this.ViewCandidate(ev, flag.key)}>
-                {flag.info.candidate_name}
-            </a>
-        );
+        const candidatelink = <Link to={`/candidates/${flag.key}`}>{flag.info.candidate_name}</Link>;
         const action = flag.info.actioned_to ? <h5>Actioned to: {flag.info.actioned_to}</h5> : "";
         return (
             <Card>

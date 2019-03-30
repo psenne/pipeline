@@ -38,7 +38,7 @@ export default function AppRoutes() {
                     <Route path="/admin" render={props => <AdminPage {...props} />} />
                     <Route path="/candidates/add" render={props => <UserContext.Consumer>{currentuser => <AddCandidateForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
                     <Route exact path="/candidates/:id/edit" render={props => <UserContext.Consumer>{currentuser => <EditCandidateForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
-                    <Route path="/candidates/:id" render={props => <CandidateDetailPage {...props} />} />
+                    <Route path="/candidates/:id" render={props => <UserContext.Consumer>{currentuser => <CandidateDetailPage currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
                     <Route path="/candidates" render={props => <UserContext.Consumer>{currentuser => <CandidatesPage currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
                     <Route path="/jobs" render={props => <JobsPage {...props} />} />
                     <Route render={() => <NoMatch />} />
