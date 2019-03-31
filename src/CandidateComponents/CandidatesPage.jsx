@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { fbCandidatesDB, fbAuditTrailDB, fbFlagNotes } from "../firebase/firebase.config";
+import { fbCandidatesDB} from "../firebase/firebase.config";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
 import CandidatesTable from "./CandidatesTable";
@@ -29,7 +29,6 @@ class CandidatesPage extends Component {
         this.filterCandidates = this.filterCandidates.bind(this);
         this.HandleDropdownInput = this.HandleDropdownInput.bind(this);
         this.filterByStatus = this.filterByStatus.bind(this);
-        this.ArchiveCandidate = this.ArchiveCandidate.bind(this);
     }
 
     componentDidMount() {
@@ -77,46 +76,7 @@ class CandidatesPage extends Component {
         });
     }
 
-    ArchiveCandidate(key, candidate, status) {
-        const { currentuser } = this.props;
-        const now = new Date();
-        let eventinfo = "";
-
-        eventinfo = `${currentuser.displayName} set candidate to ${status}.`;
-
-        const newEvent = {
-            eventdate: now.toJSON(),
-            eventinfo: eventinfo,
-            candidatename: `${candidate.firstname} ${candidate.lastname}`
-        };
-
-        let updatedinfo;
-        if (status === "archived") {
-            //remove flag if setting canddiate to archived. Otherwise there's no way to filter the FlaggedCandidates cpnt.
-            updatedinfo = {
-                archived: "archived",
-                isFlagged: false,
-                flagged_by: "",
-                flag_note: "",
-                flagged_on: "",
-                actioned_to: ""
-            };
-            fbFlagNotes.child(key).remove();
-        } else {
-            updatedinfo = {
-                archived: "current"
-            };
-        }
-
-        fbCandidatesDB
-            .child(key)
-            .update(updatedinfo)
-            .then(() => {
-                fbAuditTrailDB.push(newEvent);
-            })
-            .catch(err => console.error("CandidatesPage, line 102: ", err));
-    }
-
+ 
     render() {
         const { candidateList } = this.state;
         const flaggedCandidates = candidateList.filter(candidate => {
@@ -130,8 +90,8 @@ class CandidatesPage extends Component {
             <div>
                 <NavBar active="candidates" />
                 <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} filterByArchived={this.HandleDropdownInput} viewArchived={this.state.viewArchived} filterByStatus={this.filterByStatus} searchCandidates={this.filterCandidates} searchTerm={this.state.filterTerm} />
-                <CandidatesTable ArchiveCandidate={this.ArchiveCandidate} filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={flaggedCandidates} />
-                <CandidatesTable ArchiveCandidate={this.ArchiveCandidate} filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={unflaggedCandidates} />
+                <CandidatesTable filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={flaggedCandidates} />
+                <CandidatesTable filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={unflaggedCandidates} />
             </div>
         );
     }

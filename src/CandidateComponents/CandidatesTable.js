@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import UserContext from "../contexts/UserContext";
 import history from "../modules/history";
 import { Grid, Header } from "semantic-ui-react";
 import classnames from "classnames";
@@ -39,7 +40,6 @@ class CandidatesTable extends Component {
         };
 
         this.ViewCandidate = this.ViewCandidate.bind(this);
-        this.ArchiveCandidate = this.ArchiveCandidate.bind(this);
     }
 
     ViewCandidate(ev, key) {
@@ -48,10 +48,6 @@ class CandidatesTable extends Component {
         history.push({ pathname: `/candidates/${key}`, state: { filter, filterBySearch, filterByStatus } });
     }
 
-    ArchiveCandidate(ev, candidate, status) {
-        ev.stopPropagation();
-        this.props.ArchiveCandidate(candidate.key, { firstname: candidate.info.firstname, lastname: candidate.info.lastname }, status);
-    }
 
     render() {
         const { filterByStatus, filterBySearch, filter } = this.props;
@@ -67,12 +63,11 @@ class CandidatesTable extends Component {
                         const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
                         const company = item.info.company ? `with ${item.info.company}` : "";
                         const current_contract = item.info.current_contract ? `on ${item.info.current_contract}` : "";
-                        const toggleArchive = item.info.archived === "archived" ? "current" : "archived"; // set button text and actions for archive candidate button
 
                         return (
                             <Grid.Row columns={2} key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
                                 <Grid.Column textAlign="center" width={1}>
-                                    <MiniToolbar item={item} ArchiveCandidate={ev => this.ArchiveCandidate(ev, item, toggleArchive)} />
+                                <UserContext.Consumer>{currentuser =><MiniToolbar currentuser={currentuser} item={item}/>}</UserContext.Consumer>
                                 </Grid.Column>
                                 <Grid.Column width={15}>
                                     <Header>
