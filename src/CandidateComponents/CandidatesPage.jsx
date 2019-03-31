@@ -33,11 +33,11 @@ class CandidatesPage extends Component {
     }
 
     componentDidMount() {
-        const filter = this.props.location.state ? this.props.location.state.filter : "current";
-        const filterBySearch = this.props.location.state ? this.props.location.state.filterBySearch : "";
-        const filterByStatus = this.props.location.state ? this.props.location.state.filterByStatus : "";
-
         this.orderedCandidates.on("value", data => {
+            const filter = this.props.location.state ? this.props.location.state.filter : "current";
+            const filterBySearch = this.props.location.state ? this.props.location.state.filterBySearch : "";
+            const filterByStatus = this.props.location.state ? this.props.location.state.filterByStatus : "";
+    
             let tmpitems = [];
             data.forEach(function(candidate) {
                 tmpitems.push({ key: candidate.key, info: candidate.val() });

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import history from "../modules/history";
 import FlagMessagePopup from "../CandidateComponents/FlagMessagePopup";
 import UserContext from "../contexts/UserContext";
 import { Card, Icon, Button } from "semantic-ui-react";

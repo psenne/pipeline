@@ -4,7 +4,7 @@ import { fbFlagNotes, fbAuditTrailDB, fbCandidatesDB } from "../firebase/firebas
 import { tmplCandidate } from "../constants/candidateInfo";
 import tmplFlagNote from "../constants/flagnote";
 
-export default class FlagMessage extends Component {
+export default class FlagMessagePopup extends Component {
     constructor(props) {
         super(props);
 
