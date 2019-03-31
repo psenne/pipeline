@@ -48,11 +48,21 @@ class CandidatesPage extends Component {
                 filterTerm: filterBySearch,
                 statusFilter: filterByStatus
             });
-        }); //update candidate table when data in firebase changes.
+        }); 
+
+        this.orderedCandidates.on("child_changed", (data) => {
+            const {candidateList} = this.state;
+            const index = candidateList.findIndex(item => item.key===data.key);
+            candidateList[index].info = data.val();
+            this.setState(
+                candidateList
+            );
+        });
     }
 
     componentWillUnmount() {
         this.orderedCandidates.off("value");
+        this.orderedCandidates.off("child_changed");
     }
 
     //callback function for search bar
@@ -85,7 +95,6 @@ class CandidatesPage extends Component {
         const unflaggedCandidates = candidateList.filter(candidate => {
             return !candidate.info.isFlagged;
         });
-
         return (
             <div>
                 <NavBar active="candidates" />
