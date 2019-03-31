@@ -19,14 +19,14 @@ export default class LastCreated extends Component {
     componentDidMount() {
         fbCandidatesDB
             .orderByChild("create_date")
-            .limitToLast(5)
+            .limitToLast(50)
             .on("value", data => {
                 let tmpitems = [];
                 data.forEach(function(candidate) {
                     tmpitems.push({ key: candidate.key, info: candidate.val() });
                 });
                 this.setState({
-                    candidates: tmpitems
+                    candidates: tmpitems.filter(c => c.info.created_date).reverse().slice(0,5)
                 });
             });
     }
