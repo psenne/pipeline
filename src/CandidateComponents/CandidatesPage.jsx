@@ -98,7 +98,8 @@ class CandidatesPage extends Component {
                 isFlagged: false,
                 flagged_by: "",
                 flag_note: "",
-                flagged_on: ""
+                flagged_on: "",
+                actioned_to: ""
             };
             fbFlagNotes.child(key).remove();
         } else {
