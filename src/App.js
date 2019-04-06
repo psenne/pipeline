@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { fbUsersDB, fbauth, SignInWithGoogle, SignOutWithGoogle } from "./firebase/firebase.config";
+import { fbUsersDB, fbauth, SignInWithGoogle, SignOutWithGoogle, fbLoginsDB } from "./firebase/firebase.config";
 import AppHeader from "./AppHeader";
 import AppRoutes from "./AppRoutes";
 import UserContext from "./contexts/UserContext";
@@ -61,6 +61,14 @@ class App extends Component {
                             currentuser: currentuser,
                             userrole: role
                         }); //everything is good, so set current user and role
+                        
+                        // save login event to logins table
+                        const now = new Date();
+                        fbLoginsDB.push({
+                            user: currentuser.displayName,
+                            emailaddress: currentuser.email,
+                            eventtime: now.toJSON()
+                        })
                     }
                 }); //end get users
             } else {
