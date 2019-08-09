@@ -21,7 +21,7 @@ class CandidateProfile extends Component {
 
         fbCandidatesDB.child(candidateID).on("value", data => {
             this.setState({
-                candidate: Object.assign({}, tmplCandidate, data.val())
+                candidate: { ...tmplCandidate, ...data.val() }
             });
         });
     }
@@ -35,7 +35,17 @@ class CandidateProfile extends Component {
         ev.stopPropagation();
         const { candidate } = this.state;
         const { currentuser, candidateID } = this.props;
-
+        const flag_history = candidate.isFlagged
+            ? [
+                  {
+                      actioned_to: candidate.actioned_to,
+                      flag_note: candidate.flag_note,
+                      flagged_by: candidate.flagged_by,
+                      flagged_on: candidate.flagged_on
+                  },
+                  ...candidate.flag_history
+              ]
+            : candidate.flag_history; //only add new historical flag if candidate is currently flagged, otherwise it adds a blank flag
         const candidate_name = candidate.firstname + " " + candidate.lastname;
         const now = new Date();
         let candidateflag = {};
@@ -49,7 +59,8 @@ class CandidateProfile extends Component {
                 flagged_by: "",
                 flag_note: "",
                 flagged_on: "",
-                actioned_to: ""
+                actioned_to: "",
+                flag_history
             };
             newEvent = {
                 eventdate: now.toJSON(),
@@ -103,7 +114,7 @@ class CandidateProfile extends Component {
                             <Grid>
                                 {candidate.isFlagged && (
                                     <Grid.Row>
-                                        <FlagMessage candidate={{ id: candidateID, flag_note: candidate.flag_note, flagged_by: candidate.flagged_by, flagged_on: candidate.flagged_on, actioned_to: candidate.actioned_to }} onDismiss={this.removeFlag} />
+                                        <FlagMessage candidate={{ id: candidateID, flag_history: candidate.flag_history, flag_note: candidate.flag_note, flagged_by: candidate.flagged_by, flagged_on: candidate.flagged_on, actioned_to: candidate.actioned_to }} onDismiss={this.removeFlag} />
                                     </Grid.Row>
                                 )}
                                 <Grid.Row verticalAlign="middle" columns={2}>

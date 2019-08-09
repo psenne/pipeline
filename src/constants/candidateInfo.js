@@ -29,6 +29,7 @@ const tmplCandidate = {
     flag_note: "",
     flagged_on: "",
     actioned_to: "",
+    flag_history: [],
     created_date: "",
     created_by: "",
     modified_date: "",
