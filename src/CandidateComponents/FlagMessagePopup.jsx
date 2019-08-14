@@ -27,7 +27,7 @@ export default class FlagMessagePopup extends Component {
         const { flagkey } = this.props;
         fbCandidatesDB.child(flagkey).on("value", data => {
             this.setState({
-                candidateinfo: data.val()
+                candidateinfo: { ...tmplCandidate, ...data.val() } //replace template with firebase data
             });
         });
 
@@ -65,6 +65,17 @@ export default class FlagMessagePopup extends Component {
         ev.stopPropagation();
         const { candidateinfo, actioned_to } = this.state;
         const { flagkey } = this.props;
+        const flag_history = candidateinfo.isFlagged
+            ? [
+                  {
+                      actioned_to: candidateinfo.actioned_to,
+                      flag_note: candidateinfo.flag_note,
+                      flagged_by: candidateinfo.flagged_by,
+                      flagged_on: candidateinfo.flagged_on
+                  },
+                  ...candidateinfo.flag_history
+              ]
+            : candidateinfo.flag_history; //only add new historical flag if candidate is currently flagged, otherwise it adds a blank flag
         const candidate_name = candidateinfo.firstname + " " + candidateinfo.lastname;
         const now = new Date();
         let flag = {};
@@ -84,8 +95,10 @@ export default class FlagMessagePopup extends Component {
                 actioned_to,
                 flagged_by: currentuser.displayName,
                 flag_note,
-                flagged_on: now.toJSON()
+                flagged_on: now.toJSON(),
+                flag_history
             };
+
             newEvent = {
                 eventdate: now.toJSON(),
                 eventinfo: `${currentuser.displayName} flagged candidate with note: ${flag_note}. Actioned to: ${actioned_to}`,
@@ -101,7 +114,8 @@ export default class FlagMessagePopup extends Component {
                 flagged_by: "",
                 flag_note: "",
                 flagged_on: "",
-                actioned_to: ""
+                actioned_to: "",
+                flag_history
             };
             newEvent = {
                 eventdate: now.toJSON(),
@@ -155,7 +169,7 @@ export default class FlagMessagePopup extends Component {
         }
 
         return (
-            <Modal trigger={this.props.children} open={this.props.open} onClick={ev => ev.stopPropagation()} onClose={this.props.handleClose} size="small">
+            <Modal dimmer="blurring" trigger={this.props.children} open={this.props.open} onClick={ev => ev.stopPropagation()} onClose={this.props.handleClose} size="small">
                 <Header icon="flag" color="red" content={`Add follow up note for ${candidateinfo.firstname} ${candidateinfo.lastname}.`} />
                 <Modal.Content>
                     <Form>
