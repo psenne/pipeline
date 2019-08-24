@@ -28,12 +28,16 @@ export default class ContractDropdown extends Component {
         fbContractsDB.off("value");
     }
 
+    onChange = (ev, selection) => {
+        this.props.onChange(selection.value);
+    }
+
     render() {
-        const { text, onChange, value } = this.props;
-        const { contracts } = this.state;
+        const { text, value, multiple=false, clearable=false, selection=false, required=false } = this.props;
+        const { contracts, selectedContract } = this.state;
         const contractList = contracts.map(({ key, info: contract }) => {
             return { key: key, text: contract.name, value: contract.name };
         });
-        return <Dropdown text={text} value={value} multiple selection options={contractList} onChange={(ev, selection) => onChange(selection.value)} />;
+        return <Dropdown text={text} value={value} required={required} clearable={clearable} multiple={multiple} selection={selection} options={contractList} onChange={this.onChange} />;
     }
 }

@@ -197,7 +197,7 @@ export default class AddCandidateForm extends React.Component {
                                 <Form.Input inline type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Group inline>
                                     <label>Potential contracts: </label>
-                                    <ContractDropdown onChange={this.HandlePContractInput} value={candidate.potential_contracts} />
+                                    <ContractDropdown multiple selection onChange={this.HandlePContractInput} value={candidate.potential_contracts} />
                                 </Form.Group>
                                 <Form.Group inline>
                                     <label>Add document:</label>

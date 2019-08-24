@@ -48,7 +48,6 @@ class CandidatesTable extends Component {
         history.push({ pathname: `/candidates/${key}`, state: { filter, filterBySearch, filterByStatus } });
     }
 
-
     render() {
         const { filterByStatus, filterBySearch, filter } = this.props;
         return (
@@ -67,7 +66,7 @@ class CandidatesTable extends Component {
                         return (
                             <Grid.Row columns={2} key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
                                 <Grid.Column textAlign="center" width={1}>
-                                <UserContext.Consumer>{currentuser =><MiniToolbar currentuser={currentuser} item={item}/>}</UserContext.Consumer>
+                                    <UserContext.Consumer>{currentuser => <MiniToolbar currentuser={currentuser} item={item} />}</UserContext.Consumer>
                                 </Grid.Column>
                                 <Grid.Column width={15}>
                                     <Header>

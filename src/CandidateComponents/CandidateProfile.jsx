@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import history from "../modules/history";
 import { Grid, Header, Segment } from "semantic-ui-react";
 import classnames from "classnames";
 import moment from "moment";
@@ -20,9 +21,13 @@ class CandidateProfile extends Component {
         const { candidateID } = this.props;
 
         fbCandidatesDB.child(candidateID).on("value", data => {
-            this.setState({
-                candidate: { ...tmplCandidate, ...data.val() }
-            });
+            if (data.val()) {
+                this.setState({
+                    candidate: { ...tmplCandidate, ...data.val() }
+                });
+            } else {
+                history.push("/candidates/");
+            }
         });
     }
 

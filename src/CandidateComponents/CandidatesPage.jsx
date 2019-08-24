@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { fbCandidatesDB} from "../firebase/firebase.config";
+import { fbCandidatesDB } from "../firebase/firebase.config";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
 import CandidatesTable from "./CandidatesTable";
@@ -33,10 +33,11 @@ class CandidatesPage extends Component {
 
     componentDidMount() {
         this.orderedCandidates.on("value", data => {
+            console.log(data);
             const filter = this.props.location.state ? this.props.location.state.filter : "current";
             const filterBySearch = this.props.location.state ? this.props.location.state.filterBySearch : "";
             const filterByStatus = this.props.location.state ? this.props.location.state.filterByStatus : "";
-    
+
             let tmpitems = [];
             data.forEach(function(candidate) {
                 tmpitems.push({ key: candidate.key, info: candidate.val() });
@@ -48,15 +49,13 @@ class CandidatesPage extends Component {
                 filterTerm: filterBySearch,
                 statusFilter: filterByStatus
             });
-        }); 
+        });
 
-        this.orderedCandidates.on("child_changed", (data) => {
-            const {candidateList} = this.state;
-            const index = candidateList.findIndex(item => item.key===data.key);
+        this.orderedCandidates.on("child_changed", data => {
+            const { candidateList } = this.state;
+            const index = candidateList.findIndex(item => item.key === data.key);
             candidateList[index].info = data.val();
-            this.setState(
-                candidateList
-            );
+            this.setState(candidateList);
         });
     }
 
@@ -86,7 +85,6 @@ class CandidatesPage extends Component {
         });
     }
 
- 
     render() {
         const { candidateList } = this.state;
         const flaggedCandidates = candidateList.filter(candidate => {
