@@ -1,5 +1,5 @@
 {
-    "name": "pipeline-3.0",
+    "name": "pipeline",
     "version": "3.1.0",
     "private": true,
     "dependencies": {
@@ -22,7 +22,7 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "react-scripts build  && firebase deploy",
+        "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
 import history from "../modules/history";
 import { fbPositionsDB } from "../firebase/firebase.config";
 import tmplPosition from "../constants/positionInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
-import { Form, Container, Segment, Button, Dropdown, Header, Message } from "semantic-ui-react";
+import CandidateDropdown from "../CandidateComponents/CandidateDropdown";
+import { Form, Container, Segment, Button, Dropdown, Header, Message, DropdownDivider } from "semantic-ui-react";
 
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
     const [position, setposition] = useState({ ...tmplPosition });
     const [formError, setformError] = useState(false);
-    
 
     useEffect(() => {
         const key = match.params.id;
@@ -34,6 +35,12 @@ export default function EditPositionForm({ match }) {
         updatePositionInfo("contract", value);
     };
 
+    const HandleCandidateSubmission = key => {
+        const submission_date = format(new Date());
+        const submission = { candidate: key, submission_date };
+        console.log(submission);
+    };
+
     const updatePositionInfo = (name, value) => {
         const tmpPosition = { ...position };
         tmpPosition[name] = value;
@@ -41,15 +48,14 @@ export default function EditPositionForm({ match }) {
     };
 
     const UpdatePosition = () => {
-        if(position.title && position.contract){
+        if (position.title && position.contract) {
             fbPositionsDB
                 .child(key)
                 .update(position)
                 .then(() => {
                     history.push("/positions/");
                 });
-        }
-        else{
+        } else {
             setformError(true);
         }
     };
@@ -94,7 +100,7 @@ export default function EditPositionForm({ match }) {
                             </Form.Group>
                             <Header>Candidate submission</Header>
                             <Form.Group>
-                                <Dropdown text="Candidate" selection />
+                                <CandidateDropdown selection clearable filters={[{ archived: "current" }, { status: "active" }]} onChange={HandleCandidateSubmission} />
                             </Form.Group>
                         </Segment>
                         <Segment>
