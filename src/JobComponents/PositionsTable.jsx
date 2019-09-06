@@ -1,11 +1,13 @@
 import React from "react";
 import history from "../modules/history";
-import { Grid, Header } from "semantic-ui-react";
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
+import { Grid, Header, Label } from "semantic-ui-react";
 import classnames from "classnames";
 
 //uses search field value to filter array of candidates for table population
 function isSearched(s) {
-    return function(item) {
+    return function (item) {
         const searchTerm = s;
         let wasFound = true;
 
@@ -23,7 +25,7 @@ function isSearched(s) {
 
 // filters candidates by status
 function isFiltered(searchTerm) {
-    return function(item) {
+    return function (item) {
         return !searchTerm || item.info.contract === searchTerm;
     };
 }
@@ -42,6 +44,11 @@ export default function PositionsTable({ positions, searchTerm, contractFilter }
         ev.preventDefault();
         history.push(`/positions/${key}`);
     };
+
+    const GoToCandidate = (ev, key) => {
+        ev.stopPropagation();
+        history.push(`/candidates/${key}`);
+    }
 
     return (
         <Grid columns={16} verticalAlign="middle" divided="vertically" className="hovered">
@@ -62,7 +69,6 @@ export default function PositionsTable({ positions, searchTerm, contractFilter }
                                     <Header.Content>
                                         {contract} {item.info.title} {position_id}
                                     </Header.Content>
-
                                     <Header.Subheader>
                                         <div>
                                             {level} {dash} {item.info.skill_summary}
@@ -71,6 +77,14 @@ export default function PositionsTable({ positions, searchTerm, contractFilter }
                                     </Header.Subheader>
                                 </Header>
                                 <div>{item.info.description}</div>
+                                <Header sub >
+                                    Candidates submitted:
+                                    {item.info.candidate_submitted.map(candidate => {
+                                        return (
+                                            <Label as="a" color="blue" key={candidate.candidate_key} content={candidate.candidate_name} icon='user secret' onClick={ev => GoToCandidate(ev, candidate.candidate_key)} />
+                                        );
+                                    })}
+                                </Header>
                             </Grid.Column>
                         </Grid.Row>
                     );

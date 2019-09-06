@@ -13,11 +13,11 @@ export default class CandidateDropdown extends Component {
     }
 
     componentDidMount() {
-        const { filters } = this.props;
+        const { filters, removecandidates } = this.props;
 
-        fbCandidatesDB.on("value", data => {
+        fbCandidatesDB.once("value", data => {
             const filteredData = [];
-            data.forEach(function(candidate) {
+            data.forEach(function (candidate) {
                 const info = candidate.val();
                 const key = candidate.key;
                 let meetsCriteria = true;
@@ -41,20 +41,24 @@ export default class CandidateDropdown extends Component {
         });
     }
 
-    componentWillUnmount() {
-        fbCandidatesDB.off("value");
-    }
-
     onChange = (ev, selection) => {
-        this.props.onChange(selection.value);
+        const { candidates } = this.state;
+        if (selection.value) this.props.onChange(candidates.filter(c => c.key === selection.value)[0]);
     };
 
     render() {
-        const { text, value, multiple = false, clearable = false, selection = false, required = false } = this.props;
-        const { candidates, selectedCandidate } = this.state;
-        const candidateList = candidates.map(({ key, info: candidate }) => {
-            return { key: key, text: candidate.firstname + " " + candidate.lastname, value: key };
+        const { removecandidates, text, value, multiple = false, clearable = false, selection = false, required = false } = this.props;
+        const { candidates } = this.state;
+        const candidateList = candidates.filter(ReturnRemainingCandidates(removecandidates)).map(({ key, info: candidate }) => {
+            const candidatename = candidate.firstname + " " + candidate.lastname;
+            return { key: key, text: candidatename, value: key };
         });
-        return <Dropdown text={text} value={value} required={required} clearable={clearable} multiple={multiple} selection={selection} options={candidateList} onChange={this.onChange} />;
+        return <Dropdown text={text} selectOnBlur={false} placeholder="Select Candidate" value={value} required={required} clearable={clearable} multiple={multiple} selection={selection} options={candidateList} onChange={this.onChange} />;
+    }
+}
+
+function ReturnRemainingCandidates(removecandidates) {
+    return function (candidate) {
+        return !removecandidates.map(rc => rc.candidate_key).includes(candidate.key);
     }
 }

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import history from "../modules/history";
 import { Button, Header, Segment, Container, Menu, Icon } from "semantic-ui-react";
-import classnames from "classnames";
-import moment from "moment";
 import NavBar from "../NavBar";
 import { fbPositionsDB } from "../firebase/firebase.config";
 import tmplPosition from "../constants/positionInfo";
@@ -63,21 +62,18 @@ export default function PositionDetailPage({ match }) {
                         </Segment>
                         <Segment vertical padded>
                             <Header size="medium">Candidate Submissions</Header>
-                            <p>
-                                <Link to="/candidates:id">Alex M - submitted on Jan 2, 2019</Link>
-                            </p>
-                            <p>
-                                <Link to="/candidates:id">Alex M - submitted on Jan 2, 2019</Link>
-                            </p>
-                            <p>
-                                <Link to="/candidates:id">Alex M - submitted on Jan 2, 2019</Link>
-                            </p>
-                            <p>
-                                <Link to="/candidates:id">Alex M - submitted on Jan 2, 2019</Link>
-                            </p>
-                            <p>
+                            {position.candidate_submitted.map(candidate => {
+                                return (
+                                    <p key={candidate.candidate_key}>
+                                        <Link to={`/candidates/${candidate.candidate_key}`}>
+                                            {candidate.candidate_name} - submitted on {format(candidate.submission_date, "MMMM D, YYYY")}
+                                        </Link>
+                                    </p>
+                                );
+                            })}
+                            {/* <p>
                                 <Button icon="plus" title="Submit candidate"></Button>
-                            </p>
+                            </p> */}
                         </Segment>
                     </Segment>
                 </Container>

@@ -68,17 +68,14 @@ export default function AddPositionForm() {
                                 <Form.Input name="position_id" type="text" label="Position ID" placeholder="Position ID" onChange={HandleTextInput} value={positioninfo.position_id} />
                                 <div className="field">
                                     <label>Contract</label>
-                                    <ContractDropdown required clearable selection onChange={HandleContractInput} value={positioninfo.contract} />
+                                    <ContractDropdown required selection onChange={HandleContractInput} value={positioninfo.contract} />
                                 </div>
-                            </Form.Group>
-                            <Header>Candidate submission</Header>
-                            <Form.Group>
-                                <CandidateDropdown selection clearable filters={[{ archived: "current" }, { status: "active" }]} onChange={HandleCandidateSubmission} />
                             </Form.Group>
                         </Segment>
                         <Segment>
                             {formError && <Message error floating compact icon="warning" header="Required fields missing" content="Title and contract are both required." />}
                             <Button type="submit" icon="plus" positive content="Add" onClick={AddNewPosition} />
+                            <Button icon="close" content="Cancel" onClick={() => history.push("/positions")} />
                         </Segment>
                     </Form>
                 </Segment>

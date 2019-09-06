@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import history from "../modules/history";
-import { fbPositionsDB } from "../firebase/firebase.config";
+import { Link } from "react-router-dom";
+import { fbPositionsDB, fbCandidatesDB, fbAuditTrailDB } from "../firebase/firebase.config";
 import tmplPosition from "../constants/positionInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import CandidateDropdown from "../CandidateComponents/CandidateDropdown";
-import { Form, Container, Segment, Button, Dropdown, Header, Message, DropdownDivider } from "semantic-ui-react";
+import { Form, Container, Segment, Button, Header, Message, Icon } from "semantic-ui-react";
 
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
     const [position, setposition] = useState({ ...tmplPosition });
+    const [candidateSubmission, setCandidateSubmission] = useState([]);
     const [formError, setformError] = useState(false);
 
     useEffect(() => {
@@ -35,11 +37,26 @@ export default function EditPositionForm({ match }) {
         updatePositionInfo("contract", value);
     };
 
-    const HandleCandidateSubmission = key => {
+    const AddCandidateToPosition = candidate => {
         const submission_date = format(new Date());
-        const submission = { candidate: key, submission_date };
-        console.log(submission);
+        const candidate_name = candidate.info.firstname + " " + candidate.info.lastname;
+        const candidateSubmissionInfo = { submission_date, candidate_name, candidate_key: candidate.key };
+        const tmpPosition = { ...position };
+        tmpPosition["candidate_submitted"].push(candidateSubmissionInfo);
+        setposition(tmpPosition);
+        //setCandidateSubmission([{ position_key: key, position_name: tmpPosition.title, position_contract: tmpPosition.contract, submission_date }, ...candidateSubmission]);
     };
+
+    const RemoveCandidateFromPosition = key => {
+        const tmpPosition = { ...position };
+        const submissions = position.candidate_submitted;
+        const selectedCandidate = submissions.filter(candidate => candidate.candidate_key === key);
+        tmpPosition.candidate_submitted = submissions.filter(candidate => candidate.candidate_key !== key);
+
+        if (window.confirm(`Are you sure you want to unsubmit ${selectedCandidate[0].candidate_name}?`)) {
+            setposition(tmpPosition);
+        }
+    }
 
     const updatePositionInfo = (name, value) => {
         const tmpPosition = { ...position };
@@ -53,6 +70,7 @@ export default function EditPositionForm({ match }) {
                 .child(key)
                 .update(position)
                 .then(() => {
+                    //fbCandidatesDB.child(candidate_key).update(candidateSubmission) -- need to get current submissions from candidate's profile
                     history.push("/positions/");
                 });
         } else {
@@ -95,13 +113,22 @@ export default function EditPositionForm({ match }) {
                                 <Form.Input name="position_id" type="text" label="Position ID" placeholder="Position ID" onChange={HandleTextInput} value={position.position_id} />
                                 <div className="field">
                                     <label>Contract</label>
-                                    <ContractDropdown required clearable selection onChange={HandleContractInput} value={position.contract} />
+                                    <ContractDropdown required selection onChange={HandleContractInput} value={position.contract} />
                                 </div>
                             </Form.Group>
                             <Header>Candidate submission</Header>
-                            <Form.Group>
-                                <CandidateDropdown selection clearable filters={[{ archived: "current" }, { status: "active" }]} onChange={HandleCandidateSubmission} />
-                            </Form.Group>
+                            {position.candidate_submitted.map(candidate => {
+                                return (
+                                    <p key={candidate.candidate_key}>
+                                        <Link to={`/candidates/${candidate.candidate_key}`}>
+                                            {candidate.candidate_name} - submitted on {format(candidate.submission_date, "MMMM D, YYYY")}
+                                        </Link>{" "}
+                                        <Icon name="close" color="red" link onClick={() => RemoveCandidateFromPosition(candidate.candidate_key)} />
+                                    </p>
+                                );
+                            })}
+
+                            <CandidateDropdown selection filters={[{ archived: "current" }, { status: "active" }]} removecandidates={position.candidate_submitted} onChange={AddCandidateToPosition} />
                         </Segment>
                         <Segment>
                             {formError && <Message error floating compact icon="warning" header="Required fields missing" content="Title and contract are both required." />}
