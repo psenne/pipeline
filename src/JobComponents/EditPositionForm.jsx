@@ -134,6 +134,7 @@ export default function EditPositionForm({ match }) {
                             {formError && <Message error floating compact icon="warning" header="Required fields missing" content="Title and contract are both required." />}
                             <Button type="submit" icon="save" positive content="Update" onClick={UpdatePosition} />
                             <Button type="submit" icon="trash" negative content="Delete" onClick={DeletePosition} />
+                            <Button type="submit" icon="cancel" content="Cancel" onClick={() => history.goBack()} />
                         </Segment>
                     </Form>
                 </Segment>

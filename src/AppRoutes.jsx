@@ -36,9 +36,9 @@ export default function AppRoutes() {
                     <Route path="/candidates/:id" render={props => <UserContext.Consumer>{currentuser => <CandidateDetailPage currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
                     <Route path="/candidates" render={props => <CandidatesPage {...props} />} />
                     <Route path="/positions/add" render={props => <UserContext.Consumer>{currentuser => <AddPositionForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
-                    <Route exact path="/positions/:id/edit" render={props => <UserContext.Consumer>{currentuser => <EditPositionForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
-                    <Route path="/positions/:id" render={props => <UserContext.Consumer>{currentuser => <PositionDetailPage currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
-                   <Route path="/positions" render={props => <PositionsPage {...props} />} />
+                    {/* <Route exact path="/positions/:id/edit" render={props => <UserContext.Consumer>{currentuser => <EditPositionForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} /> */}
+                    <Route path="/positions/:id" render={props => <UserContext.Consumer>{currentuser => <EditPositionForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
+                    <Route path="/positions" render={props => <PositionsPage {...props} />} />
                     <Route path="/loginhistory" render={props => <LoginHistory {...props} />} />
                     <Route render={() => <NoMatch />} />
                 </Switch>
