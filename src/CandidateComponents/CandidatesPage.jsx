@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import CandidateTableFilters from "../contexts/CandidateSearchContext";
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
@@ -25,15 +26,10 @@ class CandidatesPage extends Component {
             filterTerm: "",
             statusFilter: ""
         };
-
-        this.filterCandidates = this.filterCandidates.bind(this);
-        this.HandleDropdownInput = this.HandleDropdownInput.bind(this);
-        this.filterByStatus = this.filterByStatus.bind(this);
     }
 
     componentDidMount() {
         this.orderedCandidates.on("value", data => {
-            console.log(data);
             const filter = this.props.location.state ? this.props.location.state.filter : "current";
             const filterBySearch = this.props.location.state ? this.props.location.state.filterBySearch : "";
             const filterByStatus = this.props.location.state ? this.props.location.state.filterByStatus : "";
@@ -64,27 +60,6 @@ class CandidatesPage extends Component {
         this.orderedCandidates.off("child_changed");
     }
 
-    //callback function for search bar
-    filterCandidates(ev, data) {
-        this.setState({
-            filterTerm: data.value
-        });
-    }
-
-    //callback function for status dropdown
-    filterByStatus(ev, data) {
-        this.setState({
-            statusFilter: data.value
-        });
-    }
-
-    //callback function for archived dropdown. initially the only dropdown, hence the generic name.
-    HandleDropdownInput(ev, data) {
-        this.setState({
-            viewArchived: data.value
-        });
-    }
-
     render() {
         const { candidateList } = this.state;
         const flaggedCandidates = candidateList.filter(candidate => {
@@ -94,12 +69,14 @@ class CandidatesPage extends Component {
             return !candidate.info.isFlagged;
         });
         return (
-            <div>
-                <NavBar active="candidates" />
-                <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} filterByArchived={this.HandleDropdownInput} viewArchived={this.state.viewArchived} filterByStatus={this.filterByStatus} searchCandidates={this.filterCandidates} searchTerm={this.state.filterTerm} />
-                <CandidatesTable filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={flaggedCandidates} />
-                <CandidatesTable filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={unflaggedCandidates} />
-            </div>
+            <CandidateTableFilters>
+                <>
+                    <NavBar active="candidates" />
+                    <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} />
+                    <CandidatesTable list={flaggedCandidates} />
+                    <CandidatesTable list={unflaggedCandidates} />
+                </>
+            </CandidateTableFilters>
         );
     }
 }
