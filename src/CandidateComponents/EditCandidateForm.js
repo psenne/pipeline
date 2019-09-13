@@ -332,7 +332,7 @@ export default class EditCandidateForm extends React.Component {
                                     <Form.Input inline type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                     <Form.Group inline>
                                         <label>Potential contracts: </label>
-                                        <ContractDropdown value={candidate.potential_contracts} onChange={this.HandlePContractInput} />
+                                        <ContractDropdown multiple selection value={candidate.potential_contracts} onChange={this.HandlePContractInput} />
                                     </Form.Group>
                                     <Form.Group inline>
                                         <label>Interview date / Interviewers: </label>

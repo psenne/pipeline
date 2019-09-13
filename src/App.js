@@ -3,6 +3,7 @@ import { fbUsersDB, fbauth, SignInWithGoogle, SignOutWithGoogle, fbLoginsDB } fr
 import AppHeader from "./AppHeader";
 import AppRoutes from "./AppRoutes";
 import UserContext from "./contexts/UserContext";
+import { CandidateTableFilters } from "./contexts/CandidateSearchContext";
 
 import { Button, Container, Image, Loader, Dimmer } from "semantic-ui-react";
 import "semantic-ui-css/semantic.css";
@@ -61,14 +62,14 @@ class App extends Component {
                             currentuser: currentuser,
                             userrole: role
                         }); //everything is good, so set current user and role
-                        
+
                         // save login event to logins table
                         const now = new Date();
                         fbLoginsDB.push({
                             user: currentuser.displayName,
                             emailaddress: currentuser.email,
                             eventtime: now.toJSON()
-                        })
+                        });
                     }
                 }); //end get users
             } else {
@@ -109,10 +110,12 @@ class App extends Component {
             //user is logged in
             return (
                 <div className="App">
-                    <UserContext.Provider value={currentuser}>
-                        <AppHeader />
-                        <AppRoutes />
-                    </UserContext.Provider>
+                    <CandidateTableFilters>
+                        <UserContext.Provider value={currentuser}>
+                            <AppHeader />
+                            <AppRoutes />
+                        </UserContext.Provider>
+                    </CandidateTableFilters>
                 </div>
             );
         }

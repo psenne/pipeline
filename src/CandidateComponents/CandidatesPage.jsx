@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import CandidateTableFilters from "../contexts/CandidateSearchContext";
 import { fbCandidatesDB } from "../firebase/firebase.config";
+import { tmplCandidate } from "../constants/candidateInfo";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
 import CandidatesTable from "./CandidatesTable";
@@ -36,7 +36,7 @@ class CandidatesPage extends Component {
 
             let tmpitems = [];
             data.forEach(function(candidate) {
-                tmpitems.push({ key: candidate.key, info: candidate.val() });
+                tmpitems.push({ key: candidate.key, info: { ...tmplCandidate, ...candidate.val() } });
             });
 
             this.setState({
@@ -69,14 +69,12 @@ class CandidatesPage extends Component {
             return !candidate.info.isFlagged;
         });
         return (
-            <CandidateTableFilters>
-                <>
-                    <NavBar active="candidates" />
-                    <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} />
-                    <CandidatesTable list={flaggedCandidates} />
-                    <CandidatesTable list={unflaggedCandidates} />
-                </>
-            </CandidateTableFilters>
+            <>
+                <NavBar active="candidates" />
+                <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} />
+                <CandidatesTable list={flaggedCandidates} />
+                <CandidatesTable list={unflaggedCandidates} />
+            </>
         );
     }
 }
