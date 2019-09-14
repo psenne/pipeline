@@ -12,7 +12,6 @@ import { Form, Container, Segment, Button, Header, Message, Icon } from "semanti
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
     const [position, setposition] = useState({ ...tmplPosition });
-    const [candidateSubmission, setCandidateSubmission] = useState([]);
     const [formError, setformError] = useState(false);
 
     useEffect(() => {
@@ -25,7 +24,7 @@ export default function EditPositionForm({ match }) {
             }
         });
         return () => fbPositionsDB.off("value");
-    }, {});
+    }, []);
 
     const HandleTextInput = ev => {
         const name = ev.target.name;
@@ -56,7 +55,7 @@ export default function EditPositionForm({ match }) {
         if (window.confirm(`Are you sure you want to unsubmit ${selectedCandidate[0].candidate_name}?`)) {
             setposition(tmpPosition);
         }
-    }
+    };
 
     const updatePositionInfo = (name, value) => {
         const tmpPosition = { ...position };
