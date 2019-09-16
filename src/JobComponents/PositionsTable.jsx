@@ -40,7 +40,6 @@ function isFiltered(searchTerm) {
 //     location: ""
 
 export default function PositionsTable({ positions, searchTerm, contractFilter }) {
-    console.log(positions);
     return (
         <Grid columns={16} verticalAlign="middle" divided="vertically" className="hovered">
             {positions

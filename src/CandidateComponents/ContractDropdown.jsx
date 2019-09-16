@@ -13,9 +13,9 @@ export default class ContractDropdown extends Component {
     }
 
     componentDidMount() {
-        fbContractsDB.on("value", data => {
+        this.listener = fbContractsDB.on("value", data => {
             let contracts = [];
-            data.forEach(function (contract) {
+            data.forEach(function(contract) {
                 contracts.push({ key: contract.key, info: contract.val() });
             });
             this.setState({
@@ -25,12 +25,12 @@ export default class ContractDropdown extends Component {
     }
 
     componentWillUnmount() {
-        fbContractsDB.off("value");
+        fbContractsDB.off("value", this.listener);
     }
 
     onChange = (ev, selection) => {
         this.props.onChange(selection.value);
-    }
+    };
 
     render() {
         const { text, value, multiple = false, clearable = false, selection = false, required = false } = this.props;

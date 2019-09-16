@@ -11,14 +11,14 @@ export default function PositionsPage() {
     const [contractFilter, setContractFilter] = useState("");
 
     useEffect(() => {
-        fbPositionsDB.on("value", data => {
+        const getPositions = fbPositionsDB.orderByChild("contract").on("value", data => {
             let tmpitems = [];
             data.forEach(function(position) {
                 tmpitems.push({ key: position.key, info: { ...tmplPosition, ...position.val() } });
             });
             updatePositions(tmpitems);
         });
-        return () => fbPositionsDB.off("value");
+        return () => fbPositionsDB.off("value", getPositions);
     }, []);
 
     const searchPositions = ev => {

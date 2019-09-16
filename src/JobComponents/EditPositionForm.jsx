@@ -16,14 +16,15 @@ export default function EditPositionForm({ match }) {
 
     useEffect(() => {
         const key = match.params.id;
-        fbPositionsDB.child(key).on("value", data => {
+        const listener = fbPositionsDB.child(key).on("value", data => {
             if (data.val()) {
                 setposition({ ...tmplPosition, ...data.val() });
             } else {
+                fbPositionsDB.off("value", listener);
                 history.push("/positions/add");
             }
         });
-        return () => fbPositionsDB.off("value");
+        return () => fbPositionsDB.off("value", listener);
     }, []);
 
     const HandleTextInput = ev => {
