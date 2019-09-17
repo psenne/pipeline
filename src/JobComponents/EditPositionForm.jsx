@@ -11,20 +11,31 @@ import { Form, Container, Segment, Button, Header, Message, Icon } from "semanti
 
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
-    const [position, setposition] = useState({ ...tmplPosition });
+    const [position, setposition] = useState({
+        title: "",
+        description: "",
+        level: "",
+        skill_summary: "",
+        position_id: "",
+        contract: "",
+        candidate_submitted: [],
+        location: ""
+    });
     const [formError, setformError] = useState(false);
 
     useEffect(() => {
         const key = match.params.id;
         const listener = fbPositionsDB.child(key).on("value", data => {
             if (data.val()) {
-                setposition({ ...tmplPosition, ...data.val() });
+                setposition({ ...position, ...data.val() });
             } else {
                 fbPositionsDB.off("value", listener);
                 history.push("/positions/add");
             }
         });
-        return () => fbPositionsDB.off("value", listener);
+        return () => {
+            fbPositionsDB.off("value", listener);
+        };
     }, []);
 
     const HandleTextInput = ev => {

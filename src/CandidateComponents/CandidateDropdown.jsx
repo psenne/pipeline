@@ -17,7 +17,7 @@ export default class CandidateDropdown extends Component {
 
         fbCandidatesDB.once("value", data => {
             const filteredData = [];
-            data.forEach(function (candidate) {
+            data.forEach(function(candidate) {
                 const info = candidate.val();
                 const key = candidate.key;
                 let meetsCriteria = true;
@@ -58,7 +58,7 @@ export default class CandidateDropdown extends Component {
 }
 
 function ReturnRemainingCandidates(removecandidates) {
-    return function (candidate) {
+    return function(candidate) {
         return !removecandidates.map(rc => rc.candidate_key).includes(candidate.key);
-    }
+    };
 }
