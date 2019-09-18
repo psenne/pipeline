@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Input, Icon, Menu, Dropdown } from "semantic-ui-react";
+import { Input, Icon, Menu } from "semantic-ui-react";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
-import ExportToExcel from "../modules/ExportToExcel";
+import ExportPositions from "../modules/ExportPositions";
 import classnames from "classnames";
 
 export default ({ positions, searchPositions, HandleContractChange, selectedContract }) => {
@@ -14,15 +14,26 @@ export default ({ positions, searchPositions, HandleContractChange, selectedCont
                 </Link>
             </Menu.Item>
             <Menu.Item>
-                <label className={classnames({"form-hidden":selectedContract})}>Filter by Contract</label>
-                <ContractDropdown clearable value={selectedContract} onChange={HandleContractChange} />
+                <ContractDropdown text="Filter by Contract" clearable value={selectedContract} onChange={HandleContractChange} />
+            </Menu.Item>
+            <Menu.Item className={classnames({ "form-hidden": !selectedContract })}>
+                <label>{`Filtering for ${selectedContract}`}</label>
             </Menu.Item>
             <Menu.Menu position="right">
                 <Menu.Item>
                     <Input placeholder="Search" onChange={searchPositions} />
                 </Menu.Item>
                 <Menu.Item>
-                    <Icon name="external" link onClick={() => ExportToExcel(positions)} title="Export to Excel" content="Export to Excel" />
+                    <Icon
+                        name="external"
+                        link
+                        onClick={() => {
+                            console.log(positions);
+                            ExportPositions(positions);
+                        }}
+                        title="Export to Excel"
+                        content="Export to Excel"
+                    />
                 </Menu.Item>
             </Menu.Menu>
         </Menu>

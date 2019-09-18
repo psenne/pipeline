@@ -10,16 +10,7 @@ import CandidateDropdown from "../CandidateComponents/CandidateDropdown";
 import { Form, Container, Icon, Segment, Button, Dropdown, Header, Message } from "semantic-ui-react";
 
 export default function AddPositionForm() {
-    const [position, setposition] = useState({
-        title: "",
-        description: "",
-        level: "",
-        skill_summary: "",
-        position_id: "",
-        contract: "",
-        candidate_submitted: [],
-        location: ""
-    });
+    const [position, setposition] = useState(Object.assign({}, tmplPosition));
     const [formError, setformError] = useState(false);
 
     const HandleTextInput = ev => {
@@ -61,6 +52,8 @@ export default function AddPositionForm() {
 
     const AddNewPosition = () => {
         if (position.title && position.contract) {
+            const added_on = new Date();
+            position.added_on = added_on;
             fbPositionsDB.push(position).then(() => {
                 history.push("/positions/");
             });

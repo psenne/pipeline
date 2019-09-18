@@ -11,16 +11,7 @@ import { Form, Container, Segment, Button, Header, Message, Icon } from "semanti
 
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
-    const [position, setposition] = useState({
-        title: "",
-        description: "",
-        level: "",
-        skill_summary: "",
-        position_id: "",
-        contract: "",
-        candidate_submitted: [],
-        location: ""
-    });
+    const [position, setposition] = useState(Object.assign({}, tmplPosition));
     const [formError, setformError] = useState(false);
 
     useEffect(() => {
@@ -77,6 +68,8 @@ export default function EditPositionForm({ match }) {
 
     const UpdatePosition = () => {
         if (position.title && position.contract) {
+            const added_on = new Date();
+            position.added_on = added_on;
             fbPositionsDB
                 .child(key)
                 .update(position)

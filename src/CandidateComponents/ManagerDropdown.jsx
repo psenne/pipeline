@@ -37,7 +37,7 @@ export default class ManagerDropdown extends Component {
 
     render() {
         const { managers } = this.state;
-        const { name, placeholder, multiple, value, disabled, onChange } = this.props;
-        return <Dropdown name={name} multiple={multiple} options={managers} selection closeOnChange placeholder={placeholder} disabled={disabled} value={value} onChange={(ev, selection) => onChange(name, selection.value)} />;
+        const { onChange, name, ...rest } = this.props;
+        return <Dropdown {...rest} options={managers} selection closeOnChange onChange={(ev, selection) => onChange(name, selection.value)} />;
     }
 }

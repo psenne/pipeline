@@ -32,7 +32,7 @@ export default function PositionsPage() {
     return (
         <div>
             <NavBar active="positions" />
-            <PositionsToolbar searchPositions={searchPositions} selectedContract={contractFilter} HandleContractChange={HandleContractChange} />
+            <PositionsToolbar positions={positions} searchPositions={searchPositions} selectedContract={contractFilter} HandleContractChange={HandleContractChange} />
             <PositionsTable positions={positions} searchTerm={searchTerm} contractFilter={contractFilter} />
         </div>
     );

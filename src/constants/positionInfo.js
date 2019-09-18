@@ -6,7 +6,8 @@ const tmplPosition = {
     position_id: "",
     contract: "",
     candidate_submitted: [],
-    location: ""
+    location: "",
+    added_on: ""
 };
 
 export default tmplPosition;
