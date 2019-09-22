@@ -15,7 +15,7 @@ export default class CandidateDropdown extends Component {
     componentDidMount() {
         const { filters, removecandidates } = this.props;
 
-        fbCandidatesDB.once("value", data => {
+        fbCandidatesDB.orderByChild("firstname").once("value", data => {
             const filteredData = [];
             data.forEach(function(candidate) {
                 const info = candidate.val();

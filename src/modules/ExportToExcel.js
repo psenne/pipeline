@@ -10,33 +10,36 @@ function s2ab(s) {
     return buf;
 }
 
-export default function(candidateList) {
+export default function(candidateList, status = "current") {
     // map candidates array for excel formatting
     const jsontable = candidateList
-        .filter(item => {
-            return item.info.archived === "current";
-        })
+        .filter(item => item.info.archived === status)
         .map(item => {
             const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
             const interview_date = item.info.interview_date ? moment(item.info.interview_date).format("MMM, DD YYYY") : "";
             const interviewers = item.info.interviewed_by ? " (" + item.info.interviewed_by.join(", ") + ")" : "";
-            const resume_type = item.info.resume_type ? item.info.resume_type.join(", ") : "";
             const loi_sent = item.info.loi_sent_by && item.info.loi_sent_date ? " (sent by " + item.info.loi_sent_by + " on " + moment(item.info.loi_sent_date).format("MMM, DD YYYY") + ")" : "";
             const salary = atob(item.info.salary);
+            const recent_flag = item.info.isFlagged ? `${item.info.actioned_to}: ${item.info.flag_note} (on ${moment(item.info.flagged_on).format("MMM, DD YYYY")})` : "";
 
             return {
                 Name: item.info.firstname + " " + item.info.lastname,
+                "Email Address": item.info.emailaddress,
+                Telephone: item.info.telephone,
+                Status: item.info.status,
+                "Prefered Location": item.info.prefered_location,
                 "Current Contract": item.info.current_contract,
+                "Current Company": item.info.current_company,
                 "Potential Contracts": potential_contracts,
                 Skill: item.info.skill,
                 Level: item.info.level,
                 "Interview Date": interview_date + interviewers,
                 "LOI Status": item.info.loi_status + loi_sent,
-                Resume: resume_type,
                 "Found By": item.info.found_by,
                 Salary: salary,
                 Notes: item.info.notes,
-                "Next Steps": item.info.next_steps
+                "Next Steps": item.info.next_steps,
+                Flag: recent_flag
             };
         });
 
@@ -46,13 +49,13 @@ export default function(candidateList) {
 
     //worksheet["A1"].s = { font: {sz: 14, bold: true, color: "#FF00FF" }}
     worksheet["!autofilter"] = { ref: worksheet["!ref"] };
-    worksheet["!cols"] = [{ width: 18 }, { width: 15 }, { width: 20 }, { width: 23 }, { width: 11 }, { width: 22 }, { width: 34 }, { width: 25 }, { width: 20 }, { width: 8 }, { width: 50 }, { width: 50 }];
+    worksheet["!cols"] = [{ width: 18 }, { width: 28 }, { width: 15 }, { width: 12 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 35 }, { width: 25 }, { width: 15 }, { width: 25 }, { width: 15 }, { width: 15 }, { width: 15 }, { width: 100 }, { width: 100 }, { width: 25 }];
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Current Candidates");
+    XLSX.utils.book_append_sheet(workbook, worksheet);
     var wbout = XLSX.write(workbook, wopts);
 
     const today = moment()
         .format("DD.MMM.YYYY")
         .toUpperCase();
-    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), "pipeline." + today + ".xlsx");
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), "pipeline_candidates." + status + "." + today + ".xlsx");
 }

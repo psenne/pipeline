@@ -27,14 +27,14 @@ export default function AddPositionForm() {
         const submission_date = format(new Date());
         const candidate_name = candidate.info.firstname + " " + candidate.info.lastname;
         const candidateSubmissionInfo = { submission_date, candidate_name, candidate_key: candidate.key };
-        const tmpPosition = { ...position };
+        const tmpPosition = Object.assign({}, position);
         tmpPosition["candidate_submitted"].push(candidateSubmissionInfo);
         setposition(tmpPosition);
         //setCandidateSubmission([{ position_key: key, position_name: tmpPosition.title, position_contract: tmpPosition.contract, submission_date }, ...candidateSubmission]);
     };
 
     const RemoveCandidateFromPosition = key => {
-        const tmpPosition = { ...position };
+        const tmpPosition = Object.assign({}, position);
         const submissions = position.candidate_submitted;
         const selectedCandidate = submissions.filter(candidate => candidate.candidate_key === key);
         tmpPosition.candidate_submitted = submissions.filter(candidate => candidate.candidate_key !== key);
@@ -45,7 +45,7 @@ export default function AddPositionForm() {
     };
 
     const updatePositionInfo = (name, value) => {
-        const tmpPosition = { ...position };
+        const tmpPosition = Object.assign({}, position);
         tmpPosition[name] = value;
         setposition(tmpPosition);
     };
@@ -55,6 +55,8 @@ export default function AddPositionForm() {
             const added_on = new Date();
             position.added_on = added_on;
             fbPositionsDB.push(position).then(() => {
+                tmplPosition.candidate_submitted = [];
+                setposition(Object.assign({}, tmplPosition));
                 history.push("/positions/");
             });
         } else {

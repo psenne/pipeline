@@ -31,8 +31,8 @@ if (!firebase.apps.length) {
 
 const fbStorage = firebase.storage().ref();
 
-const fbUsersDB = firebase.database().ref("users"); 
-const fbLoginsDB = firebase.database().ref("logins")
+const fbUsersDB = firebase.database().ref("users");
+const fbLoginsDB = firebase.database().ref("logins");
 const fbCandidatesDB = firebase.database().ref("candidates");
 const fbPositionsDB = firebase.database().ref("positions");
 const fbAuditTrailDB = firebase.database().ref("auditing");

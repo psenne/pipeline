@@ -35,61 +35,54 @@ function isFiltered(searchTerm) {
 
 class CandidatesTable extends Component {
     static contextType = CandidateSearchContext;
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            visible: false
-        };
-    }
-
     render() {
-        const { searchterm, archived, status } = this.context;
+        const { archived, searchterm, status } = this.context;
+        const filteredCandidates = this.props.list
+            .filter(isFiltered(status))
+            .filter(isSearched(searchterm))
+            .filter(item => {
+                return item.info.archived === archived;
+            });
+
         return (
             <Grid columns={16} verticalAlign="middle" divided="vertically" className="hovered">
-                {this.props.list
-                    .filter(isFiltered(status))
-                    .filter(isSearched(searchterm))
-                    .filter(item => {
-                        return item.info.archived === archived;
-                    })
-                    .map(item => {
-                        const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
-                        const company = item.info.company ? `with ${item.info.company}` : "";
-                        const current_contract = item.info.current_contract ? `on ${item.info.current_contract}` : "";
+                {filteredCandidates.map(item => {
+                    const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
+                    const company = item.info.company ? `with ${item.info.company}` : "";
+                    const current_contract = item.info.current_contract ? `on ${item.info.current_contract}` : "";
 
-                        return (
-                            <Grid.Row key={item.key} columns={2} className={classnames("status-" + item.info.status, "candidate-table-row")}>
-                                <Grid.Column textAlign="center" width={1}>
-                                    <UserContext.Consumer>{currentuser => <MiniToolbar currentuser={currentuser} item={item} />}</UserContext.Consumer>
-                                </Grid.Column>
-                                <Grid.Column width={15}>
-                                    <Link to={`/candidates/${item.key}`}>
-                                        <>
-                                            <Header>
-                                                <Header.Content>
-                                                    {item.info.firstname} {item.info.lastname}
-                                                </Header.Content>
+                    return (
+                        <Grid.Row key={item.key} columns={2} className={classnames("status-" + item.info.status, "candidate-table-row")}>
+                            <Grid.Column textAlign="center" width={1}>
+                                <UserContext.Consumer>{currentuser => <MiniToolbar currentuser={currentuser} item={item} />}</UserContext.Consumer>
+                            </Grid.Column>
+                            <Grid.Column width={15}>
+                                <Link to={`/candidates/${item.key}`}>
+                                    <>
+                                        <Header>
+                                            <Header.Content>
+                                                {item.info.firstname} {item.info.lastname}
+                                            </Header.Content>
 
-                                                <Header.Subheader>
-                                                    {item.info.level} {item.info.skill} {company} {current_contract}
-                                                </Header.Subheader>
-                                            </Header>
-                                            <div>
-                                                <span className="candidate-table-field">Potential contracts:</span> {potential_contracts}
-                                            </div>
-                                            <div>
-                                                <span className="candidate-table-field">Notes:</span> {item.info.notes}
-                                            </div>
-                                            <div>
-                                                <span className="candidate-table-field">Next steps:</span> {item.info.next_steps}
-                                            </div>
-                                        </>
-                                    </Link>
-                                </Grid.Column>
-                            </Grid.Row>
-                        );
-                    })}
+                                            <Header.Subheader>
+                                                {item.info.level} {item.info.skill} {company} {current_contract}
+                                            </Header.Subheader>
+                                        </Header>
+                                        <div>
+                                            <span className="candidate-table-field">Potential contracts:</span> {potential_contracts}
+                                        </div>
+                                        <div>
+                                            <span className="candidate-table-field">Notes:</span> {item.info.notes}
+                                        </div>
+                                        <div>
+                                            <span className="candidate-table-field">Next steps:</span> {item.info.next_steps}
+                                        </div>
+                                    </>
+                                </Link>
+                            </Grid.Column>
+                        </Grid.Row>
+                    );
+                })}
             </Grid>
         );
     }

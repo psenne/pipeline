@@ -18,7 +18,7 @@ export default function EditPositionForm({ match }) {
         const key = match.params.id;
         const listener = fbPositionsDB.child(key).on("value", data => {
             if (data.val()) {
-                setposition({ ...position, ...data.val() });
+                setposition(Object.assign({}, position, data.val()));
             } else {
                 fbPositionsDB.off("value", listener);
                 history.push("/positions/add");
@@ -43,14 +43,14 @@ export default function EditPositionForm({ match }) {
         const submission_date = format(new Date());
         const candidate_name = candidate.info.firstname + " " + candidate.info.lastname;
         const candidateSubmissionInfo = { submission_date, candidate_name, candidate_key: candidate.key };
-        const tmpPosition = { ...position };
+        const tmpPosition = Object.assign({}, position);
         tmpPosition["candidate_submitted"].push(candidateSubmissionInfo);
         setposition(tmpPosition);
         //setCandidateSubmission([{ position_key: key, position_name: tmpPosition.title, position_contract: tmpPosition.contract, submission_date }, ...candidateSubmission]);
     };
 
     const RemoveCandidateFromPosition = key => {
-        const tmpPosition = { ...position };
+        const tmpPosition = Object.assign({}, position);
         const submissions = position.candidate_submitted;
         const selectedCandidate = submissions.filter(candidate => candidate.candidate_key === key);
         tmpPosition.candidate_submitted = submissions.filter(candidate => candidate.candidate_key !== key);
@@ -61,7 +61,7 @@ export default function EditPositionForm({ match }) {
     };
 
     const updatePositionInfo = (name, value) => {
-        const tmpPosition = { ...position };
+        const tmpPosition = Object.assign({}, position);
         tmpPosition[name] = value;
         setposition(tmpPosition);
     };
@@ -74,6 +74,8 @@ export default function EditPositionForm({ match }) {
                 .child(key)
                 .update(position)
                 .then(() => {
+                    tmplPosition.candidate_submitted = [];
+                    setposition(Object.assign({}, tmplPosition));
                     //fbCandidatesDB.child(candidate_key).update(candidateSubmission) -- need to get current submissions from candidate's profile
                     history.push("/positions/");
                 });

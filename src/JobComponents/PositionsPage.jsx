@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../NavBar";
 import PositionsToolbar from "./PositionsToolbar";
 import PositionsTable from "./PositionsTable";
+import { Loader, Dimmer } from "semantic-ui-react";
 import { fbPositionsDB } from "../firebase/firebase.config";
 import tmplPosition from "../constants/positionInfo";
 
@@ -9,14 +10,17 @@ export default function PositionsPage() {
     const [positions, updatePositions] = useState([]);
     const [searchTerm, setsearchTerm] = useState("");
     const [contractFilter, setContractFilter] = useState("");
+    const [pageloading, setpageloading] = useState(false);
 
     useEffect(() => {
+        setpageloading(true);
         const getPositions = fbPositionsDB.orderByChild("contract").on("value", data => {
             let tmpitems = [];
             data.forEach(function(position) {
-                tmpitems.push({ key: position.key, info: { ...tmplPosition, ...position.val() } });
+                tmpitems.push({ key: position.key, info: Object.assign({}, tmplPosition, position.val()) });
             });
             updatePositions(tmpitems);
+            setpageloading(false);
         });
         return () => fbPositionsDB.off("value", getPositions);
     }, []);
@@ -31,6 +35,9 @@ export default function PositionsPage() {
 
     return (
         <div>
+            <Dimmer active={pageloading}>
+                <Loader>Loading positions...</Loader>
+            </Dimmer>
             <NavBar active="positions" />
             <PositionsToolbar positions={positions} searchPositions={searchPositions} selectedContract={contractFilter} HandleContractChange={HandleContractChange} />
             <PositionsTable positions={positions} searchTerm={searchTerm} contractFilter={contractFilter} />
