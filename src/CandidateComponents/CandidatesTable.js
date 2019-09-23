@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import UserContext from "../contexts/UserContext";
 import CandidateSearchContext from "../contexts/CandidateSearchContext";
 import { Link } from "react-router-dom";
-import history from "../modules/history";
 import { Grid, Header } from "semantic-ui-react";
 import classnames from "classnames";
 import MiniToolbar from "./MiniToolbar";

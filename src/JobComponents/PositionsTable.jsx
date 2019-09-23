@@ -1,6 +1,4 @@
 import React from "react";
-import history from "../modules/history";
-import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { Grid, Header, Label } from "semantic-ui-react";
 import classnames from "classnames";

@@ -33,7 +33,7 @@ export default class ContractDropdown extends Component {
     };
 
     render() {
-        const { contracts, selectedContract } = this.state;
+        const { contracts } = this.state;
         const { onChange, ...rest } = this.props;
         const contractList = contracts.map(({ key, info: contract }) => {
             return { key: key, text: contract.name, value: contract.name };

@@ -148,14 +148,3 @@ export default function EditPositionForm({ match }) {
         </>
     );
 }
-// const tmplPosition = {
-//     title: "test",
-//     description: "test",
-//     level: "",
-//     skills_summary: "",
-//     position_id: "",
-//     contract: "",
-//     pm: "",
-//     candidate_submitted: [{name, date}],
-//     location: ""
-// };

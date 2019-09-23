@@ -7,7 +7,7 @@ import tmplPosition from "../constants/positionInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import CandidateDropdown from "../CandidateComponents/CandidateDropdown";
-import { Form, Container, Icon, Segment, Button, Dropdown, Header, Message } from "semantic-ui-react";
+import { Form, Container, Icon, Segment, Button, Header, Message } from "semantic-ui-react";
 
 export default function AddPositionForm() {
     const [position, setposition] = useState(Object.assign({}, tmplPosition));
