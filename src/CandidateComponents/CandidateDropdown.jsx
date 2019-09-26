@@ -10,12 +10,13 @@ export default class CandidateDropdown extends Component {
         super(props);
 
         this.state = { candidates: [] };
+        this.orderedCandidates = fbCandidatesDB.orderByChild("firstname");
     }
 
     componentDidMount() {
         const { filters } = this.props;
 
-        fbCandidatesDB.orderByChild("firstname").once("value", data => {
+        this.orderedCandidates.on("value", data => {
             const filteredData = [];
             data.forEach(function(candidate) {
                 const info = candidate.val();
@@ -39,6 +40,10 @@ export default class CandidateDropdown extends Component {
                 candidates: filteredData
             });
         });
+    }
+
+    componentWillUnmount() {
+        this.orderedCandidates.off("value");
     }
 
     onChange = (ev, selection) => {

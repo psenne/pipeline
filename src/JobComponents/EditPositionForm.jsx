@@ -13,7 +13,8 @@ import { Form, Container, Segment, Button, Header, Message, Icon } from "semanti
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
     const [position, setposition] = useState(Object.assign({}, tmplPosition));
-    const [candidateSubmission, setcandidateSubmission] = useState([]);
+    const [addedCandidates, setaddedCandidates] = useState([]); //candidates that are added when using this form
+    const [removedCandidates, setremovedCandidates] = useState([]); //candidates that are removed when using this form
     const [formError, setformError] = useState(false);
 
     useEffect(() => {
@@ -21,6 +22,7 @@ export default function EditPositionForm({ match }) {
         const listener = fbPositionsDB.child(key).on("value", data => {
             if (data.val()) {
                 setposition(Object.assign({}, position, data.val()));
+                //setaddedCandidates(data.val().candidate_submitted);
             } else {
                 fbPositionsDB.off("value", listener);
                 history.push("/positions/add");
@@ -30,6 +32,10 @@ export default function EditPositionForm({ match }) {
             fbPositionsDB.off("value", listener);
         };
     }, []);
+
+    useEffect(() => {
+        setaddedCandidates([...position.candidate_submitted]);
+    }, [position]);
 
     const HandleTextInput = ev => {
         const name = ev.target.name;
@@ -41,65 +47,69 @@ export default function EditPositionForm({ match }) {
         updatePositionInfo("contract", value);
     };
 
-    const AddCandidateToPosition = candidate => {
-        const submission_date = format(new Date());
-        const candidate_name = candidate.info.firstname + " " + candidate.info.lastname;
-        const tmpPosition = Object.assign({}, position);
-        tmpPosition["candidate_submitted"].push({ submission_date, candidate_name, candidate_key: candidate.key });
-        setposition(tmpPosition);
-        setcandidateSubmission([{ candidate_key: candidate.key, position_key: key, position_id: tmpPosition.position_id, position_name: tmpPosition.title, position_contract: tmpPosition.contract, submission_date }, ...candidateSubmission]);
-    };
-
-    const RemoveCandidateFromPosition = key => {
-        const tmpPosition = Object.assign({}, position);
-        const submissions = position.candidate_submitted;
-        const selectedCandidate = submissions.filter(candidate => candidate.candidate_key === key);
-        tmpPosition.candidate_submitted = submissions.filter(candidate => candidate.candidate_key !== key);
-
-        if (window.confirm(`Are you sure you want to unsubmit ${selectedCandidate[0].candidate_name}?`)) {
-            setposition(tmpPosition);
-        }
-    };
-
     const updatePositionInfo = (name, value) => {
         const tmpPosition = Object.assign({}, position);
         tmpPosition[name] = value;
         setposition(tmpPosition);
     };
 
+    const AddCandidateToPosition = candidate => {
+        const submission_date = format(new Date());
+        const candidate_name = candidate.info.firstname + " " + candidate.info.lastname;
+
+        setaddedCandidates([{ submission_date, candidate_name, candidate_key: candidate.key }, ...addedCandidates]);
+    };
+
+    const RemoveCandidateFromPosition = ckey => {
+        const selectedCandidate = addedCandidates.filter(candidate => candidate.candidate_key === ckey); //get removed candidate info for prompt and fbCandidate update
+        const remainingCandidates = addedCandidates.filter(candidate => candidate.candidate_key !== ckey); //remove the candidate from submission list
+
+        if (window.confirm(`Are you sure you want to unsubmit ${selectedCandidate[0].candidate_name}?`)) {
+            setaddedCandidates([...remainingCandidates]);
+            setremovedCandidates([...selectedCandidate, ...removedCandidates]); //add candidate to to-be-removed list
+        }
+    };
+
     const UpdatePosition = () => {
         if (position.title && position.contract) {
             const added_on = new Date();
+            const promises = []; //array of firebase promises that will be resolved after they are all updated.
             position.added_on = added_on;
+            position.candidate_submitted = [...addedCandidates];
 
             fbPositionsDB
                 .child(key)
                 .update(position)
                 .then(() => {
-                    candidateSubmission.forEach(submission => {
+                    addedCandidates.forEach(submission => {
                         //add position into candidate's record. yay firebase for having me do this in two places!
                         fbCandidatesDB.child(submission.candidate_key).once("value", candidate => {
-                            const ckey = candidate.key;
-                            const cinfo = Object.assign({}, tmplCandidate, candidate.val());
-                            const csub = [...cinfo.submitted_positions];
-                            const pkeys = cinfo.submitted_positions.map(i => i.position.key); //array of position keys to check if position was already added to candidate
-                            //if (pkeys.includes(submission.position_key)) {
-                            csub.push(submission);
-                            cinfo.submitted_positions = csub;
-                            cinfo.status = "processing";
-                            //fbCandidatesDB.child(ckey).update(cinfo);
-                            console.log(cinfo);
-                            //}
+                            const tmpCandidateRecord = Object.assign({}, tmplCandidate, candidate.val());
+                            const pkeys = tmpCandidateRecord.submitted_positions.map(i => i.position_key); //array of position keys to check if position was already added to candidate
+                            tmpCandidateRecord.submitted_positions.push({ candidate_key: candidate.key, position_key: key, position_id: position.position_id, position_name: position.title, position_contract: position.contract, submission_date: submission.submission_date });
+                            tmpCandidateRecord.status = "processing";
+                            console.log(tmpCandidateRecord);
+                            promises.push(fbCandidatesDB.child(candidate.key).update(tmpCandidateRecord)); //push to array so we can use Promise.All to wait until they're all resolved
                         });
                     });
-                })
-                .then(() => {
-                    tmplPosition.candidate_submitted = [];
-                    setposition(Object.assign({}, tmplPosition));
-                    setcandidateSubmission([]);
-                    console.log("done");
-                    //history.push("/positions/");
+
+                    removedCandidates.forEach(removedone => {
+                        fbCandidatesDB.child(removedone.candidate_key).once("value", candidate => {
+                            const tmpCandidateRecord = Object.assign({}, tmplCandidate, candidate.val());
+                            tmpCandidateRecord.status = "active";
+                            //also need to update submitted_positions
+                            fbCandidatesDB.child(removedone.candidate_key).update(tmpCandidateRecord);
+                        });
+                    });
                 });
+            Promise.all(promises).then(() => {
+                tmplPosition.candidate_submitted = [];
+                setposition(Object.assign({}, tmplPosition));
+                setaddedCandidates([]);
+                setremovedCandidates([]);
+                console.log("resolved");
+                //history.push("/positions/");
+            });
         } else {
             setformError(true);
         }
@@ -111,6 +121,7 @@ export default function EditPositionForm({ match }) {
                 .child(key)
                 .remove()
                 .then(() => {
+                    //need to remove position from candidate's record as well
                     history.push("/positions/");
                 });
         }
@@ -125,7 +136,7 @@ export default function EditPositionForm({ match }) {
                         <Segment>
                             <Header>Position Information</Header>
                             <Form.Group unstackable widths={3}>
-                                <Form.Input name="title" type="text" required label="Title" onChange={HandleTextInput} value={position.title} />
+                                <Form.Input name="title" type="text" label="Title" onChange={HandleTextInput} value={position.title} />
                                 <Form.Input name="level" type="text" label="Level" onChange={HandleTextInput} value={position.level} />
                                 <Form.Input name="location" type="text" label="Location" onChange={HandleTextInput} value={position.location} />
                             </Form.Group>
@@ -144,18 +155,18 @@ export default function EditPositionForm({ match }) {
                                 </div>
                             </Form.Group>
                             <Header>Candidate submission</Header>
-                            {position.candidate_submitted.map(candidate => {
+                            {addedCandidates.map(candidate => {
                                 return (
                                     <p key={candidate.candidate_key}>
                                         <Link to={`/candidates/${candidate.candidate_key}`}>
                                             {candidate.candidate_name} - submitted on {format(candidate.submission_date, "MMMM D, YYYY")}
-                                        </Link>{" "}
+                                        </Link>
                                         <Icon name="close" color="red" link onClick={() => RemoveCandidateFromPosition(candidate.candidate_key)} />
                                     </p>
                                 );
                             })}
 
-                            <CandidateDropdown selection filters={[{ archived: "current" }, { status: "active" }]} removecandidates={position.candidate_submitted} onChange={AddCandidateToPosition} />
+                            <CandidateDropdown selection filters={[{ archived: "current" }, { status: "active" }]} removecandidates={addedCandidates} onChange={AddCandidateToPosition} />
                         </Segment>
                         <Segment>
                             {formError && <Message error floating compact icon="warning" header="Required fields missing" content="Title and contract are both required." />}
