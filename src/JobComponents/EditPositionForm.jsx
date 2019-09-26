@@ -4,6 +4,7 @@ import history from "../modules/history";
 import { Link } from "react-router-dom";
 import { fbPositionsDB, fbCandidatesDB, fbAuditTrailDB } from "../firebase/firebase.config";
 import tmplPosition from "../constants/positionInfo";
+import { tmplCandidate } from "../constants/candidateInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import CandidateDropdown from "../CandidateComponents/CandidateDropdown";
@@ -12,6 +13,7 @@ import { Form, Container, Segment, Button, Header, Message, Icon } from "semanti
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
     const [position, setposition] = useState(Object.assign({}, tmplPosition));
+    const [candidateSubmission, setcandidateSubmission] = useState([]);
     const [formError, setformError] = useState(false);
 
     useEffect(() => {
@@ -42,11 +44,10 @@ export default function EditPositionForm({ match }) {
     const AddCandidateToPosition = candidate => {
         const submission_date = format(new Date());
         const candidate_name = candidate.info.firstname + " " + candidate.info.lastname;
-        const candidateSubmissionInfo = { submission_date, candidate_name, candidate_key: candidate.key };
         const tmpPosition = Object.assign({}, position);
-        tmpPosition["candidate_submitted"].push(candidateSubmissionInfo);
+        tmpPosition["candidate_submitted"].push({ submission_date, candidate_name, candidate_key: candidate.key });
         setposition(tmpPosition);
-        //setCandidateSubmission([{ position_key: key, position_name: tmpPosition.title, position_contract: tmpPosition.contract, submission_date }, ...candidateSubmission]);
+        setcandidateSubmission([{ candidate_key: candidate.key, position_key: key, position_id: tmpPosition.position_id, position_name: tmpPosition.title, position_contract: tmpPosition.contract, submission_date }, ...candidateSubmission]);
     };
 
     const RemoveCandidateFromPosition = key => {
@@ -70,14 +71,34 @@ export default function EditPositionForm({ match }) {
         if (position.title && position.contract) {
             const added_on = new Date();
             position.added_on = added_on;
+
             fbPositionsDB
                 .child(key)
                 .update(position)
                 .then(() => {
+                    candidateSubmission.forEach(submission => {
+                        //add position into candidate's record. yay firebase for having me do this in two places!
+                        fbCandidatesDB.child(submission.candidate_key).once("value", candidate => {
+                            const ckey = candidate.key;
+                            const cinfo = Object.assign({}, tmplCandidate, candidate.val());
+                            const csub = [...cinfo.submitted_positions];
+                            const pkeys = cinfo.submitted_positions.map(i => i.position.key); //array of position keys to check if position was already added to candidate
+                            //if (pkeys.includes(submission.position_key)) {
+                            csub.push(submission);
+                            cinfo.submitted_positions = csub;
+                            cinfo.status = "processing";
+                            //fbCandidatesDB.child(ckey).update(cinfo);
+                            console.log(cinfo);
+                            //}
+                        });
+                    });
+                })
+                .then(() => {
                     tmplPosition.candidate_submitted = [];
                     setposition(Object.assign({}, tmplPosition));
-                    //fbCandidatesDB.child(candidate_key).update(candidateSubmission) -- need to get current submissions from candidate's profile
-                    history.push("/positions/");
+                    setcandidateSubmission([]);
+                    console.log("done");
+                    //history.push("/positions/");
                 });
         } else {
             setformError(true);
