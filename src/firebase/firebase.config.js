@@ -62,4 +62,5 @@ const SignOutWithGoogle = () => {
     return fbauth.signOut();
 };
 
+export default firebase;
 export { fbStorage, fbLoginsDB, fbUsersDB, fbauth, fbCandidatesDB, fbPositionsDB, fbAuditTrailDB, fbFlagNotes, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };

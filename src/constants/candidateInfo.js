@@ -35,7 +35,7 @@ const tmplCandidate = {
     modified_date: "",
     modified_by: "",
     modified_fields: [],
-    submitted_positions: []
+    submitted_positions: {}
 };
 
 // prettier-ignore

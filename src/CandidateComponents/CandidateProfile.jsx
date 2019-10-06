@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { format } from "date-fns";
 import history from "../modules/history";
+import { Link } from "react-router-dom";
 import { Grid, Header, Segment } from "semantic-ui-react";
 import classnames from "classnames";
 import moment from "moment";
@@ -82,6 +84,7 @@ class CandidateProfile extends Component {
     render() {
         const { candidateID } = this.props;
         let candidate = this.state.candidate;
+        const position_keys = Object.keys(candidate.submitted_positions);
         let interviewed = "Candidate has not been interviewed.";
         let loi_message = "LOI has not been sent.";
         let referedby = "";
@@ -110,7 +113,6 @@ class CandidateProfile extends Component {
         } else {
             loi_message = "LOI has not been sent.";
         }
-
         return (
             <>
                 {candidate && (
@@ -180,6 +182,19 @@ class CandidateProfile extends Component {
                         <Segment vertical padded className={classnames({ "form-hidden": candidate.filenames.length === 0 }, "minitoolbar-inline")}>
                             <h3>Documents</h3>
                             <Files candidateID={this.props.candidateID} filenames={candidate.filenames} />
+                        </Segment>
+                        <Segment vertical padded className={classnames({ "form-hidden": position_keys.length === 0 }, "minitoolbar-inline")}>
+                            <h3>Position submissions</h3>
+                            {position_keys.map(key => {
+                                const position = candidate.submitted_positions[key];
+                                return (
+                                    <div key={key}>
+                                        <Link to={`/positions/${key}`}>
+                                            {position.position_contract}, {position.position_name} ({position.position_id}) - submitted on {format(position.submission_date, "MMM DD, YYYY")}
+                                        </Link>
+                                    </div>
+                                );
+                            })}
                         </Segment>
                     </Segment>
                 )}

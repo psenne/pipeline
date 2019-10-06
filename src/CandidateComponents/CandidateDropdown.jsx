@@ -64,6 +64,6 @@ export default class CandidateDropdown extends Component {
 
 function ReturnRemainingCandidates(removecandidates) {
     return function(candidate) {
-        return !removecandidates.map(rc => rc.candidate_key).includes(candidate.key);
+        return !removecandidates.map(rc => rc.key).includes(candidate.key);
     };
 }

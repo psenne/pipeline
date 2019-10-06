@@ -42,7 +42,7 @@ export default function PositionsTable({ positions, searchTerm, contractFilter }
                     const location = item.info.location ? `Location: ${item.info.location}` : "";
 
                     return (
-                        <Grid.Row columns={2} key={item.key} centered className={classnames({ "candidate-submitted": item.candidate_submitted }, "candidate-table-row")}>
+                        <Grid.Row columns={2} key={item.key} centered className={classnames({ "candidate-submitted": item.candidates_submitted }, "candidate-table-row")}>
                             <Grid.Column width={15}>
                                 <Link to={`/positions/${item.key}`}>
                                     <Header>
@@ -58,10 +58,10 @@ export default function PositionsTable({ positions, searchTerm, contractFilter }
                                     </Header>
                                     <div>{item.info.description}</div>
                                 </Link>
-                                {item.info.candidate_submitted.length > 0 && (
+                                {item.info.candidates_submitted.length > 0 && (
                                     <Header sub>
                                         Candidates submitted:
-                                        {item.info.candidate_submitted.map(candidate => {
+                                        {item.info.candidates_submitted.map(candidate => {
                                             return (
                                                 <Link key={candidate.candidate_key} to={`/candidates/${candidate.candidate_key}`}>
                                                     <Label color="blue" key={candidate.candidate_key} content={candidate.candidate_name} icon="user secret" />
