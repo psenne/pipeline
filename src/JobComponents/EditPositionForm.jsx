@@ -115,7 +115,7 @@ export default function EditPositionForm({ match }) {
                             submission_date: submission.info.submission_date,
                             candidate_name: submission.info.candidate_name
                         };
-                        dbUpdate[`/candidates/${submission.key}/status`] = "processing";
+                        //dbUpdate[`/candidates/${submission.key}/status`] = "processing";
                     });
 
                     removedCandidates.forEach(submission => {
