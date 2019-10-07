@@ -8,7 +8,6 @@ import NavBar from "../NavBar";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import CandidateDropdown from "../CandidateComponents/CandidateDropdown";
 import { Form, Container, Segment, Button, Header, Message, Icon } from "semantic-ui-react";
-import { tmplCandidate } from "../constants/candidateInfo";
 
 export default function EditPositionForm({ match }) {
     const key = match.params.id;
@@ -122,7 +121,7 @@ export default function EditPositionForm({ match }) {
                     removedCandidates.forEach(submission => {
                         dbUpdate[`/candidates/${submission.key}/submitted_positions/${key}`] = null;
                         dbUpdate[`/positions/${key}/candidates_submitted/${submission.key}`] = null;
-                        dbUpdate[`/candidates/${submission.key}/status`] = "active";
+                        //dbUpdate[`/candidates/${submission.key}/status`] = "active";
                     });
 
                     //prettier-ignore

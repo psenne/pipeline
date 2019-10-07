@@ -58,13 +58,14 @@ export default function PositionsTable({ positions, searchTerm, contractFilter }
                                     </Header>
                                     <div>{item.info.description}</div>
                                 </Link>
-                                {item.info.candidates_submitted.length > 0 && (
+                                {item.info.candidates_submitted && (
                                     <Header sub>
                                         Candidates submitted:
-                                        {item.info.candidates_submitted.map(candidate => {
+                                        {Object.keys(item.info.candidates_submitted).map(ckey => {
+                                            const candidate = item.info.candidates_submitted[ckey];
                                             return (
-                                                <Link key={candidate.candidate_key} to={`/candidates/${candidate.candidate_key}`}>
-                                                    <Label color="blue" key={candidate.candidate_key} content={candidate.candidate_name} icon="user secret" />
+                                                <Link key={ckey} to={`/candidates/${ckey}`}>
+                                                    <Label color="blue" key={ckey} content={candidate.candidate_name} icon="user secret" />
                                                 </Link>
                                             );
                                         })}
