@@ -11,7 +11,7 @@ export default class AddCandidateForm extends React.Component {
         super(props);
 
         this.state = {
-            candidate: { ...tmplCandidate },
+            candidate: Object.assign({}, tmplCandidate),
             files: [],
             formError: false
         };
@@ -68,37 +68,37 @@ export default class AddCandidateForm extends React.Component {
         this.updateSelectedCandidate("potential_contracts", value);
     }
 
-    HandleLOIStatusChange(value) {
-        this.updateSelectedCandidate("loi_status", value);
-    }
+    // HandleLOIStatusChange(value) {
+    //     this.updateSelectedCandidate("loi_status", value);
+    // }
 
-    HandleManagerDropdown(name, value) {
-        this.updateSelectedCandidate(name, value);
-    }
+    // HandleManagerDropdown(name, value) {
+    //     this.updateSelectedCandidate(name, value);
+    // }
 
-    //callback for checkbox for setting candidate to archive
-    HandleCheckbox(ev, data) {
-        const name = data.name;
-        const value = data.checked ? "archived" : "current";
+    // //callback for checkbox for setting candidate to archive
+    // HandleCheckbox(ev, data) {
+    //     const name = data.name;
+    //     const value = data.checked ? "archived" : "current";
 
-        this.updateSelectedCandidate(name, value);
-    }
+    //     this.updateSelectedCandidate(name, value);
+    // }
 
-    //callback for interview date.
-    handleInterviewDateChange(date) {
-        if (date) {
-            date = date.toJSON();
-        }
-        this.updateSelectedCandidate("interview_date", date);
-    }
+    // //callback for interview date.
+    // handleInterviewDateChange(date) {
+    //     if (date) {
+    //         date = date.toJSON();
+    //     }
+    //     this.updateSelectedCandidate("interview_date", date);
+    // }
 
-    //callback for LOI date.
-    handleLOIDateChange(date) {
-        if (date) {
-            date = date.toJSON();
-        }
-        this.updateSelectedCandidate("loi_sent_date", date);
-    }
+    // //callback for LOI date.
+    // handleLOIDateChange(date) {
+    //     if (date) {
+    //         date = date.toJSON();
+    //     }
+    //     this.updateSelectedCandidate("loi_sent_date", date);
+    // }
 
     HandleFileUpload(ev) {
         //add files to state for later uploading
