@@ -187,10 +187,11 @@ class CandidateProfile extends Component {
                             <h3>Position submissions</h3>
                             {position_keys.map(key => {
                                 const position = candidate.submitted_positions[key];
+                                const pid = position.position_id ? `(${position.position_id})` : "";
                                 return (
                                     <div key={key}>
                                         <Link to={`/positions/${key}`}>
-                                            {position.position_contract}, {position.position_name} ({position.position_id}) - submitted on {format(position.submission_date, "MMM DD, YYYY")}
+                                            {position.position_contract}, {position.position_name} {pid} - submitted on {format(position.submission_date, "MMM DD, YYYY")}
                                         </Link>
                                     </div>
                                 );
