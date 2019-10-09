@@ -264,10 +264,9 @@ export default class EditCandidateForm extends React.Component {
         };
 
         const positionDBUpdate = {};
-        Object.keys(candidate.submitted_positions).map(pkey => {
+        Object.keys(candidate.submitted_positions).forEach(pkey => {
             positionDBUpdate[`/positions/${pkey}/candidates_submitted/${key}`] = null; //firebase object to remove candidate from position when deleted.
         });
-
         fbCandidatesDB
             .child(key)
             .remove()
