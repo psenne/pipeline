@@ -99,7 +99,7 @@ class CandidateProfile extends Component {
         }
 
         if (candidate.found_by) {
-            referedby = `Refered by ${candidate.found_by}`;
+            referedby = `Referred by ${candidate.found_by}`;
         }
 
         if (candidate.current_company) {
