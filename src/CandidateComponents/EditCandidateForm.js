@@ -370,7 +370,7 @@ export default class EditCandidateForm extends React.Component {
                                 <Segment>
                                     <Form.TextArea name="notes" label="Notes" onChange={this.HandleTextInput} value={candidate.notes} />
                                     <Form.TextArea name="next_steps" label="Next Steps" onChange={this.HandleTextInput} value={candidate.next_steps} />
-                                    <Form.Input name="found_by" type="text" label="Referred By" onChange={this.HandleTextInput} value={candidate.found_by} />
+                                    <Form.Input name="found_by" type="text" label="Refered By" onChange={this.HandleTextInput} value={candidate.found_by} />
                                 </Segment>
                             </Form>
                         </Segment>
