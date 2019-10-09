@@ -16,15 +16,15 @@ export default class AddCandidateForm extends React.Component {
             formError: false
         };
 
-        this.handleInterviewDateChange = this.handleInterviewDateChange.bind(this);
-        this.handleLOIDateChange = this.handleLOIDateChange.bind(this);
+        // this.handleInterviewDateChange = this.handleInterviewDateChange.bind(this);
+        // this.handleLOIDateChange = this.handleLOIDateChange.bind(this);
         this.HandleTextInput = this.HandleTextInput.bind(this);
         this.HandleTextInputUpper = this.HandleTextInputUpper.bind(this);
-        this.HandleSalaryInput = this.HandleSalaryInput.bind(this);
+        // this.HandleSalaryInput = this.HandleSalaryInput.bind(this);
         this.HandlePContractInput = this.HandlePContractInput.bind(this);
-        this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
-        this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
-        this.HandleCheckbox = this.HandleCheckbox.bind(this);
+        // this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
+        // this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
+        // this.HandleCheckbox = this.HandleCheckbox.bind(this);
         this.HandleFileUpload = this.HandleFileUpload.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
         this.updateSelectedCandidate = this.updateSelectedCandidate.bind(this);
@@ -58,10 +58,10 @@ export default class AddCandidateForm extends React.Component {
     }
 
     //callback for Salary field. This changes the value to base64, so non-authorized users can't read the data when getting value from firebase.
-    HandleSalaryInput(ev) {
-        const value = ev.target.value;
-        this.updateSelectedCandidate("salary", btoa(value));
-    }
+    // HandleSalaryInput(ev) {
+    //     const value = ev.target.value;
+    //     this.updateSelectedCandidate("salary", btoa(value));
+    // }
 
     //generic callback for dropdowns
     HandlePContractInput(value) {
