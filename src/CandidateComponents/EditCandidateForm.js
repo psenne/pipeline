@@ -8,7 +8,7 @@ import LOIStatusDropdown from "../CandidateComponents/LOIStatusDropdown";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import ManagerDropdown from "../CandidateComponents/ManagerDropdown";
 import Files from "../CandidateComponents/Files";
-import { fbCandidatesDB, fbStorage, fbAuditTrailDB } from "../firebase/firebase.config";
+import firebase, { fbCandidatesDB, fbStorage, fbAuditTrailDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 
 import { Form, Container, Segment, Button, Message, Header, Menu, Icon, Checkbox } from "semantic-ui-react";
@@ -256,13 +256,17 @@ export default class EditCandidateForm extends React.Component {
         const { currentuser } = this.props;
         const { candidate } = this.state;
         const now = new Date();
-
         const eventinfo = `${currentuser.displayName} deleted candidate.`;
         const newEvent = {
             eventinfo: eventinfo,
             eventdate: now.toJSON(),
             candidatename: `${candidate.firstname} ${candidate.lastname}`
         };
+
+        const positionDBUpdate = {};
+        Object.keys(candidate.submitted_positions).map(pkey => {
+            positionDBUpdate[`/positions/${pkey}/candidates_submitted/${key}`] = null; //firebase object to remove candidate from position when deleted.
+        });
 
         fbCandidatesDB
             .child(key)
@@ -276,6 +280,10 @@ export default class EditCandidateForm extends React.Component {
                             console.error("Error deleting files:", error);
                         });
                 });
+            })
+            .then(() => {
+                //prettier-ignore
+                firebase.database().ref().update(positionDBUpdate) //prettier-ignore
             })
             .then(() => {
                 fbAuditTrailDB.push(newEvent);

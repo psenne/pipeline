@@ -34,7 +34,7 @@ export default class ContractDropdown extends Component {
 
     render() {
         const { contracts } = this.state;
-        const { onChange, contractsoverride, ...rest } = this.props;
+        const { onChange, contractsoverride = [], ...rest } = this.props;
         const contractList = contracts.filter(OverrideContracts(contractsoverride)).map(({ key, info: contract }) => {
             return { key: key, text: contract.name, value: contract.name };
         });
