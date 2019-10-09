@@ -11,6 +11,7 @@ export default function PositionsPage() {
     const [searchTerm, setsearchTerm] = useState("");
     const [contractFilter, setContractFilter] = useState("");
     const [pageloading, setpageloading] = useState(false);
+    const [contractsWithPositions, setcontractsWithPositions] = useState([]);
 
     useEffect(() => {
         setpageloading(true);
@@ -19,6 +20,7 @@ export default function PositionsPage() {
             data.forEach(function(position) {
                 tmpitems.push({ key: position.key, info: Object.assign({}, tmplPosition, position.val()) });
             });
+            setcontractsWithPositions([...new Set(tmpitems.map(item => item.info.contract))]); //send to contract dropdown to show only those contracts that have positions listed.
             updatePositions(tmpitems);
             setpageloading(false);
         });
@@ -39,7 +41,7 @@ export default function PositionsPage() {
                 <Loader>Loading positions...</Loader>
             </Dimmer>
             <NavBar active="positions" />
-            <PositionsToolbar positions={positions} searchPositions={searchPositions} selectedContract={contractFilter} HandleContractChange={HandleContractChange} />
+            <PositionsToolbar positions={positions} searchPositions={searchPositions} selectedContract={contractFilter} contracts={contractsWithPositions} HandleContractChange={HandleContractChange} />
             <PositionsTable positions={positions} searchTerm={searchTerm} contractFilter={contractFilter} />
         </div>
     );

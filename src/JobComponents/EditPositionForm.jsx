@@ -92,16 +92,14 @@ export default function EditPositionForm({ match }) {
             setremovedCandidates([...selectedCandidate, ...removedCandidates]); //add candidate to to-be-removed list
         }
     };
-    //Reference.update failed: First argument contains a path /positions/-Lp1LvURmL0lUKb2NhZk that is ancestor of another path /positions/-Lp1LvURmL0lUKb2NhZk/candidate_submitted/-LEbgKBbQFQW_96PVBup
+
     const UpdatePosition = () => {
         if (position.title && position.contract) {
             const added_on = new Date();
             position.added_on = added_on;
 
-            fbPositionsDB
-                .child(key)
-                .update(position)
-                .then(() => {
+            //prettier-ignore
+            fbPositionsDB.child(key).update(position).then(() => {
                     //add all of the candidate submission information
                     var dbUpdate = {};
                     addedCandidates.forEach(submission => {
@@ -115,13 +113,11 @@ export default function EditPositionForm({ match }) {
                             submission_date: submission.info.submission_date,
                             candidate_name: submission.info.candidate_name
                         };
-                        //dbUpdate[`/candidates/${submission.key}/status`] = "processing";
                     });
 
                     removedCandidates.forEach(submission => {
                         dbUpdate[`/candidates/${submission.key}/submitted_positions/${key}`] = null;
                         dbUpdate[`/positions/${key}/candidates_submitted/${submission.key}`] = null;
-                        //dbUpdate[`/candidates/${submission.key}/status`] = "active";
                     });
 
                     //prettier-ignore
@@ -136,11 +132,17 @@ export default function EditPositionForm({ match }) {
 
     const DeletePosition = () => {
         if (window.confirm(`Are you sure you want to delete ${position.name}?`)) {
-            fbPositionsDB
-                .child(key)
-                .remove()
+            var dbUpdate = {};
+            addedCandidates.forEach(submission => {
+                dbUpdate[`/candidates/${submission.key}/submitted_positions/${key}`] = null;
+            });
+            dbUpdate[`/positions/${key}`] = null;
+
+            firebase
+                .database()
+                .ref()
+                .update(dbUpdate)
                 .then(() => {
-                    //need to remove position from candidate's record as well
                     history.push("/positions/");
                 });
         }

@@ -5,7 +5,7 @@ import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import ExportPositions from "../modules/ExportPositions";
 import classnames from "classnames";
 
-export default ({ positions, searchPositions, HandleContractChange, selectedContract }) => {
+export default ({ positions, searchPositions, HandleContractChange, selectedContract, contracts }) => {
     return (
         <Menu className="no-print">
             <Menu.Item title="Add new position" link>
@@ -14,7 +14,7 @@ export default ({ positions, searchPositions, HandleContractChange, selectedCont
                 </Link>
             </Menu.Item>
             <Menu.Item>
-                <ContractDropdown text="Filter by Contract" clearable value={selectedContract} onChange={HandleContractChange} />
+                <ContractDropdown text="Filter by Contract" clearable value={selectedContract} contractsoverride={contracts} onChange={HandleContractChange} />
             </Menu.Item>
             <Menu.Item className={classnames({ "form-hidden": !selectedContract })}>
                 <label>{`Filtering for ${selectedContract}`}</label>
@@ -28,7 +28,6 @@ export default ({ positions, searchPositions, HandleContractChange, selectedCont
                         name="external"
                         link
                         onClick={() => {
-                            console.log(positions);
                             ExportPositions(positions);
                         }}
                         title="Export to Excel"

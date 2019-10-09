@@ -34,10 +34,20 @@ export default class ContractDropdown extends Component {
 
     render() {
         const { contracts } = this.state;
-        const { onChange, ...rest } = this.props;
-        const contractList = contracts.map(({ key, info: contract }) => {
+        const { onChange, contractsoverride, ...rest } = this.props;
+        const contractList = contracts.filter(OverrideContracts(contractsoverride)).map(({ key, info: contract }) => {
             return { key: key, text: contract.name, value: contract.name };
         });
         return <Dropdown {...rest} selectOnBlur={false} options={contractList} onChange={this.onChange} />;
     }
+}
+
+function OverrideContracts(contractsoverride) {
+    return function(contract) {
+        if (contractsoverride.length > 0) {
+            return contractsoverride.includes(contract.info.name);
+        } else {
+            return contract;
+        }
+    };
 }
