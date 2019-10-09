@@ -53,7 +53,6 @@ export default function EditPositionForm({ match }) {
                 data.forEach(function(candidate) {
                     tmpitems.push({ key: candidate.key, info: Object.assign({}, candidate.val()) });
                 });
-
                 setaddedCandidates([...tmpitems]);
             });
         return () => {
@@ -95,9 +94,7 @@ export default function EditPositionForm({ match }) {
 
     const UpdatePosition = () => {
         if (position.title && position.contract) {
-            const added_on = new Date();
-            position.added_on = added_on;
-
+            position.added_on = "";
             //prettier-ignore
             fbPositionsDB.child(key).update(position).then(() => {
                     //add all of the candidate submission information
@@ -187,7 +184,7 @@ export default function EditPositionForm({ match }) {
                                 );
                             })}
 
-                            <CandidateDropdown selection filters={[{ archived: "current" }, { status: "active" }]} removecandidates={addedCandidates} onChange={AddCandidateToPosition} />
+                            <CandidateDropdown selection filters={[{ archived: ["current"] }, { status: ["active", "processing"] }]} removecandidates={addedCandidates} onChange={AddCandidateToPosition} />
                         </Segment>
                         <Segment>
                             {formError && <Message error floating compact icon="warning" header="Required fields missing" content="Title and contract are both required." />}

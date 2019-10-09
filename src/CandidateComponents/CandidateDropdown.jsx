@@ -21,20 +21,22 @@ export default class CandidateDropdown extends Component {
             data.forEach(function(candidate) {
                 const info = candidate.val();
                 const key = candidate.key;
-                let meetsCriteria = true;
+                let meetsAllCriteria = true;
 
                 filters.forEach(filter => {
-                    const field = Object.keys(filter)[0]; //get fieldname from props filter
-                    const value = Object.values(filter)[0]; //get corresponding value from props filter
-                    if (info[field] === value) {
-                        meetsCriteria = meetsCriteria && true;
-                    } else {
-                        meetsCriteria = meetsCriteria && false;
-                    }
+                    const field = Object.keys(filter)[0]; //get fieldname from props filter (string)
+                    const values = Object.values(filter)[0]; //get corresponding value from props filter (arrray)
+                    let meetsInnerCriteria = false;
+
+                    values.forEach(value => {
+                        meetsInnerCriteria = meetsInnerCriteria || info[field] === value;
+                    });
+                    meetsAllCriteria = meetsAllCriteria && meetsInnerCriteria;
                 });
 
-                if (meetsCriteria) filteredData.push({ key, info });
+                if (meetsAllCriteria) filteredData.push({ key, info });
             });
+            console.log(filteredData);
 
             this.setState({
                 candidates: filteredData
