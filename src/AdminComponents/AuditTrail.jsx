@@ -13,6 +13,7 @@ export default class AuditTrail extends Component {
     }
 
     componentDidMount() {
+        this.props.setloading(true);
         fbAuditTrailDB
             .orderByChild("eventdate")
             .limitToLast(1000)
@@ -21,7 +22,7 @@ export default class AuditTrail extends Component {
                 data.forEach(event => {
                     tmp.push({ key: event.key, eventinfo: event.val() });
                 });
-                this.setState({ events: tmp.reverse() });
+                this.setState({ events: tmp.reverse() }, () => this.props.setloading(false));
             });
     }
 

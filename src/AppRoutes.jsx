@@ -13,7 +13,9 @@ const AddCandidateForm = lazy(() => import("./CandidateComponents/AddCandidateFo
 const EditCandidateForm = lazy(() => import("./CandidateComponents/EditCandidateForm"));
 const AdminPage = lazy(() => import("./AdminComponents/AdminPage"));
 const LoginHistory = lazy(() => import("./AdminComponents/LoginHistory"));
-const JobsPage = lazy(() => import("./JobComponents/JobsPage"));
+const PositionsPage = lazy(() => import("./JobComponents/PositionsPage"));
+const AddPositionForm = lazy(() => import("./JobComponents/AddPositionForm"));
+const EditPositionForm = lazy(() => import("./JobComponents/EditPositionForm"));
 const NoMatch = lazy(() => import("./nomatch"));
 
 export default function AppRoutes() {
@@ -25,17 +27,25 @@ export default function AppRoutes() {
                         <Loader>Loading...</Loader>
                     </Dimmer>
                 }>
-                <Switch>
-                    <Route exact path="/" render={props => <LandingPage {...props} />} />
-                    <Route path="/admin" render={props => <AdminPage {...props} />} />
-                    <Route path="/candidates/add" render={props => <UserContext.Consumer>{currentuser => <AddCandidateForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
-                    <Route exact path="/candidates/:id/edit" render={props => <UserContext.Consumer>{currentuser => <EditCandidateForm currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
-                    <Route path="/candidates/:id" render={props => <UserContext.Consumer>{currentuser => <CandidateDetailPage currentuser={currentuser} {...props} />}</UserContext.Consumer>} />
-                    <Route path="/candidates" render={props => <CandidatesPage {...props} />} />
-                    <Route path="/jobs" render={props => <JobsPage {...props} />} />
-                    <Route path="/loginhistory" render={props => <LoginHistory {...props} />} />
-                    <Route render={() => <NoMatch />} />
-                </Switch>
+                <UserContext.Consumer>
+                    {currentuser => (
+                        <>
+                            <Switch>
+                                <Route exact path="/" render={props => <LandingPage {...props} />} />
+                                <Route path="/admin" render={props => <AdminPage {...props} />} />
+                                <Route path="/candidates/add" render={props => <AddCandidateForm currentuser={currentuser} {...props} />} />
+                                <Route exact path="/candidates/:id/edit" render={props => <EditCandidateForm currentuser={currentuser} {...props} />} />
+                                <Route path="/candidates/:id" render={props => <CandidateDetailPage currentuser={currentuser} {...props} />} />
+                                <Route path="/candidates" render={props => <CandidatesPage {...props} />} />
+                                <Route path="/positions/add" render={props => <AddPositionForm currentuser={currentuser} {...props} />} />
+                                <Route exact path="/positions/:id" render={props => <EditPositionForm currentuser={currentuser} {...props} />} />
+                                <Route path="/positions" render={props => <PositionsPage {...props} />} />
+                                <Route path="/loginhistory" render={props => <LoginHistory {...props} />} />
+                                <Route render={() => <NoMatch />} />
+                            </Switch>
+                        </>
+                    )}
+                </UserContext.Consumer>
             </Suspense>
         </Router>
     );

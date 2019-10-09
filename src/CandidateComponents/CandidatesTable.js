@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import UserContext from "../contexts/UserContext";
-import history from "../modules/history";
+import CandidateSearchContext from "../contexts/CandidateSearchContext";
+import { Link } from "react-router-dom";
 import { Grid, Header } from "semantic-ui-react";
 import classnames from "classnames";
 import MiniToolbar from "./MiniToolbar";
@@ -14,7 +15,7 @@ function isSearched(s) {
 
         s.split(" ").forEach(searchTerm => {
             let termFound = false;
-            if (item.info.firstname.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.lastname.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.skill.toLowerCase().includes(searchTerm.toLowerCase()) || contracts.includes(searchTerm.toLowerCase()) || item.info.level.toLowerCase().includes(searchTerm.toLowerCase())) {
+            if (item.info.firstname.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.lastname.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.found_by.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.title.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.prefered_location.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.skill.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.current_company.toLowerCase().includes(searchTerm.toLowerCase()) || contracts.includes(searchTerm.toLowerCase()) || item.info.notes.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.next_steps.toLowerCase().includes(searchTerm.toLowerCase()) || item.info.level.toLowerCase().includes(searchTerm.toLowerCase())) {
                 termFound = true;
             }
             wasFound = wasFound && termFound;
@@ -32,66 +33,55 @@ function isFiltered(searchTerm) {
 }
 
 class CandidatesTable extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            visible: false
-        };
-
-        this.ViewCandidate = this.ViewCandidate.bind(this);
-    }
-
-    ViewCandidate(ev, key) {
-        ev.stopPropagation();
-        const { filterByStatus, filterBySearch, filter } = this.props;
-        history.push({ pathname: `/candidates/${key}`, state: { filter, filterBySearch, filterByStatus } });
-    }
-
-
+    static contextType = CandidateSearchContext;
     render() {
-        const { filterByStatus, filterBySearch, filter } = this.props;
+        const { archived, searchterm, status } = this.context;
+        const filteredCandidates = this.props.list
+            .filter(isFiltered(status))
+            .filter(isSearched(searchterm))
+            .filter(item => {
+                return item.info.archived === archived;
+            });
+
         return (
             <Grid columns={16} verticalAlign="middle" divided="vertically" className="hovered">
-                {this.props.list
-                    .filter(isFiltered(filterByStatus))
-                    .filter(isSearched(filterBySearch))
-                    .filter(item => {
-                        return item.info.archived === filter;
-                    })
-                    .map(item => {
-                        const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
-                        const company = item.info.company ? `with ${item.info.company}` : "";
-                        const current_contract = item.info.current_contract ? `on ${item.info.current_contract}` : "";
+                {filteredCandidates.map(item => {
+                    const potential_contracts = item.info.potential_contracts ? item.info.potential_contracts.join(", ") : "";
+                    const company = item.info.company ? `with ${item.info.company}` : "";
+                    const current_contract = item.info.current_contract ? `on ${item.info.current_contract}` : "";
 
-                        return (
-                            <Grid.Row columns={2} key={item.key} className={classnames("status-" + item.info.status, "candidate-table-row")} onClick={ev => this.ViewCandidate(ev, item.key)}>
-                                <Grid.Column textAlign="center" width={1}>
-                                <UserContext.Consumer>{currentuser =><MiniToolbar currentuser={currentuser} item={item}/>}</UserContext.Consumer>
-                                </Grid.Column>
-                                <Grid.Column width={15}>
-                                    <Header>
-                                        <Header.Content>
-                                            {item.info.firstname} {item.info.lastname}
-                                        </Header.Content>
+                    return (
+                        <Grid.Row key={item.key} columns={2} className={classnames("status-" + item.info.status, "candidate-table-row")}>
+                            <Grid.Column textAlign="center" width={1}>
+                                <UserContext.Consumer>{currentuser => <MiniToolbar currentuser={currentuser} item={item} />}</UserContext.Consumer>
+                            </Grid.Column>
+                            <Grid.Column width={15}>
+                                <Link to={`/candidates/${item.key}`}>
+                                    <>
+                                        <Header>
+                                            <Header.Content>
+                                                {item.info.firstname} {item.info.lastname}
+                                            </Header.Content>
 
-                                        <Header.Subheader>
-                                            {item.info.level} {item.info.skill} {company} {current_contract}
-                                        </Header.Subheader>
-                                    </Header>
-                                    <div>
-                                        <span className="candidate-table-field">Potential contracts:</span> {potential_contracts}
-                                    </div>
-                                    <div>
-                                        <span className="candidate-table-field">Notes:</span> {item.info.notes}
-                                    </div>
-                                    <div>
-                                        <span className="candidate-table-field">Next steps:</span> {item.info.next_steps}
-                                    </div>
-                                </Grid.Column>
-                            </Grid.Row>
-                        );
-                    })}
+                                            <Header.Subheader>
+                                                {item.info.level} {item.info.skill} {company} {current_contract}
+                                            </Header.Subheader>
+                                        </Header>
+                                        <div>
+                                            <span className="candidate-table-field">Potential contracts:</span> {potential_contracts}
+                                        </div>
+                                        <div>
+                                            <span className="candidate-table-field">Notes:</span> {item.info.notes}
+                                        </div>
+                                        <div>
+                                            <span className="candidate-table-field">Next steps:</span> {item.info.next_steps}
+                                        </div>
+                                    </>
+                                </Link>
+                            </Grid.Column>
+                        </Grid.Row>
+                    );
+                })}
             </Grid>
         );
     }

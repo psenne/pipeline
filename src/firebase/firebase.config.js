@@ -31,9 +31,10 @@ if (!firebase.apps.length) {
 
 const fbStorage = firebase.storage().ref();
 
-const fbUsersDB = firebase.database().ref("users"); 
-const fbLoginsDB = firebase.database().ref("logins")
+const fbUsersDB = firebase.database().ref("users");
+const fbLoginsDB = firebase.database().ref("logins");
 const fbCandidatesDB = firebase.database().ref("candidates");
+const fbPositionsDB = firebase.database().ref("positions");
 const fbAuditTrailDB = firebase.database().ref("auditing");
 const fbStatusesDB = firebase.database().ref("statuses");
 const fbContractsDB = firebase.database().ref("contracts");
@@ -61,4 +62,5 @@ const SignOutWithGoogle = () => {
     return fbauth.signOut();
 };
 
-export { fbStorage, fbLoginsDB, fbUsersDB, fbauth, fbCandidatesDB, fbAuditTrailDB, fbFlagNotes, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };
+export default firebase;
+export { fbStorage, fbLoginsDB, fbUsersDB, fbauth, fbCandidatesDB, fbPositionsDB, fbAuditTrailDB, fbFlagNotes, fbStatusesDB, fbContractsDB, fbLOIStatusesDB, SignInWithGoogle, SignOutWithGoogle };

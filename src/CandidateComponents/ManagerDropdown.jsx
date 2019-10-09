@@ -12,7 +12,7 @@ export default class ManagerDropdown extends Component {
     }
 
     componentDidMount() {
-        fbUsersDB.on("value", data => {
+        this.listener = fbUsersDB.on("value", data => {
             let managers = [];
             data.forEach(function(manager) {
                 const val = manager.val();
@@ -32,12 +32,12 @@ export default class ManagerDropdown extends Component {
     }
 
     componentWillMount() {
-        fbUsersDB.off("value");
+        fbUsersDB.off("value", this.listener);
     }
 
     render() {
         const { managers } = this.state;
-        const { name, placeholder, multiple, value, disabled, onChange } = this.props;
-        return <Dropdown name={name} multiple={multiple} options={managers} selection closeOnChange placeholder={placeholder} disabled={disabled} value={value} onChange={(ev, selection) => onChange(name, selection.value)} />;
+        const { onChange, name, ...rest } = this.props;
+        return <Dropdown {...rest} options={managers} selection closeOnChange onChange={(ev, selection) => onChange(name, selection.value)} />;
     }
 }

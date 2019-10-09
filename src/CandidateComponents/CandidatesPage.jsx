@@ -1,62 +1,49 @@
 import React, { Component } from "react";
-import { fbCandidatesDB} from "../firebase/firebase.config";
+import { fbCandidatesDB } from "../firebase/firebase.config";
+import { tmplCandidate } from "../constants/candidateInfo";
+import CandidateSearchContext from "../contexts/CandidateSearchContext";
+import { Loader, Dimmer } from "semantic-ui-react";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
 import CandidatesTable from "./CandidatesTable";
 
 class CandidatesPage extends Component {
+    static contextType = CandidateSearchContext;
+
     constructor(props) {
         super(props);
 
         this.orderedCandidates = fbCandidatesDB.orderByChild("firstname"); //used for sorting and populating candidate table.
 
-        /***
-        
-        candidateList: array of candidates pulled from firebase
-        viewArchived: current or archived. used to be true or false, but the dropdown didn't like boolean values. sent to CandidatesTable component
-        filterTerm: searchbar field. sent to CandidatesTable component
-        statusFilter: status filter field. sent to CandidatesTable component
-        
-        ***/
-
         this.state = {
             candidateList: [],
-            viewArchived: "current",
-            filterTerm: "",
-            statusFilter: ""
+            pageLoading: false
         };
-
-        this.filterCandidates = this.filterCandidates.bind(this);
-        this.HandleDropdownInput = this.HandleDropdownInput.bind(this);
-        this.filterByStatus = this.filterByStatus.bind(this);
     }
 
     componentDidMount() {
+        this.setState({ pageLoading: true });
         this.orderedCandidates.on("value", data => {
-            const filter = this.props.location.state ? this.props.location.state.filter : "current";
-            const filterBySearch = this.props.location.state ? this.props.location.state.filterBySearch : "";
-            const filterByStatus = this.props.location.state ? this.props.location.state.filterByStatus : "";
-    
             let tmpitems = [];
             data.forEach(function(candidate) {
-                tmpitems.push({ key: candidate.key, info: candidate.val() });
+                tmpitems.push({ key: candidate.key, info: Object.assign({}, tmplCandidate, candidate.val()) });
             });
 
-            this.setState({
-                candidateList: tmpitems,
-                viewArchived: filter,
-                filterTerm: filterBySearch,
-                statusFilter: filterByStatus
+            this.setState({ candidateList: tmpitems }, () => {
+                this.setState({ pageLoading: false });
             });
-        }); 
+        });
 
-        this.orderedCandidates.on("child_changed", (data) => {
-            const {candidateList} = this.state;
-            const index = candidateList.findIndex(item => item.key===data.key);
+        this.orderedCandidates.on("child_changed", data => {
+            this.setState({ pageLoading: true });
+
+            const { candidateList } = this.state;
+            const index = candidateList.findIndex(item => item.key === data.key);
             candidateList[index].info = data.val();
-            this.setState(
-                candidateList
-            );
+
+            this.setState({ candidateList }, () => {
+                this.setState({ pageLoading: false });
+            });
         });
     }
 
@@ -65,43 +52,25 @@ class CandidatesPage extends Component {
         this.orderedCandidates.off("child_changed");
     }
 
-    //callback function for search bar
-    filterCandidates(ev, data) {
-        this.setState({
-            filterTerm: data.value
-        });
-    }
-
-    //callback function for status dropdown
-    filterByStatus(ev, data) {
-        this.setState({
-            statusFilter: data.value
-        });
-    }
-
-    //callback function for archived dropdown. initially the only dropdown, hence the generic name.
-    HandleDropdownInput(ev, data) {
-        this.setState({
-            viewArchived: data.value
-        });
-    }
-
- 
     render() {
-        const { candidateList } = this.state;
+        const { candidateList, pageLoading } = this.state;
         const flaggedCandidates = candidateList.filter(candidate => {
             return candidate.info.isFlagged;
         });
         const unflaggedCandidates = candidateList.filter(candidate => {
             return !candidate.info.isFlagged;
         });
+
         return (
-            <div>
+            <>
+                <Dimmer active={pageLoading}>
+                    <Loader>Loading candidates...</Loader>
+                </Dimmer>
                 <NavBar active="candidates" />
-                <CandidateToolbar candidates={this.state.candidateList} AddCandidate={this.AddCandidate} filterByArchived={this.HandleDropdownInput} viewArchived={this.state.viewArchived} filterByStatus={this.filterByStatus} searchCandidates={this.filterCandidates} searchTerm={this.state.filterTerm} />
-                <CandidatesTable filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={flaggedCandidates} />
-                <CandidatesTable filter={this.state.viewArchived} filterBySearch={this.state.filterTerm} filterByStatus={this.state.statusFilter} list={unflaggedCandidates} />
-            </div>
+                <CandidateToolbar candidates={this.state.candidateList} />
+                <CandidatesTable list={flaggedCandidates} />
+                <CandidatesTable list={unflaggedCandidates} />
+            </>
         );
     }
 }

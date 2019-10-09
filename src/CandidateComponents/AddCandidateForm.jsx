@@ -11,20 +11,20 @@ export default class AddCandidateForm extends React.Component {
         super(props);
 
         this.state = {
-            candidate: { ...tmplCandidate },
+            candidate: Object.assign({}, tmplCandidate),
             files: [],
             formError: false
         };
 
-        this.handleInterviewDateChange = this.handleInterviewDateChange.bind(this);
-        this.handleLOIDateChange = this.handleLOIDateChange.bind(this);
+        // this.handleInterviewDateChange = this.handleInterviewDateChange.bind(this);
+        // this.handleLOIDateChange = this.handleLOIDateChange.bind(this);
         this.HandleTextInput = this.HandleTextInput.bind(this);
         this.HandleTextInputUpper = this.HandleTextInputUpper.bind(this);
-        this.HandleSalaryInput = this.HandleSalaryInput.bind(this);
+        // this.HandleSalaryInput = this.HandleSalaryInput.bind(this);
         this.HandlePContractInput = this.HandlePContractInput.bind(this);
-        this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
-        this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
-        this.HandleCheckbox = this.HandleCheckbox.bind(this);
+        // this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
+        // this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
+        // this.HandleCheckbox = this.HandleCheckbox.bind(this);
         this.HandleFileUpload = this.HandleFileUpload.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
         this.updateSelectedCandidate = this.updateSelectedCandidate.bind(this);
@@ -58,47 +58,47 @@ export default class AddCandidateForm extends React.Component {
     }
 
     //callback for Salary field. This changes the value to base64, so non-authorized users can't read the data when getting value from firebase.
-    HandleSalaryInput(ev) {
-        const value = ev.target.value;
-        this.updateSelectedCandidate("salary", btoa(value));
-    }
+    // HandleSalaryInput(ev) {
+    //     const value = ev.target.value;
+    //     this.updateSelectedCandidate("salary", btoa(value));
+    // }
 
     //generic callback for dropdowns
     HandlePContractInput(value) {
         this.updateSelectedCandidate("potential_contracts", value);
     }
 
-    HandleLOIStatusChange(value) {
-        this.updateSelectedCandidate("loi_status", value);
-    }
+    // HandleLOIStatusChange(value) {
+    //     this.updateSelectedCandidate("loi_status", value);
+    // }
 
-    HandleManagerDropdown(name, value) {
-        this.updateSelectedCandidate(name, value);
-    }
+    // HandleManagerDropdown(name, value) {
+    //     this.updateSelectedCandidate(name, value);
+    // }
 
-    //callback for checkbox for setting candidate to archive
-    HandleCheckbox(ev, data) {
-        const name = data.name;
-        const value = data.checked ? "archived" : "current";
+    // //callback for checkbox for setting candidate to archive
+    // HandleCheckbox(ev, data) {
+    //     const name = data.name;
+    //     const value = data.checked ? "archived" : "current";
 
-        this.updateSelectedCandidate(name, value);
-    }
+    //     this.updateSelectedCandidate(name, value);
+    // }
 
-    //callback for interview date.
-    handleInterviewDateChange(date) {
-        if (date) {
-            date = date.toJSON();
-        }
-        this.updateSelectedCandidate("interview_date", date);
-    }
+    // //callback for interview date.
+    // handleInterviewDateChange(date) {
+    //     if (date) {
+    //         date = date.toJSON();
+    //     }
+    //     this.updateSelectedCandidate("interview_date", date);
+    // }
 
-    //callback for LOI date.
-    handleLOIDateChange(date) {
-        if (date) {
-            date = date.toJSON();
-        }
-        this.updateSelectedCandidate("loi_sent_date", date);
-    }
+    // //callback for LOI date.
+    // handleLOIDateChange(date) {
+    //     if (date) {
+    //         date = date.toJSON();
+    //     }
+    //     this.updateSelectedCandidate("loi_sent_date", date);
+    // }
 
     HandleFileUpload(ev) {
         //add files to state for later uploading
@@ -197,7 +197,7 @@ export default class AddCandidateForm extends React.Component {
                                 <Form.Input inline type="text" name="current_contract" label="Current contract:" onChange={this.HandleTextInput} value={candidate.current_contract} />
                                 <Form.Group inline>
                                     <label>Potential contracts: </label>
-                                    <ContractDropdown onChange={this.HandlePContractInput} value={candidate.potential_contracts} />
+                                    <ContractDropdown multiple selection onChange={this.HandlePContractInput} value={candidate.potential_contracts} />
                                 </Form.Group>
                                 <Form.Group inline>
                                     <label>Add document:</label>

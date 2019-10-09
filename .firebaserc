@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "staffing-pipeline"
+    "default": "staffing-pipeline",
+    "dev": "staffing-pipeline-dev"
   }
 }

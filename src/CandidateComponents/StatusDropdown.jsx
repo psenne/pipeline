@@ -11,7 +11,7 @@ export default class StatusDropdown extends Component {
     }
 
     componentDidMount() {
-        fbStatusesDB.on("value", data => {
+        this.listener = fbStatusesDB.on("value", data => {
             let statuses = [];
             data.forEach(function(status) {
                 statuses.push({ key: status.key, info: status.val() });
@@ -23,7 +23,7 @@ export default class StatusDropdown extends Component {
     }
 
     componentWillUnmount() {
-        fbStatusesDB.off("value");
+        fbStatusesDB.off("value", this.listener);
     }
 
     render() {

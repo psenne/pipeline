@@ -13,7 +13,7 @@ export default class ContractDropdown extends Component {
     }
 
     componentDidMount() {
-        fbContractsDB.on("value", data => {
+        this.listener = fbContractsDB.on("value", data => {
             let contracts = [];
             data.forEach(function(contract) {
                 contracts.push({ key: contract.key, info: contract.val() });
@@ -25,15 +25,40 @@ export default class ContractDropdown extends Component {
     }
 
     componentWillUnmount() {
-        fbContractsDB.off("value");
+        fbContractsDB.off("value", this.listener);
     }
 
+    onChange = (ev, selection) => {
+        this.props.onChange(selection.value);
+    };
+
     render() {
-        const { text, onChange, value } = this.props;
         const { contracts } = this.state;
-        const contractList = contracts.map(({ key, info: contract }) => {
-            return { key: key, text: contract.name, value: contract.name };
-        });
-        return <Dropdown text={text} value={value} multiple selection options={contractList} onChange={(ev, selection) => onChange(selection.value)} />;
+        const { onChange, contractsoverride = [], ...rest } = this.props;
+        const contractList = contracts
+            .filter(OverrideContracts(contractsoverride))
+            .map(({ key, info: contract }) => {
+                return { key: key, text: contract.name, value: contract.name };
+            })
+            .sort((a, b) => {
+                var comparison = 0;
+                if (a.text > b.text) {
+                    comparison = 1;
+                } else if (a.text < b.text) {
+                    comparison = -1;
+                }
+                return comparison;
+            });
+        return <Dropdown {...rest} selectOnBlur={false} options={contractList} onChange={this.onChange} />;
     }
+}
+
+function OverrideContracts(contractsoverride) {
+    return function(contract) {
+        if (contractsoverride.length > 0) {
+            return contractsoverride.includes(contract.info.name);
+        } else {
+            return contract;
+        }
+    };
 }

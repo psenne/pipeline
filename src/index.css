@@ -59,6 +59,9 @@
     color: rgba(0, 0, 0, 0.9) !important;
 }
 
+.candidate-table-row a {
+    color: inherit;
+}
 .candidate-table-row {
     cursor: pointer;
 }

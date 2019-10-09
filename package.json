@@ -1,12 +1,13 @@
 {
-    "name": "pipeline-3.0",
-    "version": "3.1.0",
+    "name": "pipeline",
+    "version": "4.0.1",
     "private": true,
     "dependencies": {
         "classnames": "^2.2.6",
         "date-fns": "^1.30.1",
         "file-saver": "^2.0.2",
-        "firebase": "^5.11.1",
+        "firebase": "^7.1.0",
+        "firebase-tools": "^7.4.0",
         "json2xls": "^0.1.2",
         "lodash": "^4.17.15",
         "moment": "^2.24.0",
@@ -22,7 +23,7 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "react-scripts build  && firebase deploy",
+        "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },

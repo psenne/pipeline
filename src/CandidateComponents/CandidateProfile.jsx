@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { format } from "date-fns";
+import history from "../modules/history";
+import { Link } from "react-router-dom";
 import { Grid, Header, Segment } from "semantic-ui-react";
 import classnames from "classnames";
 import moment from "moment";
@@ -20,9 +23,13 @@ class CandidateProfile extends Component {
         const { candidateID } = this.props;
 
         fbCandidatesDB.child(candidateID).on("value", data => {
-            this.setState({
-                candidate: { ...tmplCandidate, ...data.val() }
-            });
+            if (data.val()) {
+                this.setState({
+                    candidate: { ...tmplCandidate, ...data.val() }
+                });
+            } else {
+                history.push("/candidates/");
+            }
         });
     }
 
@@ -77,6 +84,7 @@ class CandidateProfile extends Component {
     render() {
         const { candidateID } = this.props;
         let candidate = this.state.candidate;
+        const position_keys = Object.keys(candidate.submitted_positions);
         let interviewed = "Candidate has not been interviewed.";
         let loi_message = "LOI has not been sent.";
         let referedby = "";
@@ -91,7 +99,7 @@ class CandidateProfile extends Component {
         }
 
         if (candidate.found_by) {
-            referedby = `Refered by ${candidate.found_by}`;
+            referedby = `Referred by ${candidate.found_by}`;
         }
 
         if (candidate.current_company) {
@@ -105,7 +113,6 @@ class CandidateProfile extends Component {
         } else {
             loi_message = "LOI has not been sent.";
         }
-
         return (
             <>
                 {candidate && (
@@ -175,6 +182,20 @@ class CandidateProfile extends Component {
                         <Segment vertical padded className={classnames({ "form-hidden": candidate.filenames.length === 0 }, "minitoolbar-inline")}>
                             <h3>Documents</h3>
                             <Files candidateID={this.props.candidateID} filenames={candidate.filenames} />
+                        </Segment>
+                        <Segment vertical padded className={classnames({ "form-hidden": position_keys.length === 0 }, "minitoolbar-inline")}>
+                            <h3>Position submissions</h3>
+                            {position_keys.map(key => {
+                                const position = candidate.submitted_positions[key];
+                                const pid = position.position_id ? `(${position.position_id})` : "";
+                                return (
+                                    <div key={key}>
+                                        <Link to={`/positions/${key}`}>
+                                            {position.position_contract}, {position.position_name} {pid} - submitted on {format(position.submission_date, "MMM DD, YYYY")}
+                                        </Link>
+                                    </div>
+                                );
+                            })}
                         </Segment>
                     </Segment>
                 )}
