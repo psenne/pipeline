@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
-import CandidateSearchContext from "../contexts/CandidateSearchContext";
 import { Loader, Dimmer } from "semantic-ui-react";
 import NavBar from "../NavBar";
 import CandidateToolbar from "./CandidateToolbar";
 import CandidatesTable from "./CandidatesTable";
 
 class CandidatesPage extends Component {
-    static contextType = CandidateSearchContext;
-
     constructor(props) {
         super(props);
 

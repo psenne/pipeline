@@ -4,6 +4,7 @@ import AppHeader from "./AppHeader";
 import AppRoutes from "./AppRoutes";
 import UserContext from "./contexts/UserContext";
 import { CandidateTableFilters } from "./contexts/CandidateSearchContext";
+import { PositionTableFilters } from "./contexts/PositionContext";
 
 import { Button, Container, Image, Loader, Dimmer } from "semantic-ui-react";
 import "semantic-ui-css/semantic.css";
@@ -110,12 +111,14 @@ class App extends Component {
             //user is logged in
             return (
                 <div className="App">
-                    <CandidateTableFilters>
-                        <UserContext.Provider value={currentuser}>
-                            <AppHeader />
-                            <AppRoutes />
-                        </UserContext.Provider>
-                    </CandidateTableFilters>
+                    <PositionTableFilters>
+                        <CandidateTableFilters>
+                            <UserContext.Provider value={currentuser}>
+                                <AppHeader />
+                                <AppRoutes />
+                            </UserContext.Provider>
+                        </CandidateTableFilters>
+                    </PositionTableFilters>
                 </div>
             );
         }
