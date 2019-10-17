@@ -117,7 +117,7 @@ export default function AddPositionForm() {
                                 );
                             })}
 
-                            <CandidateDropdown selection filters={[{ archived: "current" }, { status: "active" }]} removecandidates={addedCandidates} onChange={AddCandidateToPosition} />
+                            <CandidateDropdown selection filters={[{ archived: ["current"] }, { status: ["active", "processing"] }]} removecandidates={addedCandidates} onChange={AddCandidateToPosition} />
                         </Segment>
                         <Segment>
                             {formError && <Message error floating compact icon="warning" header="Required fields missing" content="Title and contract are both required." />}

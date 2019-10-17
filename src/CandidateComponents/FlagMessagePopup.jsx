@@ -169,7 +169,7 @@ export default class FlagMessagePopup extends Component {
         }
 
         return (
-            <Modal dimmer="blurring" trigger={this.props.children} open={this.props.open} onClick={ev => ev.stopPropagation()} onClose={this.props.handleClose} size="small">
+            <Modal closeIcon dimmer="blurring" trigger={this.props.children} open={this.props.open} onClick={ev => ev.stopPropagation()} onClose={this.props.handleClose} size="small">
                 <Header icon="flag" color="red" content={`Add follow up note for ${candidateinfo.firstname} ${candidateinfo.lastname}.`} />
                 <Modal.Content>
                     <Form>

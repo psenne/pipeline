@@ -16,6 +16,8 @@ export default class CandidateDropdown extends Component {
     componentDidMount() {
         const { filters } = this.props;
 
+        //filters = [{ filter1: value1, filter2: [value1, value2] }]; -- filters format
+
         this.orderedCandidates.on("value", data => {
             const filteredData = [];
             data.forEach(function(candidate) {
