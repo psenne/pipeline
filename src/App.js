@@ -27,7 +27,6 @@ class App extends Component {
     //callback function when form editing is done.
     showLoader(isLoading, msg) {
         msg = msg || "Loading Page...";
-        //console.log(isLoading, msg);
 
         this.setState({
             loading: isLoading,

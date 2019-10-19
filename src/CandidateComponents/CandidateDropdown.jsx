@@ -38,7 +38,6 @@ export default class CandidateDropdown extends Component {
 
                 if (meetsAllCriteria) filteredData.push({ key, info });
             });
-            console.log(filteredData);
 
             this.setState({
                 candidates: filteredData
