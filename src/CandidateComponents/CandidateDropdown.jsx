@@ -16,6 +16,8 @@ export default class CandidateDropdown extends Component {
     componentDidMount() {
         const { filters } = this.props;
 
+        //filters = [{ filter1: value1, filter2: [value1, value2] }]; -- filters format
+
         this.orderedCandidates.on("value", data => {
             const filteredData = [];
             data.forEach(function(candidate) {
@@ -36,7 +38,6 @@ export default class CandidateDropdown extends Component {
 
                 if (meetsAllCriteria) filteredData.push({ key, info });
             });
-            console.log(filteredData);
 
             this.setState({
                 candidates: filteredData

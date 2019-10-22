@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import history from "../modules/history";
+import { Link } from "react-router-dom";
 
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import { Container, List } from "semantic-ui-react";
@@ -12,8 +12,6 @@ export default class LastCreated extends Component {
         this.state = {
             candidates: []
         };
-
-        this.ViewCandidate = this.ViewCandidate.bind(this);
     }
 
     componentDidMount() {
@@ -26,18 +24,16 @@ export default class LastCreated extends Component {
                     tmpitems.push({ key: candidate.key, info: candidate.val() });
                 });
                 this.setState({
-                    candidates: tmpitems.filter(c => c.info.created_date).reverse().slice(0,5)
+                    candidates: tmpitems
+                        .filter(c => c.info.created_date)
+                        .reverse()
+                        .slice(0, 5)
                 });
             });
     }
 
     componentWillUnmount() {
         fbCandidatesDB.off("value");
-    }
-
-    ViewCandidate(ev, key) {
-        ev.stopPropagation();
-        history.push({ pathname: `/candidates/${key}` });
     }
 
     render() {
@@ -57,10 +53,12 @@ export default class LastCreated extends Component {
                             const addedmsg = info.created_by ? `Added by ${info.created_by} on ${created_date}` : "";
 
                             return (
-                                <List.Item key={key} onClick={ev => this.ViewCandidate(ev, key)}>
+                                <List.Item key={key}>
                                     <List.Content>
-                                        <List.Header as="a">
-                                            {info.firstname} {info.lastname} {skill}
+                                        <List.Header>
+                                            <Link to={`/candidates/${key}`}>
+                                                {info.firstname} {info.lastname} {skill}
+                                            </Link>
                                         </List.Header>
                                         <List.Description>{addedmsg}</List.Description>
                                     </List.Content>

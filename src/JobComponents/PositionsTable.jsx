@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import PositionContext from "../contexts/PositionContext";
 import { Grid, Header, Label } from "semantic-ui-react";
 import classnames from "classnames";
 
@@ -28,12 +29,13 @@ function isFiltered(searchTerm) {
     };
 }
 
-export default function PositionsTable({ positions, searchTerm, contractFilter }) {
+export default function PositionsTable({ positions }) {
+    const { selectedcontract, searchterm } = useContext(PositionContext);
     return (
         <Grid columns={16} verticalAlign="middle" divided="vertically" className="hovered">
             {positions
-                .filter(isFiltered(contractFilter))
-                .filter(isSearched(searchTerm))
+                .filter(isFiltered(selectedcontract))
+                .filter(isSearched(searchterm))
                 .map(item => {
                     const position_id = item.info.position_id ? `(${item.info.position_id})` : "";
                     const contract = item.info.contract ? `${item.info.contract} - ` : "";

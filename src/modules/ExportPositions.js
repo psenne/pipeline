@@ -21,10 +21,8 @@ function s2ab(s) {
 //     added_on: Date
 
 export default function(positions) {
-    console.log(positions);
     const jsontable = positions.map(item => {
         const added_on = item.info.added_on ? format(item.info.added_on, "MMM, DD YYYY") : "";
-        console.log(item);
         return {
             "Position ID": item.info.position_id,
             "Position Title": item.info.title,
