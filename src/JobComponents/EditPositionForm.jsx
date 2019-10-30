@@ -128,7 +128,7 @@ export default function EditPositionForm({ match }) {
     };
 
     const DeletePosition = () => {
-        if (window.confirm(`Are you sure you want to delete ${position.name}?`)) {
+        if (window.confirm(`Are you sure you want to delete ${position.title} on ${position.contract}?`)) {
             var dbUpdate = {};
             addedCandidates.forEach(submission => {
                 dbUpdate[`/candidates/${submission.key}/submitted_positions/${key}`] = null;
