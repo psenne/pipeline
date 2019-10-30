@@ -17,8 +17,7 @@ class App extends Component {
 
         this.state = {
             loading: false,
-            loadingMSG: "",
-            userrole: null
+            loadingMSG: ""
         };
 
         this.showLoader = this.showLoader.bind(this);
@@ -38,46 +37,32 @@ class App extends Component {
         fbauth.onAuthStateChanged(currentuser => {
             //called when logging in or out or when page is refreshed.
             if (currentuser) {
-                //user is logged in
-                const useremail = currentuser.email;
-                let authorizedUser = false;
-                let role = "";
+                fbUsersDB
+                    .orderByChild("email")
+                    .equalTo(currentuser.email)
+                    .once("value", user => {
+                        if (user.val()) {
+                            this.setState({
+                                currentuser: currentuser
+                            }); //everything is good, so set current user and role
 
-                //check firebase db for list of approved users and compare to user who just logged in via Google Auth.
-                fbUsersDB.once("value", users => {
-                    users.forEach(function(u) {
-                        var username = u.val().email;
-                        if (username === useremail) {
-                            //compare users by verified Google Email addresses.
-                            authorizedUser = true;
-                            role = u.val().role;
+                            // save login event to logins table
+                            const now = new Date();
+                            fbLoginsDB.push({
+                                user: currentuser.displayName,
+                                emailaddress: currentuser.email,
+                                eventtime: now.toJSON()
+                            });
+                        } else {
+                            alert("User is not authorized.");
+                            SignOutWithGoogle();
                         }
-                    });
-
-                    if (!authorizedUser) {
-                        alert("User is not authorized.");
-                        SignOutWithGoogle();
-                    } else {
-                        this.setState({
-                            currentuser: currentuser,
-                            userrole: role
-                        }); //everything is good, so set current user and role
-
-                        // save login event to logins table
-                        const now = new Date();
-                        fbLoginsDB.push({
-                            user: currentuser.displayName,
-                            emailaddress: currentuser.email,
-                            eventtime: now.toJSON()
-                        });
-                    }
-                }); //end get users
+                    }); //end get users
             } else {
                 //user logged out. reset app user state. shows login button.
                 this.setState({
                     currentuser: null,
-                    loading: false,
-                    userrole: null
+                    loading: false
                 });
             }
         }); //end auth state change
