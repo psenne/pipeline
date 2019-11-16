@@ -33,3 +33,18 @@ exports.updateCandidateStatus = functions.database.ref("/candidates/{candidateID
         console.log(`Updated ${candidateinfo.firstname} ${candidateinfo.lastname} status to ${status}.`);
     }); //prettier-ignore
 });
+
+exports.addCreatedEvent = functions.database.ref("/candidates/{candidateID}").onCreate((snapshot, context) => {
+    const username = context.auth.token.name;
+    const candidatename = `${snapshot.val().firstname} ${snapshot.val().lastname}`;
+    const now = new Date();
+    const event = {
+        eventdate: now.toJSON(),
+        eventinfo: `${username} added ${candidatename}.`,
+        candidatename
+    };
+
+    return snapshot.ref.parent.parent.child("auditing").push(event).then(()=>{ 
+        console.log(event);
+    }) //prettier-ignore
+});

@@ -143,7 +143,7 @@ export default class AddCandidateForm extends React.Component {
             }
             Promise.all(uploadedFiles)
                 .then(() => {
-                    fbAuditTrailDB.push(newEvent);
+                    //fbAuditTrailDB.push(newEvent);
                 })
                 .then(() => {
                     history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
