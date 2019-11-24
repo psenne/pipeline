@@ -255,13 +255,13 @@ export default class EditCandidateForm extends React.Component {
     DeleteCandidate(key, filenames) {
         const { currentuser } = this.props;
         const { candidate } = this.state;
-        const now = new Date();
-        const eventinfo = `${currentuser.displayName} deleted candidate.`;
-        const newEvent = {
-            eventinfo: eventinfo,
-            eventdate: now.toJSON(),
-            candidatename: `${candidate.firstname} ${candidate.lastname}`
-        };
+        // const now = new Date();
+        // const eventinfo = `${currentuser.displayName} deleted candidate.`;
+        // const newEvent = {
+        //     eventinfo: eventinfo,
+        //     eventdate: now.toJSON(),
+        //     candidatename: `${candidate.firstname} ${candidate.lastname}`
+        // };
 
         const positionDBUpdate = {};
         Object.keys(candidate.submitted_positions).forEach(pkey => {
@@ -284,9 +284,9 @@ export default class EditCandidateForm extends React.Component {
                 //prettier-ignore
                 firebase.database().ref().update(positionDBUpdate) //prettier-ignore
             })
-            .then(() => {
-                fbAuditTrailDB.push(newEvent);
-            })
+            // .then(() => {
+            //     fbAuditTrailDB.push(newEvent);
+            // })
             .catch(function(error) {
                 console.error("Error deleting candidate:", error);
             });

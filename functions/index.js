@@ -48,3 +48,46 @@ exports.addCreatedEvent = functions.database.ref("/candidates/{candidateID}").on
         console.log(event);
     }) //prettier-ignore
 });
+
+exports.updateCandidateEvent = functions.database.ref("/candidates/{candidateID}").onUpdate(({ before, after }, context) => {
+    const username = context.auth.token.name;
+    const orgInfo = before.val();
+    const newInfo = after.val();
+
+    const candidatename = `${orgInfo.firstname} ${orgInfo.lastname}`;
+    const now = new Date();
+
+    //get fields that have changed
+    const changedFields = Object.keys(before).map(key => {
+        if (before[key] !== after[key]) {
+            return key;
+        }
+    });
+
+    const event = {
+        eventdate: now.toJSON(),
+        eventinfo: `${username} updated ${changedFields.join(", ")}.`,
+        candidatename
+    };
+
+    return () => console.log(event);
+
+    // return snapshot.ref.parent.parent.child("auditing").push(event).then(()=>{
+    //     console.log(event);
+    // }) //prettier-ignore
+});
+
+exports.deletedCandidateEvent = functions.database.ref("/candidates/{candidateID}").onDelete((snapshot, context) => {
+    const username = context.auth.token.name;
+    const candidatename = `${snapshot.val().firstname} ${snapshot.val().lastname}`;
+    const now = new Date();
+    const event = {
+        eventdate: now.toJSON(),
+        eventinfo: `${username} removed ${candidatename} from the database.`,
+        candidatename
+    };
+
+    return snapshot.ref.parent.parent.child("auditing").push(event).then(()=>{ 
+        console.log(event);
+    }) //prettier-ignore
+});
