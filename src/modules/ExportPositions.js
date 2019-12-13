@@ -1,6 +1,6 @@
 import XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 // some random function for excel exporting
 function s2ab(s) {
@@ -22,7 +22,7 @@ function s2ab(s) {
 
 export default function(positions) {
     const jsontable = positions.map(item => {
-        const added_on = item.info.added_on ? format(item.info.added_on, "MMM, DD YYYY") : "";
+        const added_on = item.info.added_on ? format(parseISO(item.info.added_on), "MMM, d yyyy") : "";
         return {
             "Position ID": item.info.position_id,
             "Position Title": item.info.title,
@@ -47,6 +47,6 @@ export default function(positions) {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Open Positions");
     var wbout = XLSX.write(workbook, wopts);
 
-    const today = format(new Date(), "DD.MMM.YYYY").toUpperCase();
+    const today = format(new Date(), "dd.MMM.yyyy").toUpperCase();
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), "positions." + today + ".xlsx");
 }

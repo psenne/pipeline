@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 import history from "../modules/history";
 import { Button, Header, Segment, Container, Menu, Icon } from "semantic-ui-react";
@@ -66,7 +66,7 @@ export default function PositionDetailPage({ match }) {
                                 return (
                                     <p key={candidate.candidate_key}>
                                         <Link to={`/candidates/${candidate.candidate_key}`}>
-                                            {candidate.candidate_name} - submitted on {format(candidate.submission_date, "MMMM D, YYYY")}
+                                            {candidate.candidate_name} - submitted on {format(parseISO(candidate.submission_date), "MMMM d, yyyy")}
                                         </Link>
                                     </p>
                                 );

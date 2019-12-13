@@ -1,7 +1,7 @@
 import React from "react";
 import { fbCandidatesDB, fbAuditTrailDB, fbFlagNotes } from "../firebase/firebase.config";
 import history from "../modules/history";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import classnames from "classnames";
 import FlagMessagePopup from "./FlagMessagePopup";
 import UserContext from "../contexts/UserContext";
@@ -105,7 +105,7 @@ export default class MiniToolbar extends React.Component {
     render() {
         const { item } = this.props;
         const { flagOpen } = this.state;
-        const flagDate = format(new Date(item.info.flagged_on), "M/D/YYYY");
+        const flagDate = item.info.flagged_on ? format(parseISO(item.info.flagged_on), "M/d/yyyy") : "";
         const flagNote = `${item.info.flagged_by} (${flagDate}): ${item.info.flag_note}`;
         const title = item.info.flag_note ? flagNote : "Add follow up note";
         const setArchiveStatusText = item.info.archived === "archived" ? "Unarchive" : "Archive";

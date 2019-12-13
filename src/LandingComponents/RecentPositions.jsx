@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { fbPositionsDB } from "../firebase/firebase.config";
 import { Container, List } from "semantic-ui-react";
 import ComponentPlaceholder from "./ComponentPlaceholder";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import tmplPosition from "../constants/positionInfo";
 
 const RecentPositions = () => {
@@ -34,7 +34,7 @@ const RecentPositions = () => {
             ) : (
                 <List selection verticalAlign="middle" divided relaxed>
                     {orderedPositions.reverse().map(({ info, key }) => {
-                        const added_on = info.added_on ? "added on " + format(info.added_on, "MMM DD, YYYY") : "";
+                        const added_on = info.added_on ? "added on " + format(parseISO(info.added_on), "MMM d, yyyy") : "";
 
                         return (
                             <List.Item key={key}>

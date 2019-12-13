@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Icon, Message, Accordion } from "semantic-ui-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import FlagMessagePopup from "./FlagMessagePopup";
 import UserContext from "../contexts/UserContext";
 
@@ -32,7 +32,7 @@ export default function FlagMessage({ onDismiss, candidate }) {
                         {action}
                         <div>{candidate.flag_note}</div>
                         <div style={{ color: "#808080" }}>
-                            Added by {candidate.flagged_by} on {format(candidate.flagged_on, "MMM DD, YYYY")}
+                            Added by {candidate.flagged_by} on {format(parseISO(candidate.flagged_on), "MMM d, yyyy")}
                         </div>
                         {candidate.flag_history.length > 0 && (
                             <Accordion>
@@ -49,7 +49,7 @@ export default function FlagMessage({ onDismiss, candidate }) {
                                                     {action}
                                                     <div>{flag.flag_note}</div>
                                                     <div style={{ color: "#808080" }}>
-                                                        Added by {flag.flagged_by} on {format(flag.flagged_on, "MMM DD, YYYY")}
+                                                        Added by {flag.flagged_by} on {format(parseISO(flag.flagged_on), "MMM d, yyyy")}
                                                     </div>
                                                 </Message.Content>
                                             </Message>

@@ -14,7 +14,7 @@ import { tmplCandidate } from "../constants/candidateInfo";
 import { Form, Container, Segment, Button, Message, Header, Menu, Icon, Checkbox } from "semantic-ui-react";
 
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker-cssmodules.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default class EditCandidateForm extends React.Component {
     constructor(props) {
@@ -253,7 +253,6 @@ export default class EditCandidateForm extends React.Component {
 
     //callback function when delete candidate button is click in form.
     DeleteCandidate(key, filenames) {
-        const { currentuser } = this.props;
         const { candidate } = this.state;
         // const now = new Date();
         // const eventinfo = `${currentuser.displayName} deleted candidate.`;
