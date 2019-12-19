@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import history from "../modules/history";
 import { Link } from "react-router-dom";
 import { Grid, Header, Segment } from "semantic-ui-react";
@@ -191,7 +191,7 @@ class CandidateProfile extends Component {
                                 return (
                                     <div key={key}>
                                         <Link to={`/positions/${key}`}>
-                                            {position.position_contract}, {position.position_name} {pid} - submitted on {format(position.submission_date, "MMM DD, YYYY")}
+                                            {position.position_contract}, {position.position_name} {pid} - submitted on {format(parseISO(position.submission_date), "MMM d, yyyy")}
                                         </Link>
                                     </div>
                                 );
