@@ -58,23 +58,32 @@ exports.updateCandidateEvent = functions.database.ref("/candidates/{candidateID}
     const now = new Date();
 
     //get fields that have changed
-    const changedFields = Object.keys(before).map(key => {
-        if (before[key] !== after[key]) {
-            return key;
+    const changedFields = Object.keys(orgInfo).filter(key => {
+        if (orgInfo[key] !== newInfo[key] && key !== "modified_fields" && key !== "modified_date" && key !== "modified_by") {
+            const beforeval = orgInfo[key];
+            const afterval = newInfo[key];
+            if(beforeval instanceof Array){
+                if(!afterval.every(e=>beforeval.includes(e))){ //if the array elements have changed, then add key to changedFields
+                    return `${key} to ${afterval}`
+                }
+            }
+            else{
+                return `${key} to ${afterval}`
+            }
         }
     });
 
     const event = {
         eventdate: now.toJSON(),
-        eventinfo: `${username} updated ${changedFields.join(", ")}.`,
+        eventinfo: `${username} updated ${changedFields.join("; ")}.`,
         candidatename
     };
 
-    return () => console.log(event);
+    //return () => console.info("All fields:", changedFields, newInfo);
 
-    // return snapshot.ref.parent.parent.child("auditing").push(event).then(()=>{
-    //     console.log(event);
-    // }) //prettier-ignore
+    return after.ref.parent.parent.child("auditing").push(event).then(()=>{
+        console.info(event);
+    }) //prettier-ignore
 });
 
 exports.deletedCandidateEvent = functions.database.ref("/candidates/{candidateID}").onDelete((snapshot, context) => {
@@ -88,6 +97,6 @@ exports.deletedCandidateEvent = functions.database.ref("/candidates/{candidateID
     };
 
     return snapshot.ref.parent.parent.child("auditing").push(event).then(()=>{ 
-        console.log(event);
+        console.info(event);
     }) //prettier-ignore
 });

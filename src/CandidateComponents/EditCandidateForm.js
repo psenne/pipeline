@@ -183,14 +183,14 @@ export default class EditCandidateForm extends React.Component {
         const { currentuser } = this.props;
         const now = new Date();
 
-        const newEvents = candidate.modified_fields.map(field => {
-            const eventinfo = candidate[field] === "" ? `${currentuser.displayName} deleted ${field.replace("_", " ")}.` : `${currentuser.displayName} updated ${field.replace("_", " ")} with ${candidate[field]}.`;
-            return {
-                eventinfo: eventinfo,
-                eventdate: now.toJSON(),
-                candidatename: `${candidate.firstname} ${candidate.lastname}`
-            };
-        });
+        // const newEvents = candidate.modified_fields.map(field => {
+        //     const eventinfo = candidate[field] === "" ? `${currentuser.displayName} deleted ${field.replace("_", " ")}.` : `${currentuser.displayName} updated ${field.replace("_", " ")} with ${candidate[field]}.`;
+        //     return {
+        //         eventinfo: eventinfo,
+        //         eventdate: now.toJSON(),
+        //         candidatename: `${candidate.firstname} ${candidate.lastname}`
+        //     };
+        // });
 
         candidate["modified_by"] = currentuser.displayName;
         candidate["modified_date"] = now.toJSON();
@@ -206,11 +206,11 @@ export default class EditCandidateForm extends React.Component {
                     uploadedFiles.push(fileRef.put(file, { contentType: file.type })); //add file upload promise to array, so that we can use promise.all() for one returned promise
                 }
                 Promise.all(uploadedFiles)
-                    .then(() => {
-                        newEvents.forEach(newEvent => {
-                            fbAuditTrailDB.push(newEvent);
-                        });
-                    })
+                    // .then(() => {
+                    //     newEvents.forEach(newEvent => {
+                    //         fbAuditTrailDB.push(newEvent);
+                    //     });
+                    // })
                     .then(() => {
                         history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
                     });
