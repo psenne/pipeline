@@ -1,5 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const datefns = require('date-fns');
+const atob = require("atob");
 
 admin.initializeApp();
 
@@ -58,20 +60,32 @@ exports.updateCandidateEvent = functions.database.ref("/candidates/{candidateID}
     const now = new Date();
 
     //get fields that have changed
-    const changedFields = Object.keys(orgInfo).filter(key => {
-        if (orgInfo[key] !== newInfo[key] && key !== "modified_fields" && key !== "modified_date" && key !== "modified_by") {
-            const beforeval = orgInfo[key];
-            const afterval = newInfo[key];
-            if(beforeval instanceof Array){
-                if(!afterval.every(e=>beforeval.includes(e))){ //if the array elements have changed, then add key to changedFields
-                    return `${key} to ${afterval}`
+    const changedFields = Object.keys(orgInfo)
+        .map(key => {
+            if (orgInfo[key] !== newInfo[key] && key !== "modified_fields" && key !== "modified_date" && key !== "modified_by") {
+                var beforeval = orgInfo[key];
+                var afterval = newInfo[key];
+                if (beforeval instanceof Array) {
+                    if (!afterval.every(e => beforeval.includes(e)) || !beforeval.every(e => afterval.includes(e))) {
+                        //if the array elements have changed, then add key to changedFields
+                        return `${key.replace(/[_]/g," ").toUpperCase()} to "${afterval}"`;
+                    }
+                } else {
+                    if(key === "interview_date" || key === "loi_sent_date" || key === "flagged_on"){
+                        afterval = datefns.format(new Date(afterval), "MMM d, yyyy")
+                    }
+                    if(key === "salary"){
+                        afterval = "$" + atob(afterval);
+                    }
+                    return `${key.replace(/[_]/g," ").toUpperCase()} to "${afterval}"`;
                 }
             }
-            else{
-                return `${key} to ${afterval}`
+        })
+        .filter(key => {
+            if (key !== undefined) {
+                return true;
             }
-        }
-    });
+        });
 
     const event = {
         eventdate: now.toJSON(),
