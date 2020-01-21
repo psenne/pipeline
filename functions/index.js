@@ -60,24 +60,38 @@ exports.updateCandidateEvent = functions.database.ref("/candidates/{candidateID}
     const now = new Date();
 
     //get fields that have changed
-    const changedFields = Object.keys(orgInfo)
+    const changedFields = Object.keys({...orgInfo,...newInfo}) //grab all keys
         .map(key => {
-            if (orgInfo[key] !== newInfo[key] && key !== "modified_fields" && key !== "modified_date" && key !== "modified_by") {
-                var beforeval = orgInfo[key];
-                var afterval = newInfo[key];
-                if (beforeval instanceof Array) {
-                    if (!afterval.every(e => beforeval.includes(e)) || !beforeval.every(e => afterval.includes(e))) {
-                        //if the array elements have changed, then add key to changedFields
-                        return `${key.replace(/[_]/g," ").toUpperCase()} to "${afterval}"`;
+            var beforeval = orgInfo[key];
+            var afterval = newInfo[key];
+            if (beforeval !== afterval && key !== "modified_fields" && key !== "modified_date" && key !== "modified_by") {
+                if (beforeval === undefined && afterval instanceof Array) { //field was filled in
+                        return `added "${afterval.join(", ")}" to ${key.replace(/[_]/g," ").toUpperCase()}`;
+                } 
+                else if (beforeval instanceof Array && afterval === undefined) { //field was erased
+                        return `erased "${beforeval.join(", ")}" from ${key.replace(/[_]/g," ").toUpperCase()}`;
+                } 
+                else if (beforeval instanceof Array && afterval instanceof Array) { //field was added to or removed from
+                    if (!afterval.every(e => beforeval.includes(e)) || !beforeval.every(e => afterval.includes(e))) { //if the array elements have changed, then add key to changedFields
+                        return `updated ${key.replace(/[_]/g," ").toUpperCase()} to "${afterval.join(", ")}"`;
                     }
-                } else {
+                } 
+                else { //field is not multiple selection
                     if(key === "interview_date" || key === "loi_sent_date" || key === "flagged_on"){
-                        afterval = datefns.format(new Date(afterval), "MMM d, yyyy")
-                    }
+                        afterval = afterval !== "" ? datefns.format(new Date(afterval), "MMM d, yyyy") : "";
+                    } 
                     if(key === "salary"){
-                        afterval = "$" + atob(afterval);
+                        afterval = afterval !== "" ? "$" + atob(afterval) : "";
                     }
-                    return `${key.replace(/[_]/g," ").toUpperCase()} to "${afterval}"`;
+                    if(beforeval !== "" && afterval === ""){
+                        return `erased "${beforeval}" from ${key.replace(/[_]/g," ").toUpperCase()}`;
+                    }
+                    else if(beforeval === "" && afterval !== ""){
+                        return `added "${afterval}" to ${key.replace(/[_]/g," ").toUpperCase()}`;
+                    }
+                    else{
+                        return `updated ${key.replace(/[_]/g," ").toUpperCase()} to "${afterval}"`;
+                    }
                 }
             }
         })
@@ -87,16 +101,17 @@ exports.updateCandidateEvent = functions.database.ref("/candidates/{candidateID}
             }
         });
 
+    var eventinfo = `${username} ${changedFields.join(", ")}`;
     const event = {
         eventdate: now.toJSON(),
-        eventinfo: `${username} updated ${changedFields.join("; ")}.`,
+        eventinfo,
         candidatename
     };
 
     //return () => console.info("All fields:", changedFields, newInfo);
 
     return after.ref.parent.parent.child("auditing").push(event).then(()=>{
-        console.info(event);
+        console.info(newInfo);
     }) //prettier-ignore
 });
 
