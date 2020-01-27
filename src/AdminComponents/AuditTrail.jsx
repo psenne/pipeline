@@ -37,7 +37,7 @@ export default class AuditTrail extends Component {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Event date</Table.HeaderCell>
-                        <Table.HeaderCell>Candidate</Table.HeaderCell>
+                        <Table.HeaderCell>Candidate / Position</Table.HeaderCell>
                         <Table.HeaderCell>Event Information</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>

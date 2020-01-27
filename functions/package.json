@@ -12,7 +12,8 @@
         "atob": "^2.1.2",
         "date-fns": "^2.9.0",
         "firebase-admin": "^8.8.0",
-        "firebase-functions": "^3.3.0"
+        "firebase-functions": "^3.3.0",
+        "lodash": "^4.17.15"
     },
     "private": true,
     "engines": {
