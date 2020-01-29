@@ -8,7 +8,7 @@ import LOIStatusDropdown from "../CandidateComponents/LOIStatusDropdown";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
 import ManagerDropdown from "../CandidateComponents/ManagerDropdown";
 import Files from "../CandidateComponents/Files";
-import firebase, { fbCandidatesDB, fbStorage, fbAuditTrailDB } from "../firebase/firebase.config";
+import firebase, { fbCandidatesDB, fbStorage, fbFlagNotes } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 
 import { Form, Container, Segment, Button, Message, Header, Menu, Icon, Checkbox } from "semantic-ui-react";
@@ -183,15 +183,6 @@ export default class EditCandidateForm extends React.Component {
         const { currentuser } = this.props;
         const now = new Date();
 
-        // const newEvents = candidate.modified_fields.map(field => {
-        //     const eventinfo = candidate[field] === "" ? `${currentuser.displayName} deleted ${field.replace("_", " ")}.` : `${currentuser.displayName} updated ${field.replace("_", " ")} with ${candidate[field]}.`;
-        //     return {
-        //         eventinfo: eventinfo,
-        //         eventdate: now.toJSON(),
-        //         candidatename: `${candidate.firstname} ${candidate.lastname}`
-        //     };
-        // });
-
         candidate["modified_by"] = currentuser.displayName;
         candidate["modified_date"] = now.toJSON();
 
@@ -221,46 +212,17 @@ export default class EditCandidateForm extends React.Component {
     //callback for checkbox for setting candidate to archive
     ToggleArchive(ev, data) {
         const { candidate, key } = this.state;
-        const { currentuser } = this.props;
-        const value = data.checked ? "archived" : "current";
-        const now = new Date();
-        let eventinfo = "";
-
-        candidate.archived = value;
-        if (value === "archived") {
-            eventinfo = `${currentuser.displayName} set candidate to archived.`;
-        } else {
-            eventinfo = `${currentuser.displayName} set candidate to active.`;
-        }
-
-        const newEvent = {
-            eventdate: now.toJSON(),
-            username: currentuser.displayName,
-            eventinfo: eventinfo,
-            candidatename: `${candidate.firstname} ${candidate.lastname}`
-        };
-
+        
+        candidate.archived = data.checked ? "archived" : "current";
         fbCandidatesDB
             .child(key)
             .update(candidate)
-            .then(() => {
-                fbAuditTrailDB.push(newEvent).then(() => {
-                    history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
-                });
-            })
             .catch(err => console.error("EditCandidate, line 250: ", err));
     }
 
     //callback function when delete candidate button is click in form.
     DeleteCandidate(key, filenames) {
         const { candidate } = this.state;
-        // const now = new Date();
-        // const eventinfo = `${currentuser.displayName} deleted candidate.`;
-        // const newEvent = {
-        //     eventinfo: eventinfo,
-        //     eventdate: now.toJSON(),
-        //     candidatename: `${candidate.firstname} ${candidate.lastname}`
-        // };
 
         const positionDBUpdate = {};
         Object.keys(candidate.submitted_positions).forEach(pkey => {
@@ -279,13 +241,13 @@ export default class EditCandidateForm extends React.Component {
                         });
                 });
             })
+            .then(()=>{
+                fbFlagNotes.child(key).remove();
+            })
             .then(() => {
                 //prettier-ignore
                 firebase.database().ref().update(positionDBUpdate) //prettier-ignore
             })
-            // .then(() => {
-            //     fbAuditTrailDB.push(newEvent);
-            // })
             .catch(function(error) {
                 console.error("Error deleting candidate:", error);
             });

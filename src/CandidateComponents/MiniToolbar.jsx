@@ -1,5 +1,5 @@
 import React from "react";
-import { fbCandidatesDB, fbAuditTrailDB, fbFlagNotes } from "../firebase/firebase.config";
+import { fbCandidatesDB, fbFlagNotes } from "../firebase/firebase.config";
 import history from "../modules/history";
 import { format, parseISO } from "date-fns";
 import classnames from "classnames";
@@ -10,10 +10,6 @@ import { Icon, Menu } from "semantic-ui-react";
 export default class MiniToolbar extends React.Component {
     constructor(props) {
         super(props);
-
-        // this.props = {
-        //     item, currentuser
-        // }
 
         this.state = {
             visible: false,
@@ -59,21 +55,10 @@ export default class MiniToolbar extends React.Component {
     ArchiveCandidate(ev) {
         ev.stopPropagation();
         
-        const { currentuser, item } = this.props;
+        const { item } = this.props;
         const key = item.key;
         const candidate = item.info;
-        const now = new Date();
-        const status = candidate.archived === "archived" ? "current" : "archived"; // set button text and actions for archive candidate button
 
-
-        let eventinfo = "";
-        eventinfo = `${currentuser.displayName} set candidate to ${status}.`;
-
-        const newEvent = {
-            eventdate: now.toJSON(),
-            eventinfo: eventinfo,
-            candidatename: `${candidate.firstname} ${candidate.lastname}`
-        };
 
         let updatedinfo;
         if (candidate.archived === "current") {
@@ -96,9 +81,6 @@ export default class MiniToolbar extends React.Component {
         fbCandidatesDB
             .child(key)
             .update(updatedinfo)
-            .then(() => {
-                fbAuditTrailDB.push(newEvent);
-            })
             .catch(err => console.error("CandidatesPage, line 102: ", err));
     }
 
