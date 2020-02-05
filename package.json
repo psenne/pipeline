@@ -29,7 +29,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy-dev": "firebase -P staffing-pipeline-dev deploy --only hosting:staffing-pipeline-dev",
+    "deploy-prod": "firebase -P staffing-pipeline deploy --only hosting:staffing-pipeline"
   },
   "eslintConfig": {
     "extends": "react-app"
