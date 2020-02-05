@@ -23,6 +23,8 @@ function s2ab(s) {
 export default function(positions) {
     const jsontable = positions.map(item => {
         const added_on = item.info.added_on ? format(parseISO(item.info.added_on), "MMM, d yyyy") : "";
+        const candidates = item.info.candidates_submitted || {};
+        
         return {
             "Position ID": item.info.position_id,
             "Position Title": item.info.title,
@@ -31,7 +33,7 @@ export default function(positions) {
             Description: item.info.description,
             Level: item.info.level,
             Location: item.info.location,
-            Submissions: item.info.candidate_submitted.map(candidate => candidate.candidate_name).join(", "),
+            Submissions: Object.keys(candidates).map(key => candidates[key].candidate_name).join(", "),
             "Added on": added_on
         };
     });
@@ -42,7 +44,7 @@ export default function(positions) {
 
     //worksheet["A1"].s = { font: {sz: 14, bold: true, color: "#FF00FF" }}
     worksheet["!autofilter"] = { ref: worksheet["!ref"] };
-    worksheet["!cols"] = [{ width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }];
+    worksheet["!cols"] = [{ width: 13 }, { width: 45 }, { width: 20 }, { width: 40 }, { width: 40 }, { width: 20 }, { width: 20 }, { width: 50 }, { width: 20 }];
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Open Positions");
     var wbout = XLSX.write(workbook, wopts);
