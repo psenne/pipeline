@@ -1,12 +1,18 @@
 {
     "rules": {
-        ".read": "auth !== null && auth.provider == 'google'",
-        ".write": "auth !== null && auth.provider == 'google'",
+     	".read": "auth.token.email.matches(/.*@renegadetec.com$/)",
+     	".write": "auth.token.email.matches(/.*@renegadetec.com$/)",
         "candidates": {
-            ".indexOn": ["create_date", "modified_date"]
+            ".indexOn": ["create_date", "modified_date", "firstname"]
         },
         "auditing": {
             ".indexOn": ["eventdate"]
+        },
+        "users":{
+          	".indexOn" : ["email"]
+        },
+        "positions":{
+          	".indexOn" : ["added_on"]
         }
     }
 }

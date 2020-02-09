@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Modal, Header, Icon, Button, Form } from "semantic-ui-react";
-import { fbFlagNotes, fbAuditTrailDB, fbCandidatesDB } from "../firebase/firebase.config";
+import { fbFlagNotes, fbCandidatesDB } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 import tmplFlagNote from "../constants/flagnote";
 
@@ -80,7 +80,6 @@ export default class FlagMessagePopup extends Component {
         const now = new Date();
         let flag = {};
         let candidateflag = {};
-        let newEvent = {};
 
         if (flag_note) {
             flag = {
@@ -99,14 +98,8 @@ export default class FlagMessagePopup extends Component {
                 flag_history
             };
 
-            newEvent = {
-                eventdate: now.toJSON(),
-                eventinfo: `${currentuser.displayName} flagged candidate with note: ${flag_note}. Actioned to: ${actioned_to}`,
-                candidatename: candidate_name
-            };
 
             fbFlagNotes.child(flagkey).update(flag);
-            fbAuditTrailDB.push(newEvent);
             fbCandidatesDB.child(flagkey).update(candidateflag);
         } else {
             candidateflag = {
@@ -117,14 +110,8 @@ export default class FlagMessagePopup extends Component {
                 actioned_to: "",
                 flag_history
             };
-            newEvent = {
-                eventdate: now.toJSON(),
-                eventinfo: `${currentuser.displayName} removed flag from candidate.`,
-                candidatename: candidate_name
-            };
 
             fbFlagNotes.child(flagkey).remove();
-            fbAuditTrailDB.push(newEvent);
             fbCandidatesDB.child(flagkey).update(candidateflag);
         }
         this.props.handleClose();

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import { Container, List } from "semantic-ui-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 export default class LastCreated extends Component {
     constructor(props) {
@@ -48,7 +48,7 @@ export default class LastCreated extends Component {
                             return candidate.info.created_by;
                         })
                         .map(({ info, key }) => {
-                            const created_date = info.created_date ? format(info.created_date, "MMM DD, YYYY") : "";
+                            const created_date = info.created_date ? format(parseISO(info.created_date), "MMM d, yyyy") : "";
                             const skill = info.skill ? `(${info.skill})` : "";
                             const addedmsg = info.created_by ? `Added by ${info.created_by} on ${created_date}` : "";
 

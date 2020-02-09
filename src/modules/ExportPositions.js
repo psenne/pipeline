@@ -1,6 +1,6 @@
 import XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 // some random function for excel exporting
 function s2ab(s) {
@@ -22,8 +22,10 @@ function s2ab(s) {
 
 export default function(positions) {
     const jsontable = positions.map(item => {
-        const added_on = item.info.added_on ? format(item.info.added_on, "MMM, DD YYYY") : "";
-        const submissions = item.info.candidate_submitted || [];
+
+        const added_on = item.info.added_on ? format(parseISO(item.info.added_on), "MMM, d yyyy") : "";
+        const candidates = item.info.candidates_submitted || {};
+
         return {
             "Position ID": item.info.position_id,
             "Position Title": item.info.title,
@@ -32,7 +34,8 @@ export default function(positions) {
             Description: item.info.description,
             Level: item.info.level,
             Location: item.info.location,
-            Submissions: submissions.map(candidate => candidate.candidate_name).join(", "),
+
+            Submissions: Object.keys(candidates).map(key => candidates[key].candidate_name).join(", "),
             "Added on": added_on
         };
     });
@@ -43,11 +46,11 @@ export default function(positions) {
 
     //worksheet["A1"].s = { font: {sz: 14, bold: true, color: "#FF00FF" }}
     worksheet["!autofilter"] = { ref: worksheet["!ref"] };
-    worksheet["!cols"] = [{ width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }];
+    worksheet["!cols"] = [{ width: 13 }, { width: 45 }, { width: 20 }, { width: 40 }, { width: 40 }, { width: 20 }, { width: 20 }, { width: 50 }, { width: 20 }];
 
     XLSX.utils.book_append_sheet(workbook, worksheet, "Open Positions");
     var wbout = XLSX.write(workbook, wopts);
 
-    const today = format(new Date(), "DD.MMM.YYYY").toUpperCase();
+    const today = format(new Date(), "dd.MMM.yyyy").toUpperCase();
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), "positions." + today + ".xlsx");
 }

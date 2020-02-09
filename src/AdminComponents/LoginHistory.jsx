@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { fbLoginsDB } from "../firebase/firebase.config";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Container, Table, Header, Icon} from "semantic-ui-react";
 
 class LoginHistory extends Component {
@@ -43,7 +43,7 @@ class LoginHistory extends Component {
                                 <Table.Row key={login.key}>
                                     <Table.Cell>{loginevent.user}</Table.Cell>
                                     <Table.Cell>{loginevent.emailaddress}</Table.Cell>
-                                    <Table.Cell>{format(loginevent.eventtime, "MMM D, YYYY h:mm a")}</Table.Cell>
+                                    <Table.Cell>{format(parseISO(loginevent.eventtime), "MMM d, yyyy h:mm aaaa")}</Table.Cell>
                                 </Table.Row>
                             );
                         })}

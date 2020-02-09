@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import history from "../modules/history";
 import { Link } from "react-router-dom";
-import firebase, { fbPositionsDB, fbAuditTrailDB } from "../firebase/firebase.config";
+import firebase, { fbPositionsDB } from "../firebase/firebase.config";
 import tmplPosition from "../constants/positionInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
@@ -110,7 +110,7 @@ export default function AddPositionForm() {
                                 return (
                                     <p key={candidate.key}>
                                         <Link to={`/candidates/${candidate.key}`}>
-                                            {candidate.info.candidate_name} - submitted on {format(candidate.info.submission_date, "MMMM D, YYYY")}
+                                            {candidate.info.candidate_name} - submitted on {format(parseISO(candidate.info.submission_date), "MMMM d, yyyy")}
                                         </Link>
                                         <Icon name="close" color="red" link onClick={() => RemoveCandidateFromPosition(candidate.key)} />
                                     </p>

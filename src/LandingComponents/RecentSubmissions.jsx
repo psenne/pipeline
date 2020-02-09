@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { fbPositionsDB } from "../firebase/firebase.config";
 import { Container, List } from "semantic-ui-react";
 import ComponentPlaceholder from "./ComponentPlaceholder";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 const RecentSubmissions = () => {
     const [candidateSubmissions, setCandidateSubmissions] = useState([]);
@@ -45,7 +45,7 @@ const RecentSubmissions = () => {
                             <List.Item key={positionkey + candidatekey}>
                                 <List.Content>
                                     <List.Header>
-                                        <Link to={`/candidates/${candidatekey}`}>{submissioninfo.candidate_name}</Link> submitted for <Link to={`/positions/${positionkey}`}>{positioninfo.title}</Link> on {positioninfo.contract} ({format(submissioninfo.submission_date, "MMM DD, YYYY")})
+                                        <Link to={`/candidates/${candidatekey}`}>{submissioninfo.candidate_name}</Link> submitted for <Link to={`/positions/${positionkey}`}>{positioninfo.title}</Link> on {positioninfo.contract} ({format(parseISO(submissioninfo.submission_date), "MMM d, yyyy")})
                                     </List.Header>
                                 </List.Content>
                             </List.Item>

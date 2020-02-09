@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import FlagMessagePopup from "../CandidateComponents/FlagMessagePopup";
 import UserContext from "../contexts/UserContext";
 import { Card, Icon, Button } from "semantic-ui-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 export default class Flag extends Component {
     constructor(props) {
@@ -31,7 +31,7 @@ export default class Flag extends Component {
     render() {
         const { flag } = this.props;
         const { flagOpen } = this.state;
-        const flagdate = format(flag.info.flagged_on, "MMM DD, YYYY");
+        const flagdate = format(parseISO(flag.info.flagged_on), "MMM d, yyyy");
         const candidatelink = <Link to={`/candidates/${flag.key}`}>{flag.info.candidate_name}</Link>;
         const action = flag.info.actioned_to ? <h5>Actioned to: {flag.info.actioned_to}</h5> : "";
         return (

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, parseISO, formatISO } from "date-fns";
 import history from "../modules/history";
 import { Link } from "react-router-dom";
-import firebase, { fbPositionsDB, fbAuditTrailDB } from "../firebase/firebase.config";
+import firebase, { fbPositionsDB } from "../firebase/firebase.config";
 import tmplPosition from "../constants/positionInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "../CandidateComponents/ContractDropdown";
@@ -39,9 +39,11 @@ export default function EditPositionForm({ match }) {
             }
         });
         return () => {
-            fbPositionsDB.off("value", listener);
+            fbPositionsDB.off("value", listener); 
         };
-    }, []);
+
+        // eslint-disable-next-line
+    }, [match.params.id]);
 
     useEffect(() => {
         const key = match.params.id;
@@ -58,7 +60,7 @@ export default function EditPositionForm({ match }) {
         return () => {
             fbPositionsDB.off("value", listener);
         };
-    }, []);
+    }, [match.params.id]);
 
     const HandleTextInput = ev => {
         const name = ev.target.name;
@@ -77,7 +79,7 @@ export default function EditPositionForm({ match }) {
     };
 
     const AddCandidateToPosition = candidate => {
-        const submission_date = format(new Date());
+        const submission_date = formatISO(new Date());
         const candidate_name = candidate.info.firstname + " " + candidate.info.lastname;
         const tmpCandidate = { key: candidate.key, info: { submission_date, candidate_name } };
         setaddedCandidates([{ ...tmpCandidate }, ...addedCandidates]);
@@ -177,7 +179,7 @@ export default function EditPositionForm({ match }) {
                                 return (
                                     <p key={candidate.key}>
                                         <Link to={`/candidates/${candidate.key}`}>
-                                            {candidate.info.candidate_name} - submitted on {format(candidate.info.submission_date, "MMMM D, YYYY")}
+                                            {candidate.info.candidate_name} - submitted on {format(parseISO(candidate.info.submission_date), "MMMM d, yyyy")}
                                         </Link>
                                         <Icon name="close" color="red" link onClick={() => RemoveCandidateFromPosition(candidate.key)} />
                                     </p>

@@ -1,6 +1,6 @@
 import React from "react";
 import history from "../modules/history";
-import { fbCandidatesDB, fbStorage, fbAuditTrailDB } from "../firebase/firebase.config";
+import { fbCandidatesDB, fbStorage,  } from "../firebase/firebase.config";
 import { tmplCandidate } from "../constants/candidateInfo";
 import NavBar from "../NavBar";
 import ContractDropdown from "./ContractDropdown";
@@ -16,15 +16,9 @@ export default class AddCandidateForm extends React.Component {
             formError: false
         };
 
-        // this.handleInterviewDateChange = this.handleInterviewDateChange.bind(this);
-        // this.handleLOIDateChange = this.handleLOIDateChange.bind(this);
         this.HandleTextInput = this.HandleTextInput.bind(this);
         this.HandleTextInputUpper = this.HandleTextInputUpper.bind(this);
-        // this.HandleSalaryInput = this.HandleSalaryInput.bind(this);
         this.HandlePContractInput = this.HandlePContractInput.bind(this);
-        // this.HandleManagerDropdown = this.HandleManagerDropdown.bind(this);
-        // this.HandleLOIStatusChange = this.HandleLOIStatusChange.bind(this);
-        // this.HandleCheckbox = this.HandleCheckbox.bind(this);
         this.HandleFileUpload = this.HandleFileUpload.bind(this);
         this.ValidateAndSubmit = this.ValidateAndSubmit.bind(this);
         this.updateSelectedCandidate = this.updateSelectedCandidate.bind(this);
@@ -57,48 +51,10 @@ export default class AddCandidateForm extends React.Component {
         this.updateSelectedCandidate(name, value.toUpperCase());
     }
 
-    //callback for Salary field. This changes the value to base64, so non-authorized users can't read the data when getting value from firebase.
-    // HandleSalaryInput(ev) {
-    //     const value = ev.target.value;
-    //     this.updateSelectedCandidate("salary", btoa(value));
-    // }
-
     //generic callback for dropdowns
     HandlePContractInput(value) {
         this.updateSelectedCandidate("potential_contracts", value);
     }
-
-    // HandleLOIStatusChange(value) {
-    //     this.updateSelectedCandidate("loi_status", value);
-    // }
-
-    // HandleManagerDropdown(name, value) {
-    //     this.updateSelectedCandidate(name, value);
-    // }
-
-    // //callback for checkbox for setting candidate to archive
-    // HandleCheckbox(ev, data) {
-    //     const name = data.name;
-    //     const value = data.checked ? "archived" : "current";
-
-    //     this.updateSelectedCandidate(name, value);
-    // }
-
-    // //callback for interview date.
-    // handleInterviewDateChange(date) {
-    //     if (date) {
-    //         date = date.toJSON();
-    //     }
-    //     this.updateSelectedCandidate("interview_date", date);
-    // }
-
-    // //callback for LOI date.
-    // handleLOIDateChange(date) {
-    //     if (date) {
-    //         date = date.toJSON();
-    //     }
-    //     this.updateSelectedCandidate("loi_sent_date", date);
-    // }
 
     HandleFileUpload(ev) {
         //add files to state for later uploading
@@ -118,19 +74,6 @@ export default class AddCandidateForm extends React.Component {
     //callback function when form editing is done.
     updateDB() {
         const { candidate, files } = this.state;
-        const {
-            currentuser: { displayName: username }
-        } = this.props;
-
-        const now = new Date();
-        const eventinfo = `${username} added candidate.`;
-
-        const newEvent = {
-            eventdate: now.toJSON(),
-            username,
-            eventinfo,
-            candidatename: `${candidate.firstname} ${candidate.lastname}`
-        };
 
         fbCandidatesDB.push(candidate).then(newcandidate => {
             const key = newcandidate.key;
@@ -142,9 +85,6 @@ export default class AddCandidateForm extends React.Component {
                 uploadedFiles.push(fileRef.put(file, { contentType: file.type })); //add file upload promise to array, so that we can use promise.all() for one returned promise
             }
             Promise.all(uploadedFiles)
-                .then(() => {
-                    fbAuditTrailDB.push(newEvent);
-                })
                 .then(() => {
                     history.push("/candidates/" + key); //wait until all files have been uploaded, then go to profile page.
                 });

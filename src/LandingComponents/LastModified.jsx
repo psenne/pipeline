@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { fbCandidatesDB } from "../firebase/firebase.config";
 import { Container, List } from "semantic-ui-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 
 export default class LastModified extends Component {
     constructor(props) {
@@ -45,7 +45,7 @@ export default class LastModified extends Component {
                             return candidate.info.modified_fields !== undefined;
                         })
                         .map(({ info, key }) => {
-                            const modified_date = info.modified_date ? format(info.modified_date, "MMM DD, YYYY") : "";
+                            const modified_date = info.modified_date ? format(parseISO(info.modified_date), "MMM dd, yyyy") : "";
                             const skill = info.skill ? `(${info.skill})` : "";
                             const modified_fields = info.modified_fields
                                 ? info.modified_fields.map(field => {

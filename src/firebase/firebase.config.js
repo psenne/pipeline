@@ -9,7 +9,9 @@ var prodconfig = {
     databaseURL: "https://staffing-pipeline.firebaseio.com",
     projectId: "staffing-pipeline",
     storageBucket: "staffing-pipeline.appspot.com",
-    messagingSenderId: "403362370549"
+    messagingSenderId: "403362370549",
+    appId: "1:403362370549:web:c3a6d08e56a8e152c406bc"
+
 };
 
 var devconfig = {
@@ -18,7 +20,9 @@ var devconfig = {
     databaseURL: "https://staffing-pipeline-dev.firebaseio.com",
     projectId: "staffing-pipeline-dev",
     storageBucket: "staffing-pipeline-dev.appspot.com",
-    messagingSenderId: "90337545773"
+    messagingSenderId: "90337545773",
+    appId: "1:90337545773:web:39eda8e65470fdda90b2a4"
+  
 };
 
 // eslint-disable-next-line
