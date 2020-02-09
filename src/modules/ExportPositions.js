@@ -22,9 +22,10 @@ function s2ab(s) {
 
 export default function(positions) {
     const jsontable = positions.map(item => {
+
         const added_on = item.info.added_on ? format(parseISO(item.info.added_on), "MMM, d yyyy") : "";
         const candidates = item.info.candidates_submitted || {};
-        
+
         return {
             "Position ID": item.info.position_id,
             "Position Title": item.info.title,
@@ -33,6 +34,7 @@ export default function(positions) {
             Description: item.info.description,
             Level: item.info.level,
             Location: item.info.location,
+
             Submissions: Object.keys(candidates).map(key => candidates[key].candidate_name).join(", "),
             "Added on": added_on
         };
