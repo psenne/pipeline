@@ -4,24 +4,12 @@ import "firebase/database";
 import "firebase/storage";
 
 var prodconfig = {
-    apiKey: "AIzaSyCNMMcb5kK1Mc-8v-_LjxI6gl7RDLbfj98",
-    authDomain: "staffing-pipeline.firebaseapp.com",
-    databaseURL: "https://staffing-pipeline.firebaseio.com",
-    projectId: "staffing-pipeline",
-    storageBucket: "staffing-pipeline.appspot.com",
-    messagingSenderId: "403362370549",
-    appId: "1:403362370549:web:c3a6d08e56a8e152c406bc"
+
 
 };
 
 var devconfig = {
-    apiKey: "AIzaSyCzu1yAol8hre3s8SGINGzf0BwVFhxrIbY",
-    authDomain: "staffing-pipeline-dev.firebaseapp.com",
-    databaseURL: "https://staffing-pipeline-dev.firebaseio.com",
-    projectId: "staffing-pipeline-dev",
-    storageBucket: "staffing-pipeline-dev.appspot.com",
-    messagingSenderId: "90337545773",
-    appId: "1:90337545773:web:39eda8e65470fdda90b2a4"
+
   
 };
 
