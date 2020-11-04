@@ -2,16 +2,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 import "firebase/storage";
+import ".env.local";
 
-var prodconfig = {
-
-
-};
-
-var devconfig = {
-
-  
-};
 
 // eslint-disable-next-line
 const config = process.env.NODE_ENV === "production" ? prodconfig : devconfig;
